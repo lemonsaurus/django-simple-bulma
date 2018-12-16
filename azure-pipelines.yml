@@ -1,0 +1,100 @@
+# https://aka.ms/yaml
+
+jobs:
+- job: test
+  displayName: 'Lint & Test'
+
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  variables:
+    PIP_CACHE_DIR: ".cache/pip"
+
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Set Python version'
+    inputs:
+      versionSpec: '3.7.x'
+      addToPath: true
+
+  - script: pip install .[dev]
+    displayName: 'Install project and dev dependencies'
+
+  - script: python -m flake8
+    displayName: 'Run linter'
+
+- job: build
+  displayName: 'Build Distribution'
+  dependsOn: 'test'
+
+  steps:
+  - task: UsePythonVersion@0
+    displayName: 'Set Python version'
+    inputs:
+      versionSpec: '3.7.x'
+      addToPath: true
+
+  - script: pip install .[dev]
+    displayName: 'Install project and dev dependencies'
+
+  # region: Binary/source distributions
+
+  - script: python setup.py build bdist_wheel
+
+    displayName: 'Build distribution'
+
+  - script: |
+      mkdir $(Build.ArtifactStagingDirectory)/build
+      cp -R dist/* $(Build.ArtifactStagingDirectory)/build
+
+    displayName: 'Copy artifacts'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish artifacts for release pipeline'
+
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)/build'
+      artifactName: build
+
+  # endregion
+
+  # region: Documentation
+
+  - script: pdoc crispy_bulma --html --html-dir doc
+    displayName: 'Build documentation'
+
+  - script: |
+      mkdir $(Build.ArtifactStagingDirectory)/doc
+      cp -R doc/* $(Build.ArtifactStagingDirectory)/doc
+
+    displayName: 'Copy documentation'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish documentation artifact'
+
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)/doc'
+      artifactName: documentation
+
+  # endregion
+
+  # region: Version info
+
+  - script: python scripts/save-versions.py
+    displayName: 'Build version info'
+
+  - script: |
+      mkdir $(Build.ArtifactStagingDirectory)/meta
+      cp meta.json $(Build.ArtifactStagingDirectory)/meta
+      cp scripts/github-release.py $(Build.ArtifactStagingDirectory)/meta
+
+    displayName: 'Copy version info'
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish version info artifact'
+
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)/meta'
+      artifactName: meta
+
+  # endregion
