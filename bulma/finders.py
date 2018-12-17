@@ -1,3 +1,11 @@
+"""
+Custom finders that can be used together
+with StaticFileStorage objects in order to
+locate files that should be collected into
+the staticfiles folder when the collectstatic
+command is executed.
+"""
+
 from django.contrib.staticfiles.finders import BaseFinder
 
 
@@ -7,6 +15,7 @@ class SimpleBulmaFinder(BaseFinder):
     and then return paths to those static files so they may be collected
     by the static collector.
     """
+
     def find(self, path, all=False):
         """
         Given a relative file path, find an absolute file path.
@@ -14,11 +23,11 @@ class SimpleBulmaFinder(BaseFinder):
         If the ``all`` parameter is False (default) return only the first found
         file path; if True, return a list of all found files paths.
         """
-        raise NotImplementedError('subclasses of BaseFinder must provide a find() method')
+        raise NotImplementedError("subclasses of BaseFinder must provide a find() method")
 
     def list(self, ignore_patterns):
         """
         Given an optional list of paths to ignore, return a two item iterable
         consisting of the relative path and storage instance.
         """
-        raise NotImplementedError('subclasses of BaseFinder must provide a list() method')
+        raise NotImplementedError("subclasses of BaseFinder must provide a list() method")

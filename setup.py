@@ -1,15 +1,22 @@
+"""
+This file is used to install this package via the pip tool.
+
+It keeps track of versioning, as well as dependencies and
+what versions of python or django we support.
+"""
+
 from setuptools import find_packages, setup
 
 setup(
-    name='django-simple-bulma',
-    version='0.0.1',
-    description='Django application to add the Bulma CSS framework and its extensions',
-    long_description=open('README.md').read(),
+    name="django-simple-bulma",
+    version="0.0.1",
+    description="Django application to add the Bulma CSS framework and its extensions",
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    author='Python Discord',
-    author_email='staff@pythondiscord.com',
-    url='http://pypi.python.org/pypi/django-simple-bulma',
-    license='MIT',
+    author="Python Discord",
+    author_email="staff@pythondiscord.com",
+    url="http://pypi.python.org/pypi/django-simple-bulma",
+    license="MIT",
     packages=find_packages(),
     classifiers=[
         "Environment :: Web Environment",
@@ -26,8 +33,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     install_requires=[
-        'Django>=2.0',
-        'django-crispy-forms==1.7.2'
+        "Django>=2.0"
     ],
     extras_require={
         "dev": [
