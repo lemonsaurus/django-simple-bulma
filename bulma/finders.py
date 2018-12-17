@@ -1,9 +1,7 @@
 """
 Custom finders that can be used together
-with StaticFileStorage objects in order to
-locate files that should be collected into
-the staticfiles folder when the collectstatic
-command is executed.
+with StaticFileStorage objects to find
+files that should be collected by collectstatic.
 """
 
 from django.contrib.staticfiles.finders import BaseFinder
