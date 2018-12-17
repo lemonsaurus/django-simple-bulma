@@ -33,7 +33,8 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     install_requires=[
-        "Django>=2.0"
+        "Django>=2.0",
+        "libsass",
     ],
     extras_require={
         "dev": [
@@ -46,7 +47,6 @@ setup(
             "flake8-todo",
             "flake8-type-annotations",
             "flake8-string-format",
-
             "pdoc",
             "PyGithub",
             "wheel",

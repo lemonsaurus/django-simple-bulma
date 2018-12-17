@@ -5,6 +5,7 @@ files that should be collected by collectstatic.
 """
 
 from django.contrib.staticfiles.finders import BaseFinder
+from django.core.files.storage import FileSystemStorage
 
 
 class SimpleBulmaFinder(BaseFinder):
@@ -13,6 +14,8 @@ class SimpleBulmaFinder(BaseFinder):
     and then return paths to those static files so they may be collected
     by the static collector.
     """
+
+    storage_class = FileSystemStorage
 
     def find(self, path, all=False):
         """
