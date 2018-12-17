@@ -1,0 +1,136 @@
+/*
+Error: Invalid CSS after "100%": expected expression (e.g. 1px, bold), was ";"
+        on line 210 of sass/extensions/bulma-calendar.sass
+        from line 3 of sass/extensions/_all.sass
+        from line 6 of bulma.sass
+
+205:               &::before
+206:                 background: $calendar-range-background-color
+207:                 border: $calendar-date-hover-border
+208:                 content: ""
+209:                 height: 100%
+210:                 width: 100%;
+211:                 position: absolute
+212:                 right: 0
+213:                 top: 50%
+214:                 transform: translateY(-50%)
+215:               &.calendar-range-start,
+
+Backtrace:
+sass/extensions/bulma-calendar.sass:210
+sass/extensions/_all.sass:3
+bulma.sass:6
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/scss/parser.rb:1278:in `expected'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/script/lexer.rb:231:in `expected!'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/script/parser.rb:762:in `assert_done'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/script/parser.rb:69:in `parse'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/script/parser.rb:228:in `parse'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/script.rb:27:in `parse'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:1177:in `parse_script'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:749:in `parse_property'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:708:in `parse_property_or_rule'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:667:in `parse_line'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:540:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:549:in `block in build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:542:in `build_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:559:in `block in append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:558:in `append_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:417:in `_to_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:321:in `to_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:327:in `block in visit_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:88:in `block in with_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:135:in `with_frame'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:88:in `with_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:326:in `visit_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:36:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:79:in `block in with_base'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:135:in `with_frame'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:79:in `with_base'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:162:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:329:in `block (2 levels) in visit_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:329:in `map'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:329:in `block in visit_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:88:in `block in with_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:135:in `with_frame'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:88:in `with_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:326:in `visit_import'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:36:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:162:in `block in visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:79:in `block in with_base'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:135:in `with_frame'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/stack.rb:79:in `with_base'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:162:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:52:in `map'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:171:in `block in visit_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:183:in `with_environment'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:170:in `visit_children'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:190:in `visit_root'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/base.rb:36:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:161:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/visitors/perform.rb:10:in `visit'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/root_node.rb:36:in `css_tree'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:389:in `_render_with_sourcemap'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/engine.rb:307:in `render_with_sourcemap'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/plugin/compiler.rb:462:in `update_stylesheet'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/plugin/compiler.rb:209:in `each'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/plugin.rb:82:in `update_stylesheets'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/exec/sass_scss.rb:340:in `watch_or_update'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/exec/sass_scss.rb:51:in `process_result'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/exec/base.rb:52:in `parse'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/lib/sass/exec/base.rb:19:in `parse!'
+/var/lib/gems/2.5.0/gems/sass-3.5.6/bin/sass:13:in `<top (required)>'
+/usr/local/bin/sass:23:in `load'
+/usr/local/bin/sass:23:in `<main>'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Invalid CSS after \"100%\": expected expression (e.g. 1px, bold), was \";\"\A         on line 210 of sass/extensions/bulma-calendar.sass\A         from line 3 of sass/extensions/_all.sass\A         from line 6 of bulma.sass\A \A 205:               &::before\A 206:                 background: $calendar-range-background-color\A 207:                 border: $calendar-date-hover-border\A 208:                 content: \"\"\A 209:                 height: 100%\A 210:                 width: 100%;\A 211:                 position: absolute\A 212:                 right: 0\A 213:                 top: 50%\A 214:                 transform: translateY(-50%)\A 215:               &.calendar-range-start,"; }
