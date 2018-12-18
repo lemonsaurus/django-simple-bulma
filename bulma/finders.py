@@ -3,6 +3,7 @@ Custom finders that can be used together
 with StaticFileStorage objects to find
 files that should be collected by collectstatic.
 """
+from pathlib import Path
 
 from django.contrib.staticfiles.finders import BaseFinder
 from django.core.files.storage import FileSystemStorage
@@ -17,36 +18,39 @@ class SimpleBulmaFinder(BaseFinder):
     by the static collector.
     """
 
-    storage_class = FileSystemStorage
+    def __init__(self):
+        self.bulma_settings = settings.BULMA_SETTINGS
+        self.simple_bulma_path = Path(__file__).resolve().parent
+        self.extensions = self.bulma_settings.get("extensions", "_all")
+        self.variables = self.bulma_settings.get("variables", {})
+        self.storage = FileSystemStorage(self.simple_bulma_path)
 
     def _get_bulma_css(self):
         """
-        Build and compile the bulma css file.
+        Compiles the bulma css file and returns its relative path.
         """
 
         # Start by unpacking the users custom variables
-        bulma_settings = settings.BULMA_SETTINGS
         scss_string = ""
-        for var, value in bulma_settings.get("variables", []):
-            scss_string += f"${var}: {value}\n"
+        for var, value in self.variables.items():
+            scss_string += f"${var}: {value};\n"
+
+        # Now load bulma
+        scss_string += f'@import "{self.simple_bulma_path}/bulma.sass";'
 
         # Now load in the extensions that the user wants
-        extensions = bulma_settings.get("extensions", True)
-
-        if extensions is True:
-            scss_string += '@import "sass/extensions/_all"'
-        elif isinstance(extensions, list):
-            for extension in extensions:
-                scss_string += f'@import "sass/extensions/{extension}"'
-
-        # Finally, load bulma
-        scss_string += '@import "bulma"'
+        if self.extensions == "_all" :
+            scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_all";\n'
+        elif isinstance(self.extensions, list):
+            for extension in self.extensions:
+                scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_{extension}";\n'
 
         # Store this as a css file
         css_string = sass.compile(string=scss_string)
-        # Save to file
+        with open(f"{self.simple_bulma_path}/css/bulma.css", "w") as bulma_css:
+            bulma_css.write(css_string)
 
-        return  # The file
+        return "css/bulma.css"
 
     def _get_bulma_js(self):
         """
@@ -54,7 +58,20 @@ class SimpleBulmaFinder(BaseFinder):
         needed for the users selected extensions.
         """
 
-        pass
+        js_files = []
+        js_folder = self.simple_bulma_path / "js"
+
+        if self.extensions == "_all":
+            for filename in js_folder.iterdir():
+                js_files.append(f"js/{filename}")
+        else:
+            for filename in js_folder.iterdir():
+                extension_name = str(filename).split(".")[0]
+
+                if extension_name in self.extensions:
+                    js_files.append(f"js/{filename}")
+
+        return js_files
 
     def find(self, path, all=False):
         """
@@ -63,13 +80,20 @@ class SimpleBulmaFinder(BaseFinder):
         If the ``all`` parameter is False (default) return only the first found
         file path; if True, return a list of all found files paths.
         """
+        absolute_path = str(self.simple_bulma_path / path)
 
-        raise NotImplementedError("subclasses of BaseFinder must provide a find() method")
+        if all:
+            return [absolute_path]
+        return absolute_path
 
     def list(self, ignore_patterns):
         """
-        Given an optional list of paths to ignore, return a two item iterable
-        consisting of the relative path and storage instance.
+        Returns a two item iterable consisting of
+        the relative path and storage instance.
         """
 
-        pass
+        files = [self._get_bulma_css()]
+        files.extend(self._get_bulma_js())
+
+        for path in files:
+            yield path, self.storage
