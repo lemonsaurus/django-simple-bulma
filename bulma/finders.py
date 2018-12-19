@@ -63,14 +63,15 @@ class SimpleBulmaFinder(BaseFinder):
 
         if self.extensions == "_all":
             for filename in js_folder.iterdir():
-                js_files.append(f"js/{filename}")
+                js_files.append(f"js/{filename.name}")
         else:
             for filename in js_folder.iterdir():
-                extension_name = str(filename).split(".")[0]
+                extension_name = str(filename.stem)
 
                 if extension_name in self.extensions:
-                    js_files.append(f"js/{filename}")
+                    js_files.append(f"js/{filename.name}")
 
+        print(js_files)
         return js_files
 
     def find(self, path, all=False):
