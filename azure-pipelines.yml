@@ -60,7 +60,7 @@ jobs:
   # endregion
 
   # region: Documentation
-  - script: pdoc bulma --html --html-dir doc
+  - script: pdoc django_simple_bulma --html --html-dir doc
     displayName: 'Build documentation'
 
   - script: |
