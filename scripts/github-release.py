@@ -25,8 +25,8 @@ if len(sys.argv) > 2:
     print("Usage: github-release.py [token]")
     exit(1)
 
-if not os.path.exists("Bot Core/meta/meta.json"):
-    print("No such file: Bot Core/meta/meta.json")
+if not os.path.exists("Django Simple Bulma/meta/meta.json"):
+    print("No such file: Django Simple Bulma/meta/meta.json")
     exit(1)
 
 
@@ -46,11 +46,11 @@ repo.create_git_ref(f"refs/tags/{tag}", sha)
 print(f"Creating release: {tag}")
 release: GitRelease = repo.create_git_release(tag, f"Release: {tag}", MESSAGE, target_commitish=sha)
 
-for file in os.listdir("Bot Core/build"):
+for file in os.listdir("Django Simple Bulma/build"):
     print(f"Uploading: {file}")
-    release.upload_asset(f"Bot Core/build/{file}")
+    release.upload_asset(f"Django Simple Bulma/build/{file}")
 
 print("Uploading: doc.zip")
-release.upload_asset("Bot Core/documentation/doc.zip")
+release.upload_asset("Django Simple Bulma/documentation/doc.zip")
 
 print(f"Released: {release.html_url}")
