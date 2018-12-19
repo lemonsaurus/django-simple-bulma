@@ -16,7 +16,7 @@ To get `django-simple-bulma`, up and running for your Django project, follow the
     ```python
     INSTALLED_APPS = [
       #...
-      'django_simple_bulma.bulma',
+      'django_simple_bulma',
       #...
     ]
     ``` 
@@ -28,7 +28,7 @@ To get `django-simple-bulma`, up and running for your Django project, follow the
       'django.contrib.staticfiles.finders.AppDirectoriesFinder',
   
       # Now add our custom SimpleBulma one.
-      'django_simple_bulma.bulma.finders.SimpleBulmaFinder',
+      'django_simple_bulma.finders.SimpleBulmaFinder',
     ]
     ```
 - Run `python manage.py collectstatic` command in order to build Bulma and move it to your `staticfiles` folder. Please note that you will need to use this command every time you make a change to the configuration, as this is the only way to rebuild the Bulma css file. If you are not using `collectstatic`, [read up on it](https://stackoverflow.com/questions/34586114/whats-the-point-of-djangos-collectstatic) and [start using it](https://docs.djangoproject.com/en/2.1/ref/contrib/staticfiles/). 
