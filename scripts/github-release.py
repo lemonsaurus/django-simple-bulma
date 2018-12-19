@@ -30,7 +30,7 @@ if not os.path.exists("Django Simple Bulma/meta/meta.json"):
     exit(1)
 
 
-with open("Bot Core/meta/meta.json") as fh:
+with open("Django Simple Bulma/meta/meta.json") as fh:
     metadata = json.load(fh)
 
 sha = metadata["hash"]
