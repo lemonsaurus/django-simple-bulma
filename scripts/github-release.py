@@ -38,7 +38,7 @@ tag = metadata["tag"]
 token = sys.argv[1]
 
 g = Github("pydis-bot", token)
-repo: Repository = g.get_repo("python-discord/pydis-bot-core")
+repo: Repository = g.get_repo("python-discord/django-simple-bulma")
 
 print(f"Creating tag: {tag}")
 repo.create_git_ref(f"refs/tags/{tag}", sha)
