@@ -28,7 +28,7 @@ jobs:
   dependsOn: 'test'
 
   variables:
-    DJANGO_SETTINGS_MODULE: "bulma.settings"
+    DJANGO_SETTINGS_MODULE: "django_simple_bulma.settings"
 
   steps:
   - task: UsePythonVersion@0
