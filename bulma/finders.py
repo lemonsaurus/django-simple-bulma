@@ -20,7 +20,13 @@ class SimpleBulmaFinder(BaseFinder):
 
     def __init__(self):
         """Initialize the finder with user settings and paths."""
-        self.bulma_settings = settings.BULMA_SETTINGS
+
+        # Try to get the Bulma settings. The user may not have created this dict.
+        try:
+            self.bulma_settings = settings.BULMA_SETTINGS
+        except AttributeError:
+            self.bulma_settings = {}
+
         self.simple_bulma_path = Path(__file__).resolve().parent
         self.extensions = self.bulma_settings.get("extensions", "_all")
         self.variables = self.bulma_settings.get("variables", {})
@@ -68,7 +74,6 @@ class SimpleBulmaFinder(BaseFinder):
                 if extension_name in self.extensions:
                     js_files.append(f"js/{filename.name}")
 
-        print(js_files)
         return js_files
 
     def find(self, path, all=False):

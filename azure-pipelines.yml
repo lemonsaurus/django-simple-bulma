@@ -27,6 +27,9 @@ jobs:
   displayName: 'Build Distribution'
   dependsOn: 'test'
 
+  variables:
+    DJANGO_SETTINGS_MODULE: "bulma.settings"
+
   steps:
   - task: UsePythonVersion@0
     displayName: 'Set Python version'
@@ -38,7 +41,6 @@ jobs:
     displayName: 'Install project and dev dependencies'
 
   # region: Binary/source distributions
-
   - script: python setup.py build bdist_wheel
 
     displayName: 'Build distribution'
@@ -55,11 +57,9 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/build'
       artifactName: build
-
   # endregion
 
   # region: Documentation
-
   - script: pdoc crispy_bulma --html --html-dir doc
     displayName: 'Build documentation'
 
@@ -75,11 +75,9 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/doc'
       artifactName: documentation
-
   # endregion
 
   # region: Version info
-
   - script: python scripts/save-versions.py
     displayName: 'Build version info'
 
@@ -96,5 +94,4 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)/meta'
       artifactName: meta
-
   # endregion
