@@ -34,6 +34,6 @@ def bulma():
         extension_name = filename.stem
 
         if extension_name in extensions or extensions == "_all":
-            html.append(f'    <script type="text/javascript" src="{js_file}"></script>')
+            html.append(f'{" " * 8}<script type="text/javascript" src="{js_file}"></script>')
 
     return mark_safe("\n".join(html))  # noqa

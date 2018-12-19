@@ -12,7 +12,7 @@ Installation
 To get `django-simple-bulma`, up and running for your Django project, follow these simple steps:
 - Install it from PyPI with `pip install django-simple-bulma` (or add it to your [Pipfile](https://pipenv.readthedocs.io/en/latest/))
 - In your Django projects `settings.py` file:
-  - Add `django_simple_bulma.bulma` to your `INSTALLED_APPS`
+  - Add `django_simple_bulma` to your `INSTALLED_APPS`
     ```python
     INSTALLED_APPS = [
       #...
@@ -20,7 +20,7 @@ To get `django-simple-bulma`, up and running for your Django project, follow the
       #...
     ]
     ``` 
-  - Add the `SimpleBulmaFinder` to your `STATICFILES_FINDERS`. This normally holds two default handlers that you will probably want to keep, so unless you have any other custom Finders, it should look like this:
+  - Add `django_simple_bulma.finders.SimpleBulmaFinder` to your `STATICFILES_FINDERS`. This normally holds two default handlers that you will probably want to keep, so unless you have any other custom Finders, it should look like this:
     ```python
     STATICFILES_FINDERS = [
       # First add the two default Finders, since this will overwrite the default.
