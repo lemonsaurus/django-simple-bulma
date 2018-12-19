@@ -41,7 +41,7 @@ jobs:
     displayName: 'Install project and dev dependencies'
 
   # region: Binary/source distributions
-  - script: python setup.py build bdist_wheel
+  - script: python setup.py build sdist bdist_wheel
 
     displayName: 'Build distribution'
 
