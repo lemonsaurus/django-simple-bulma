@@ -5,10 +5,10 @@ files that should be collected by collectstatic.
 """
 from pathlib import Path
 
+import sass
+from django.conf import settings
 from django.contrib.staticfiles.finders import BaseFinder
 from django.core.files.storage import FileSystemStorage
-from django.conf import settings
-import sass
 
 
 class SimpleBulmaFinder(BaseFinder):
@@ -19,6 +19,7 @@ class SimpleBulmaFinder(BaseFinder):
     """
 
     def __init__(self):
+        """Initialize the finder with user settings and paths."""
         self.bulma_settings = settings.BULMA_SETTINGS
         self.simple_bulma_path = Path(__file__).resolve().parent
         self.extensions = self.bulma_settings.get("extensions", "_all")
@@ -26,10 +27,7 @@ class SimpleBulmaFinder(BaseFinder):
         self.storage = FileSystemStorage(self.simple_bulma_path)
 
     def _get_bulma_css(self):
-        """
-        Compiles the bulma css file and returns its relative path.
-        """
-
+        """Compiles the bulma css file and returns its relative path."""
         # Start by unpacking the users custom variables
         scss_string = ""
         for var, value in self.variables.items():
@@ -39,7 +37,7 @@ class SimpleBulmaFinder(BaseFinder):
         scss_string += f'@import "{self.simple_bulma_path}/bulma.sass";'
 
         # Now load in the extensions that the user wants
-        if self.extensions == "_all" :
+        if self.extensions == "_all":
             scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_all";\n'
         elif isinstance(self.extensions, list):
             for extension in self.extensions:
@@ -54,10 +52,9 @@ class SimpleBulmaFinder(BaseFinder):
 
     def _get_bulma_js(self):
         """
-        Returns a list of all the js files that are
+        Return a list of all the js files that are
         needed for the users selected extensions.
         """
-
         js_files = []
         js_folder = self.simple_bulma_path / "js"
 
@@ -89,10 +86,9 @@ class SimpleBulmaFinder(BaseFinder):
 
     def list(self, ignore_patterns):
         """
-        Returns a two item iterable consisting of
+        Return a two item iterable consisting of
         the relative path and storage instance.
         """
-
         files = [self._get_bulma_css()]
         files.extend(self._get_bulma_js())
 
