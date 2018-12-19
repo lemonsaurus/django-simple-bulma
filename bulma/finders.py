@@ -20,7 +20,6 @@ class SimpleBulmaFinder(BaseFinder):
 
     def __init__(self):
         """Initialize the finder with user settings and paths."""
-
         # Try to get the Bulma settings. The user may not have created this dict.
         try:
             self.bulma_settings = settings.BULMA_SETTINGS
