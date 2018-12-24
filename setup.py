@@ -9,13 +9,13 @@ from setuptools import find_packages, setup
 
 setup(
     name="django-simple-bulma",
-    version="1.0.2",
+    version="1.0.3",
     description="Django application to add the Bulma CSS framework and its extensions",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="Python Discord",
     author_email="staff@pythondiscord.com",
-    url="http://pypi.python.org/pypi/django-simple-bulma",
+    url="https://github.com/python-discord/django-simple-bulma",
     license="MIT",
     packages=find_packages(),
     classifiers=[
