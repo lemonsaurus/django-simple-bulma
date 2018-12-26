@@ -30,7 +30,7 @@ def bulma():
 
     # Build html to include all the js files required.
     for filename in js_folder.iterdir():
-        js_file = static(f"js/{filename}")
+        js_file = static(f"js/{filename.name}")
         extension_name = filename.stem
 
         if extension_name in extensions or extensions == "_all":
