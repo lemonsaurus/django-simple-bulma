@@ -67,8 +67,13 @@ BULMA_SETTINGS = {
 
 You may here define any variable found on the [Bulma variables](https://bulma.io/documentation/customize/variables/) page, and you may use any valid SASS or CSS as the value. For example, `hsl(217, 71%, 53%)` would be a valid value for a color variable, as would `#ffff00`. Please note that any syntactically incorrect values may prevent Bulma from building correctly, so be careful what you add here unless you know exactly what you're doing.
 
-If the `extensions` key is not found, it will default to loading **all extensions**. This is 8 js files, so it may add a bit of overhead. If you don't want any extensions, simply set it to an empty list.
+If the `extensions` key is not found, it will default to loading **all extensions**. If you don't want any extensions, simply set it to an empty list.
 
+Additional scripts
+------------------
+For your convenience, we also give you the option to add other quality of life improvements to your Bulma app.
+
+* If you import `bulma-fileupload` into your extensions (or if you have not customized your extension settings), we will import a script that will handle displaying the filename in your file upload inputs. See https://bulma.io/documentation/form/file/ for more information about these.  
 
 Troubleshooting
 ---------------

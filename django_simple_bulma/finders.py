@@ -46,7 +46,12 @@ class SimpleBulmaFinder(BaseFinder):
             scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_all";\n'
         elif isinstance(self.extensions, list):
             for extension in self.extensions:
-                scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_{extension}";\n'
+
+                # Check if the extension exists
+                extensions_folder = self.simple_bulma_path / "sass" / "extensions"
+                extensions = [extension.stem[1:] for extension in extensions_folder.iterdir()]
+                if extension in extensions:
+                    scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_{extension}";\n'
 
         # Store this as a css file
         css_string = sass.compile(string=scss_string)
