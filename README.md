@@ -71,9 +71,10 @@ If the `extensions` key is not found, it will default to loading **all extension
 
 Additional scripts
 ------------------
-For your convenience, we also give you the option to add other quality of life improvements to your Bulma app.
+For your convenience, we also give you the option to add other quality of life improvements to your Bulma app. If you are not specifying any extensions in `BULMA_SETTINGS`, these will all be loaded by default. If you are, you may want to add these as well if they sound useful to you.
 
-* If you import `bulma-fileupload` into your extensions (or if you have not customized your extension settings), we will import a script that will handle displaying the filename in your file upload inputs. See https://bulma.io/documentation/form/file/ for more information about these.  
+* `bulma-fileupload` will handle displaying the filename in your [file upload inputs](https://bulma.io/documentation/form/file/).
+* `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 
 Troubleshooting
 ---------------

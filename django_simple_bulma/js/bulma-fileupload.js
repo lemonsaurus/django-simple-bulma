@@ -1,5 +1,4 @@
 window.onload = function() {
-    // Apply this to all upload fields with filename spans
     const upload_fields = document.querySelectorAll("div.file.has-name");
     for (let i = 0; i < upload_fields.length; i++) {
         let input = upload_fields[i].querySelector("input.file-input");
