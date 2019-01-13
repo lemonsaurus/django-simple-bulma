@@ -79,4 +79,6 @@ For your convenience, we also give you the option to add other quality of life i
 Troubleshooting
 ---------------
 
-If you run into any trouble with this app, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to help you with it. Alternatively, head over to our discord server at https://discord.gg/python and we'll help you figure it out over chat.
+- If you have the module `sass` installed, please note that it is incompatible with this project. There is a namespace conflict between `sass` and `libsass` which will make `django-simple-bulma` crash when you attempt to do a `collectstatic`. To solve this, just uninstall `sass` and use `libsass` instead. 
+
+If you run into any other problems with this app, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to help you with it. Alternatively, head over to our discord server at https://discord.gg/python and we'll help you figure it out over chat.
