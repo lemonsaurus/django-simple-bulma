@@ -54,7 +54,18 @@ class SimpleBulmaFinder(BaseFinder):
                     scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_{extension}";\n'
 
         # Store this as a css file
-        css_string = sass.compile(string=scss_string)
+        if hasattr(sass, "libsass_version"):
+            css_string = sass.compile(string=scss_string)
+        else:
+            # If the user has the sass module installed in addition to libsass, warn the user and fail hard.
+            raise UserWarning(
+                "There was an error compiling your Bulma CSS. This error is "
+                "probably caused by having the `sass` module installed, as the two modules "
+                "are in conflict, causing django-simple-bulma to import the wrong sass namespace."
+                "\n"
+                "Please ensure you have only the `libsass` module installed, "
+                "not both `sass` and `libsass`, or this application will not work."
+            )
         with open(f"{self.simple_bulma_path}/css/bulma.css", "w") as bulma_css:
             bulma_css.write(css_string)
 
