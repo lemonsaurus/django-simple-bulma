@@ -11,8 +11,15 @@ from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.utils.safestring import mark_safe
 
+
+# If BULMA_SETTINGS has not been declared if no extensions
+# have been defined, default to all extensions.
+if hasattr(settings, "BULMA_SETTINGS"):
+    extensions = settings.BULMA_SETTINGS.get("extensions", "_all")
+else:
+    extensions = "_all"
+
 register = template.Library()
-extensions = settings.BULMA_SETTINGS.get("extensions", "_all")
 simple_bulma_path = Path(__file__).resolve().parent.parent
 js_folder = simple_bulma_path / "js"
 
