@@ -44,3 +44,22 @@ def bulma():
             html.append(f'{" " * 8}<script type="text/javascript" src="{js_file}"></script>')
 
     return mark_safe("\n".join(html))  # noqa
+
+
+@register.simple_tag
+def font_awesome():
+    """
+    Return the latest FontAwesome CDN link.
+
+    Currently just returns 5.6.3, but will
+    eventually return the latest version.
+    """
+
+    cdn_link = (
+        '<link rel="stylesheet" '
+        'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
+        'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
+        'crossorigin="anonymous">'
+    )
+
+    return mark_safe(cdn_link)  # noqa

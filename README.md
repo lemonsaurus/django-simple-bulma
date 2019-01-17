@@ -5,7 +5,7 @@ django-simple-bulma
 
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.7.2** and **Bulma-Extensions v4.0.0**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
+This project currently uses **Bulma v0.7.2**, **Bulma-Extensions v4.0.0**, and **FontAwesome v5.6.3**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
 
 Installation
 ------------
@@ -35,12 +35,13 @@ To get `django-simple-bulma`, up and running for your Django project, follow the
 
   This app works fine with [Whitenoise](http://whitenoise.evans.io/en/stable/), which is a great way to serve static files without needing to mess with your webserver.
   
-- `django-simple-bulma` should now be working. In order to import it into your template, simply use the following template tags:
+`django-simple-bulma` should now be working! In order to import it into your template, first load the app with `{% load django_simple_bulma %}`, and then use the `{% bulma %}` template tag. If you're planning on using icons, you should also import FontAwesome by using `{% font_awesome %}`.
   ```html
     <head>
         <!-- ... -->
         {% load django_simple_bulma %}
         {% bulma %}
+        {% font_awesome %}
         <!-- ... -->
     </head>
   ```
