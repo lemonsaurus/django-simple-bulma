@@ -48,6 +48,7 @@ setup(
             "flake8-type-annotations",
             "flake8-string-format",
             "pdoc",
+            "pre-commit",
             "PyGithub",
             "wheel",
         ]
