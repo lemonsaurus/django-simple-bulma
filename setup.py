@@ -40,9 +40,7 @@ setup(
         "dev": [
             "flake8",
             "flake8-bugbear",
-            "flake8-docstrings",
             "flake8-import-order",
-            "flake8-quotes",
             "flake8-tidy-imports",
             "flake8-todo",
             "flake8-type-annotations",
