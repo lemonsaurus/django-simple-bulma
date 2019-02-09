@@ -37,7 +37,7 @@ class SimpleBulmaFinder(BaseFinder):
         scss_string = ""
         for var, value in self.variables.items():
             scss_string += f"${var}: {value};\n"
-        
+
         # SASS wants paths with forward slash:
         sass_bulma_path = str(self.simple_bulma_path).replace('\\', '/')
         # Now load bulma
@@ -50,7 +50,7 @@ class SimpleBulmaFinder(BaseFinder):
             for extension in self.extensions:
 
                 # Check if the extension exists
-                extensions_folder = sass_bulma_path / "sass" / "extensions"
+                extensions_folder = self.simple_bulma_path / "sass" / "extensions"
                 extensions = [extension.stem[1:] for extension in extensions_folder.iterdir()]
                 if extension in extensions:
                     scss_string += f'@import "{sass_bulma_path}/sass/extensions/_{extension}";\n'
@@ -68,7 +68,9 @@ class SimpleBulmaFinder(BaseFinder):
                 "Please ensure you have only the `libsass` module installed, "
                 "not both `sass` and `libsass`, or this application will not work."
             )
-        with open(f"{self.simple_bulma_path}/css/bulma.css", "w") as bulma_css:
+
+        css_path = self.simple_bulma_path / "css" / "bulma.css"
+        with css_path.open("w") as bulma_css:
             bulma_css.write(css_string)
 
         return "css/bulma.css"
