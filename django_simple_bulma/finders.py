@@ -37,21 +37,23 @@ class SimpleBulmaFinder(BaseFinder):
         scss_string = ""
         for var, value in self.variables.items():
             scss_string += f"${var}: {value};\n"
-
+        
+        # SASS wants paths with forward slash:
+        sass_bulma_path = str(self.simple_bulma_path).replace('\\', '/')
         # Now load bulma
-        scss_string += f'@import "{self.simple_bulma_path}/bulma.sass";'
+        scss_string += f'@import "{sass_bulma_path}/bulma.sass";'
 
         # Now load in the extensions that the user wants
         if self.extensions == "_all":
-            scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_all";\n'
+            scss_string += f'@import "{sass_bulma_path}/sass/extensions/_all";\n'
         elif isinstance(self.extensions, list):
             for extension in self.extensions:
 
                 # Check if the extension exists
-                extensions_folder = self.simple_bulma_path / "sass" / "extensions"
+                extensions_folder = sass_bulma_path / "sass" / "extensions"
                 extensions = [extension.stem[1:] for extension in extensions_folder.iterdir()]
                 if extension in extensions:
-                    scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_{extension}";\n'
+                    scss_string += f'@import "{sass_bulma_path}/sass/extensions/_{extension}";\n'
 
         # Store this as a css file
         if hasattr(sass, "libsass_version"):
