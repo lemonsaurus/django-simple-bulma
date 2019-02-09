@@ -70,7 +70,7 @@ class SimpleBulmaFinder(BaseFinder):
             )
 
         css_path = self.simple_bulma_path / "css" / "bulma.css"
-        with css_path.open("w") as bulma_css:
+        with open(css_path, "w") as bulma_css:
             bulma_css.write(css_string)
 
         return "css/bulma.css"
