@@ -39,13 +39,11 @@ class SimpleBulmaFinder(BaseFinder):
             scss_string += f"${var}: {value};\n"
 
         # Now load bulma
-        sass_path = self.simple_bulma_path / 'bulma.sass'
-        scss_string += f'@import "{sass_path}";'
+        scss_string += f'@import "{self.simple_bulma_path}/bulma.sass";'
 
         # Now load in the extensions that the user wants
         if self.extensions == "_all":
-            extensions_path = self.simple_bulma_path / "sass" / "extensions" / "_all"
-            scss_string += f'@import "{extensions_path}";\n'
+            scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_all";\n'
         elif isinstance(self.extensions, list):
             for extension in self.extensions:
 
@@ -53,8 +51,7 @@ class SimpleBulmaFinder(BaseFinder):
                 extensions_folder = self.simple_bulma_path / "sass" / "extensions"
                 extensions = [extension.stem[1:] for extension in extensions_folder.iterdir()]
                 if extension in extensions:
-                    extension_path = extensions_folder / f"_{extension}"
-                    scss_string += f'@import "{extension_path}";\n'
+                    scss_string += f'@import "{self.simple_bulma_path}/sass/extensions/_{extension}";\n'
 
         # Store this as a css file
         if hasattr(sass, "libsass_version"):
@@ -69,12 +66,10 @@ class SimpleBulmaFinder(BaseFinder):
                 "Please ensure you have only the `libsass` module installed, "
                 "not both `sass` and `libsass`, or this application will not work."
             )
-
-        css_path = self.simple_bulma_path / "css" / "bulma.css"
-        with open(css_path, "w") as bulma_css:
+        with open(f"{self.simple_bulma_path}/css/bulma.css", "w") as bulma_css:
             bulma_css.write(css_string)
 
-        return str(Path("css", "bulma.css"))
+        return "css/bulma.css"
 
     def _get_bulma_js(self):
         """
@@ -86,13 +81,13 @@ class SimpleBulmaFinder(BaseFinder):
 
         if self.extensions == "_all":
             for filename in js_folder.iterdir():
-                js_files.append(str(Path("js", filename.name)))
+                js_files.append(f"js/{filename.name}")
         else:
             for filename in js_folder.iterdir():
                 extension_name = str(filename.stem)
 
                 if extension_name in self.extensions:
-                    js_files.append(str(Path("js", filename.name)))
+                    js_files.append(f"js/{filename.name}")
 
         return js_files
 
