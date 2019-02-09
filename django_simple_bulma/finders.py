@@ -20,6 +20,7 @@ class SimpleBulmaFinder(BaseFinder):
 
     def __init__(self):
         """Initialize the finder with user settings and paths."""
+
         # Try to get the Bulma settings. The user may not have created this dict.
         try:
             self.bulma_settings = settings.BULMA_SETTINGS
@@ -33,6 +34,7 @@ class SimpleBulmaFinder(BaseFinder):
 
     def _get_bulma_css(self):
         """Compiles the bulma css file and returns its relative path."""
+
         # Start by unpacking the users custom variables
         scss_string = ""
         for var, value in self.variables.items():
@@ -80,6 +82,7 @@ class SimpleBulmaFinder(BaseFinder):
         Return a list of all the js files that are
         needed for the users selected extensions.
         """
+
         js_files = []
         js_folder = self.simple_bulma_path / "js"
 
@@ -102,6 +105,7 @@ class SimpleBulmaFinder(BaseFinder):
         If the ``all`` parameter is False (default) return only the first found
         file path; if True, return a list of all found files paths.
         """
+
         absolute_path = str(self.simple_bulma_path / path)
 
         if all:
@@ -113,6 +117,7 @@ class SimpleBulmaFinder(BaseFinder):
         Return a two item iterable consisting of
         the relative path and storage instance.
         """
+
         files = [self._get_bulma_css()]
         files.extend(self._get_bulma_js())
 

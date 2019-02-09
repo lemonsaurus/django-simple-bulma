@@ -31,6 +31,7 @@ def bulma():
     import bulma and the javascript for all
     active extensions.
     """
+
     # Build the html to include the stylesheet
     css = static("css/bulma.css")
     html = [f'<link rel="stylesheet" href="{css}">']
