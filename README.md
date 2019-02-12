@@ -75,6 +75,7 @@ Additional scripts
 For your convenience, we also give you the option to add other quality of life improvements to your Bulma app. If you are not specifying any extensions in `BULMA_SETTINGS`, these will all be loaded by default. If you are, you may want to add these as well if they sound useful to you.
 
 * `bulma-fileupload` will handle displaying the filename in your [file upload inputs](https://bulma.io/documentation/form/file/).
+* `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for mobile users. We use a slightly updated version of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) - simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should be expanded and collapsed by the button.
 * `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 
 Troubleshooting
