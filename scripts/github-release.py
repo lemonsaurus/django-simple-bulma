@@ -1,8 +1,8 @@
 """
 A small script for publishing releases to GitHub.
 
-This file is designed explicitly with this project in mind - a bunch of values are hardcoded, and it assumes that
-you're working with Azure.
+This file is designed explicitly with this project in mind - a bunch of values are hardcoded,
+and it assumes that you're working with Azure.
 """
 
 import json

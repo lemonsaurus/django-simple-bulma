@@ -1,5 +1,5 @@
 [flake8]
-max-line-length=120
+max-line-length=100
 application_import_names=crispy_bulma
 exclude=.venv,build,dist, __init__.py
 ignore=B311,W503,E226,S311,S603,S404,D400,D205
