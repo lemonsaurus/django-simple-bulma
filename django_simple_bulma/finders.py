@@ -61,7 +61,8 @@ class SimpleBulmaFinder(BaseFinder):
         if hasattr(sass, "libsass_version"):
             css_string = sass.compile(string=scss_string)
         else:
-            # If the user has the sass module installed in addition to libsass, warn the user and fail hard.
+            # If the user has the sass module installed in addition to libsass,
+            # warn the user and fail hard.
             raise UserWarning(
                 "There was an error compiling your Bulma CSS. This error is "
                 "probably caused by having the `sass` module installed, as the two modules "
