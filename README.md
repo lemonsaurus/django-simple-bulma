@@ -103,7 +103,7 @@ path to your `.scss` file, using the following strategy:
 * If a containing path exists in the `STATICFILES_DIRS` setting, assume that this is the base path to use, and the
   directory structure below it will be used to contain the resulting `.css` file
 * Otherwise, if the path contains `static/`, assume that the base path ends there and use the rest of the path
-  below it to contain the resuling `.css` file.
+  below it to contain the resulting `.css` file.
  
 If both of these strategies fail to figure out what base path to use, an exception will be raised.
 
