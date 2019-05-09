@@ -91,10 +91,16 @@ class SimpleBulmaFinder(BaseFinder):
             relative_path = self.find_relative_staticfiles(scss_path)
 
             if relative_path is None:
-                raise ValueError(
-                    f"Given SCSS path is not within a configured static dir: {scss_path}. "
-                    f"Make sure you add it to your STATICFILES_DIRS setting!"
-                )
+                if "static/" in scss_path:
+                    relative_path = scss_path.split("static/", 1)[-1]
+                else:
+                    raise ValueError(
+                        "We couldn't figure out where the static directory for the given SCSS "
+                        f"path is: \"{scss_path}\". If the given path doesn't contain "
+                        "\"static/\", then you may need to add it to your STATICFILES_DIRS "
+                        "setting."
+                    )
+
             # SASS wants paths with forward slash:
             scss_path = str(scss_path).replace('\\', '/')
 

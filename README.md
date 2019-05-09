@@ -86,8 +86,7 @@ it for you. This is provided because, currently, `django-simple-bulma` will caus
 to compile SCSS for you.
 
 To use this feature, please specify the `custom_css` key when defining your `BULMA_SETTINGS`. This should be a list
-of strings, containing relative paths to `.scss` files to be compiled. **Please note**: We require that these files
-reside within one of the locations defined in your `STATICFILES_DIRS` setting.
+of strings, containing relative paths to `.scss` files to be compiled.
 
 ```python
 BULMA_SETTINGS = {
@@ -96,6 +95,10 @@ BULMA_SETTINGS = {
     ],
 }
 ```
+
+**Please note**: If the path provided to a `.scss` file does not contain `static/`, we will be unable to resolve the
+correct relative path to place it in when you run `collectstatic`. In this case, you will need to add the static file
+root to your `STATICFILES_DIRS` setting.
 
 Troubleshooting
 ---------------
