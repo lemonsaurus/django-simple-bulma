@@ -78,6 +78,25 @@ For your convenience, we also give you the option to add other quality of life i
 * `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for mobile users. We use a slightly updated version of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) - simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should be expanded and collapsed by the button.
 * `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 
+Additional functionality
+------------------------
+
+If you're writing custom SCSS for your application, `django-simple-bulma` does provide a very basic mechanism for compiling
+it for you. This is provided because, currently, `django-simple-bulma` will cause issues with current Django apps that exist
+to compile SCSS for you.
+
+To use this feature, please specify the `custom_css` key when defining your `BULMA_SETTINGS`. This should be a list
+of strings, containing relative paths to `.scss` files to be compiled. **Please note**: We require that these files
+reside within one of the locations defined in your `STATICFILES_DIRS` setting.
+
+```python
+BULMA_SETTINGS = {
+    "custom_scss": [
+        "myapp/static/css/base/base.scss"
+    ],
+}
+```
+
 Troubleshooting
 ---------------
 
