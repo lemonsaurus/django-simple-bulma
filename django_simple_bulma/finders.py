@@ -92,7 +92,7 @@ class SimpleBulmaFinder(BaseFinder):
 
             if relative_path is None:
                 if "static/" in scss_path:
-                    relative_path = scss_path.split("static/", 1)[-1]
+                    relative_path = Path(scss_path.split("static/", 1)[-1])
                 else:
                     raise ValueError(
                         "We couldn't figure out where the static directory for the given SCSS "
