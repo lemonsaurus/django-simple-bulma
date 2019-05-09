@@ -96,7 +96,7 @@ BULMA_SETTINGS = {
 }
 ```
 
-**Please note**: The default Django behavior when collecting static files it to keep the containing file structure for
+**Please note**: The default Django behavior when collecting static files is to keep the containing file structure for
 them when they're copied over to the final static files directory. We attempt to do the same thing by parsing the given
 path to your `.scss` file, using the following strategy:
 
