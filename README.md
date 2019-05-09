@@ -78,6 +78,35 @@ For your convenience, we also give you the option to add other quality of life i
 * `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for mobile users. We use a slightly updated version of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) - simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should be expanded and collapsed by the button.
 * `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 
+Additional functionality
+------------------------
+
+If you're writing custom SCSS for your application, `django-simple-bulma` does provide a very basic mechanism for compiling
+it for you. This is provided because, currently, `django-simple-bulma` will cause issues with current Django apps that exist
+to compile SCSS for you.
+
+To use this feature, please specify the `custom_css` key when defining your `BULMA_SETTINGS`. This should be a list
+of strings, containing relative paths to `.scss` files to be compiled.
+
+```python
+BULMA_SETTINGS = {
+    "custom_scss": [
+        "myapp/static/css/base/base.scss"
+    ],
+}
+```
+
+**Please note**: The default Django behavior when collecting static files is to keep the containing file structure for
+them when they're copied over to the final static files directory. We attempt to do the same thing by parsing the given
+path to your `.scss` file, using the following strategy:
+
+* If a containing path exists in the `STATICFILES_DIRS` setting, assume that this is the base path to use, and the
+  directory structure below it will be used to contain the resulting `.css` file
+* Otherwise, if the path contains `static/`, assume that the base path ends there and use the rest of the path
+  below it to contain the resulting `.css` file.
+ 
+If both of these strategies fail to figure out what base path to use, an exception will be raised.
+
 Troubleshooting
 ---------------
 
