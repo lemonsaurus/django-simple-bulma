@@ -43,7 +43,6 @@ setup(
             "flake8-import-order~=0.18",
             "flake8-tidy-imports~=2.0",
             "flake8-todo~=0.7",
-            "flake8-type-annotations~=0.1",
             "flake8-string-format~=0.2",
             "pdoc~=0.3",
             "pre-commit~=1.18",
