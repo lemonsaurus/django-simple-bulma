@@ -5,3 +5,4 @@ exclude=.venv,build,dist, __init__.py
 ignore=B311,W503,E226,S311,S603,S404,D400,D205
 import-order-style=pycharm
 inline-quotes=double
+
