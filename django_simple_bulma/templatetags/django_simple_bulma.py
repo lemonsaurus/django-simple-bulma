@@ -8,7 +8,7 @@ from pathlib import Path
 
 from django import template
 from django.conf import settings
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.utils.safestring import mark_safe
 
 
@@ -33,12 +33,12 @@ def bulma():
     """
 
     # Build the html to include the stylesheet
-    css = static("css/bulma.css")
+    css = staticfiles_storage.url("css/bulma.css")
     html = [f'<link rel="stylesheet" href="{css}">']
 
     # Build html to include all the js files required.
     for filename in js_folder.iterdir():
-        js_file = static(f"js/{filename.name}")
+        js_file = staticfiles_storage.url(f"js/{filename.name}")
         extension_name = filename.stem
 
         if extension_name in extensions or extensions == "_all":
