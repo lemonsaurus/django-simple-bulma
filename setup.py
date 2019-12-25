@@ -9,7 +9,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="django-simple-bulma",
-    version="1.1.8",
+    version="1.2.0",
     description="Django application to add the Bulma CSS framework and its extensions",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -23,11 +23,14 @@ setup(
         "Framework :: Django",
         "Framework :: Django :: 2.0",
         "Framework :: Django :: 2.1",
+        "Framework :: Django :: 2.2",
+        "Framework :: Django :: 3.0",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
