@@ -44,7 +44,7 @@ def bulma():
         if extension_name in extensions or extensions == "_all":
             html.append(f'{" " * 8}<script type="text/javascript" src="{js_file}"></script>')
 
-    return mark_safe("\n".join(html))  # noqa
+    return mark_safe("\n".join(html))
 
 
 @register.simple_tag
@@ -63,4 +63,4 @@ def font_awesome():
         'crossorigin="anonymous">'
     )
 
-    return mark_safe(cdn_link)  # noqa
+    return mark_safe(cdn_link)

@@ -1,12 +1,24 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.2.3
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
     hooks:
-    - id: flake8
-      additional_dependencies: [
-        "flake8-bugbear~=19.8",
-        "flake8-import-order~=0.18",
-        "flake8-tidy-imports~=2.0",
-        "flake8-todo~=0.7",
-        "flake8-string-format~=0.2"
-      ]
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.5.1
+    hooks:
+      - id: python-check-blanket-noqa
+  - repo: local
+    hooks:
+      - id: flake8
+        name: Flake8
+        description: This hook runs flake8 in the active python environment.
+        entry: flake8
+        language: python
+        types: [python]
+        require_serial: true

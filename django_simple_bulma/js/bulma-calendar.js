@@ -12765,7 +12765,7 @@ var bulmaCalendar = function (_EventEmitter) {
 
     /**
      * Get / Set datePicker value
-     * @param {*} date 
+     * @param {*} date
      */
 
   }, {
