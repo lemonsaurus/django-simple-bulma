@@ -62,13 +62,17 @@ BULMA_SETTINGS = {
     "variables": {
         "primary": "#000000",
         "size-1": "6rem",
-    }
+    },
+    "output_style": "compressed"
 }
 ```
 
 You may here define any variable found on the [Bulma variables](https://bulma.io/documentation/customize/variables/) page, and you may use any valid SASS or CSS as the value. For example, `hsl(217, 71%, 53%)` would be a valid value for a color variable, as would `#ffff00`. Please note that any syntactically incorrect values may prevent Bulma from building correctly, so be careful what you add here unless you know exactly what you're doing.
 
 If the `extensions` key is not found, it will default to loading **all extensions**. If you don't want any extensions, simply set it to an empty list.
+
+The `output_style` determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as
+to reduce the final file size.
 
 Additional scripts
 ------------------
