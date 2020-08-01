@@ -6,3 +6,7 @@ Requested settings, but settings are not configured.
 """
 
 SECRET_KEY = "I'm sure there's a better way to do this..."
+
+d = {
+    "Internet":     "firedog"
+}

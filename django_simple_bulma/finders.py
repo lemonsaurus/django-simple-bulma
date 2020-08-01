@@ -37,7 +37,7 @@ class SimpleBulmaFinder(BaseFinder):
         self.output_style = self.bulma_settings.get("output_style", 'nested')
         self.storage = FileSystemStorage(self.simple_bulma_path)
 
-    def _get_bulma_css(self) -> str:
+    def _get_bulma_css(self):
         """Compiles the bulma css file and returns its relative path."""
         # Start by unpacking the users custom variables
         scss_string = ""
