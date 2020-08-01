@@ -15,4 +15,4 @@ jobs:
           python -m pip install --upgrade pip
           pip install .[dev]
       - name: Lint with flake8
-        run: flake8 . --isolated --exclude=.cache,.venv,.svn,CVS,.bzr,.hg,.git,__pycache__,.tox --max-line-length=120
+        run: flake8 .
