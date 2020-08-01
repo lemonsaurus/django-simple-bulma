@@ -1,4 +1,4 @@
-"""A file used by Django in order to link this app to the main project"""
+"""A file used by Django in order to link this app to the main project."""
 
 from django.apps import AppConfig
 
