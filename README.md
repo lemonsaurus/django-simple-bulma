@@ -1,11 +1,12 @@
 django-simple-bulma
 ===================
-[![Build Status](https://dev.azure.com/python-discord/Python%20Discord/_apis/build/status/Django%20Simple%20Bulma?branchName=master)](https://dev.azure.com/python-discord/Python%20Discord/_build/latest?definitionId=7?branchName=master)
-[![Discord](https://img.shields.io/static/v1?label=Python%20Discord&logo=discord&message=%3E30k%20members&color=%237289DA&logoColor=white)](https://discord.gg/2B963hn)
+[![Discord](https://img.shields.io/static/v1?label=Python%20Discord&logo=discord&message=%3E75k%20members&color=%237289DA&logoColor=white)](https://discord.gg/2B963hn)
+[![License](https://img.shields.io/github/license/python-discord/bot)](LICENSE)
+[![Website](https://img.shields.io/badge/website-visit-brightgreen)](https://pythondiscord.com)
 
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.7.2**, **Bulma-Extensions v4.0.0**, and **FontAwesome v5.6.3**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
+This project currently uses **Bulma v0.9.0**, **Bulma-Extensions v4.0.0**, and **FontAwesome v5.6.3**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
 
 Installation
 ------------
@@ -62,13 +63,17 @@ BULMA_SETTINGS = {
     "variables": {
         "primary": "#000000",
         "size-1": "6rem",
-    }
+    },
+    "output_style": "compressed"
 }
 ```
 
 You may here define any variable found on the [Bulma variables](https://bulma.io/documentation/customize/variables/) page, and you may use any valid SASS or CSS as the value. For example, `hsl(217, 71%, 53%)` would be a valid value for a color variable, as would `#ffff00`. Please note that any syntactically incorrect values may prevent Bulma from building correctly, so be careful what you add here unless you know exactly what you're doing.
 
 If the `extensions` key is not found, it will default to loading **all extensions**. If you don't want any extensions, simply set it to an empty list.
+
+The `output_style` determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as
+to reduce the final file size.
 
 Additional scripts
 ------------------

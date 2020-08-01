@@ -1,6 +1,7 @@
 """
-This project ensures the pdoc does not fail. Without this,
-pdoc will fail with django.core.exceptions.ImproperlyConfigured:
+This file ensures the pdoc does not fail.
+
+Without this, pdoc will fail with django.core.exceptions.ImproperlyConfigured:
 Requested settings, but settings are not configured.
 """
 
