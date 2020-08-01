@@ -2,7 +2,7 @@ django-simple-bulma
 ===================
 [![Discord](https://img.shields.io/static/v1?label=Python%20Discord&logo=discord&message=%3E75k%20members&color=%237289DA&logoColor=white)](https://discord.gg/2B963hn)
 [![License](https://img.shields.io/github/license/python-discord/bot)](LICENSE)
-[![Website](https://img.shields.io/badge/website-visit-brightgreen)]
+[![Website](https://img.shields.io/badge/website-visit-brightgreen)](https://pythondiscord.com)
 
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
