@@ -33,6 +33,7 @@ class SimpleBulmaFinder(BaseFinder):
         self.custom_scss = self.bulma_settings.get("custom_scss", [])
         self.extensions = self.bulma_settings.get("extensions", "_all")
         self.variables = self.bulma_settings.get("variables", {})
+        self.output_style = self.bulma_settings.get("output_style", 'nested')
         self.storage = FileSystemStorage(self.simple_bulma_path)
 
     def _get_bulma_css(self):
@@ -62,7 +63,7 @@ class SimpleBulmaFinder(BaseFinder):
 
         # Store this as a css file
         if hasattr(sass, "libsass_version"):
-            css_string = sass.compile(string=scss_string)
+            css_string = sass.compile(string=scss_string, output_style=self.output_style)
         else:
             # If the user has the sass module installed in addition to libsass,
             # warn the user and fail hard.
@@ -109,7 +110,7 @@ class SimpleBulmaFinder(BaseFinder):
 
             # Store this as a css file - we don't check and raise here because it would have
             # already happened earlier, during the Bulma compilation
-            css_string = sass.compile(string=scss_string)
+            css_string = sass.compile(string=scss_string, output_style=self.output_style)
 
             css_path = self.simple_bulma_path / relative_path.parent
             css_path.mkdir(exist_ok=True)
