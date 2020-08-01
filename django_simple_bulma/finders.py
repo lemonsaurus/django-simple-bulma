@@ -168,7 +168,7 @@ class SimpleBulmaFinder(BaseFinder):
             return [absolute_path]
         return absolute_path
 
-    def list(self, _: List[str]) -> Tuple(str, FileSystemStorage):
+    def list(self, _: List[str]) -> Tuple[str, FileSystemStorage]:
         """Return a two item iterable consisting of the relative path and storage instance."""
         files = [self._get_bulma_css()]
         files.extend(self._get_custom_css())
