@@ -1,3 +1,4 @@
+name: Lint with flake8
 on: [pull_request]
 
 jobs:
