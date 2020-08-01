@@ -1,11 +1,12 @@
 """
-Custom finders that can be used together
-with StaticFileStorage objects to find
-files that should be collected by collectstatic.
+Custom collectstatic finders.
+
+These finders that can be used together with StaticFileStorage
+objects to find files that should be collected by collectstatic.
 """
 from os.path import abspath
 from pathlib import Path
-from typing import Union
+from typing import List, Tuple, Union
 
 import sass
 from django.conf import settings
@@ -15,14 +16,14 @@ from django.core.files.storage import FileSystemStorage
 
 class SimpleBulmaFinder(BaseFinder):
     """
-    A custom Finder class to compile bulma to static files,
-    and then return paths to those static files so they may be collected
+    Custom Finder to compile Bulma static files.
+
+    Returns paths to those static files so they may be collected
     by the static collector.
     """
 
     def __init__(self):
         """Initialize the finder with user settings and paths."""
-
         # Try to get the Bulma settings. The user may not have created this dict.
         try:
             self.bulma_settings = settings.BULMA_SETTINGS
@@ -36,9 +37,8 @@ class SimpleBulmaFinder(BaseFinder):
         self.output_style = self.bulma_settings.get("output_style", 'nested')
         self.storage = FileSystemStorage(self.simple_bulma_path)
 
-    def _get_bulma_css(self):
+    def _get_bulma_css(self) -> str:
         """Compiles the bulma css file and returns its relative path."""
-
         # Start by unpacking the users custom variables
         scss_string = ""
         for var, value in self.variables.items():
@@ -82,9 +82,8 @@ class SimpleBulmaFinder(BaseFinder):
 
         return "css/bulma.css"
 
-    def _get_custom_css(self):
+    def _get_custom_css(self) -> str:
         """Compiles any custom-specified SASS and returns its relative path."""
-
         paths = []
 
         for scss_path in self.custom_scss:
@@ -123,12 +122,8 @@ class SimpleBulmaFinder(BaseFinder):
 
         return paths
 
-    def _get_bulma_js(self):
-        """
-        Return a list of all the js files that are
-        needed for the users selected extensions.
-        """
-
+    def _get_bulma_js(self) -> List[str]:
+        """Return a list of all the js files that are needed for the users selected extensions."""
         js_files = []
         js_folder = self.simple_bulma_path / "js"
 
@@ -144,13 +139,13 @@ class SimpleBulmaFinder(BaseFinder):
 
         return js_files
 
-    def find_relative_staticfiles(self, path: Union[str, Path]) -> Union[Path, None]:
+    @staticmethod
+    def find_relative_staticfiles(path: Union[str, Path]) -> Union[Path, None]:
         """
         Returns a given path, relative to one of the paths in STATICFILES_DIRS.
 
         Returns None if the given path isn't available within STATICFILES_DIRS.
         """
-
         if not isinstance(path, Path):
             path = Path(abspath(path))
 
@@ -160,26 +155,21 @@ class SimpleBulmaFinder(BaseFinder):
             if directory in path.parents:
                 return path.relative_to(directory)
 
-    def find(self, path, all=False):
+    def find(self, path: str, all: bool = False) -> Union[List[str], str]:
         """
         Given a relative file path, find an absolute file path.
 
         If the ``all`` parameter is False (default) return only the first found
         file path; if True, return a list of all found files paths.
         """
-
         absolute_path = str(self.simple_bulma_path / path)
 
         if all:
             return [absolute_path]
         return absolute_path
 
-    def list(self, ignore_patterns):
-        """
-        Return a two item iterable consisting of
-        the relative path and storage instance.
-        """
-
+    def list(self, _: List[str]) -> Tuple(str, FileSystemStorage):
+        """Return a two item iterable consisting of the relative path and storage instance."""
         files = [self._get_bulma_css()]
         files.extend(self._get_custom_css())
         files.extend(self._get_bulma_js())

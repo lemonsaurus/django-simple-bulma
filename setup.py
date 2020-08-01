@@ -9,7 +9,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="django-simple-bulma",
-    version="1.2.0",
+    version="1.3.0",
     description="Django application to add the Bulma CSS framework and its extensions",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -41,10 +41,12 @@ setup(
     ],
     extras_require={
         "dev": [
-            "flake8~=3.7",
-            "flake8-bugbear~=19.8",
+            "flake8~=3.8",
+            "flake8-annotations~=2.0",
+            "flake8-bugbear~=20.1",
+            "flake8-docstrings~=1.4",
             "flake8-import-order~=0.18",
-            "flake8-tidy-imports~=2.0",
+            "flake8-tidy-imports~=4.0",
             "flake8-todo~=0.7",
             "flake8-string-format~=0.2",
             "pdoc~=0.3",
