@@ -31,6 +31,7 @@ class SimpleBulmaFinder(BaseFinder):
             self.bulma_settings = {}
 
         self.simple_bulma_path = Path(__file__).resolve().parent
+        self.bulma_submodule_path = self.simple_bulma_path / 'bulma' / 'sass'
         self.custom_scss = self.bulma_settings.get("custom_scss", [])
         self.extensions = self.bulma_settings.get("extensions", "_all")
         self.variables = self.bulma_settings.get("variables", {})
@@ -40,26 +41,37 @@ class SimpleBulmaFinder(BaseFinder):
     def _get_bulma_css(self) -> str:
         """Compiles the bulma css file and returns its relative path."""
         # Start by unpacking the users custom variables
-        scss_string = ""
+        scss_string = '@charset "utf-8";\n'
         for var, value in self.variables.items():
             scss_string += f"${var}: {value};\n"
 
         # SASS wants paths with forward slash:
         sass_bulma_path = str(self.simple_bulma_path).replace('\\', '/')
-        # Now load bulma
-        scss_string += f'@import "{sass_bulma_path}/bulma.sass";'
+        sass_bulma_submodule_path = str(self.bulma_submodule_path).replace('\\', '/')
+
+        scss_string += f'@import "{sass_bulma_submodule_path}/utilities/_all";\n'
+
+        # Now load bulma dynamically.
+        # Doing this instead of just referencing bulma.sass is preperation for issue #6
+        for dirname in self.bulma_submodule_path.iterdir():
+
+            # We already added this earlier
+            if dirname.name == "utilities":
+                continue
+
+            scss_string += f'@import "{sass_bulma_submodule_path}/{dirname.name}/_all";\n'
 
         # Now load in the extensions that the user wants
         if self.extensions == "_all":
-            scss_string += f'@import "{sass_bulma_path}/sass/extensions/_all";\n'
+            scss_string += f'@import "{sass_bulma_path}/extensions/_all";\n'
         elif isinstance(self.extensions, list):
             for extension in self.extensions:
 
                 # Check if the extension exists
-                extensions_folder = self.simple_bulma_path / "sass" / "extensions"
+                extensions_folder = self.simple_bulma_path / "extensions"
                 extensions = [extension.stem[1:] for extension in extensions_folder.iterdir()]
                 if extension in extensions:
-                    scss_string += f'@import "{sass_bulma_path}/sass/extensions/_{extension}";\n'
+                    scss_string += f'@import "{sass_bulma_path}/extensions/_{extension}";\n'
 
         # Store this as a css file
         if hasattr(sass, "libsass_version"):
