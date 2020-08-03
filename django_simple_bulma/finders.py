@@ -46,8 +46,8 @@ class SimpleBulmaFinder(BaseFinder):
             scss_string += f"${var}: {value};\n"
 
         # SASS wants paths with forward slash:
-        sass_bulma_path = str(self.simple_bulma_path).replace('\\', '/')
-        sass_bulma_submodule_path = str(self.bulma_submodule_path).replace('\\', '/')
+        sass_bulma_path = self.simple_bulma_path.as_posix()
+        sass_bulma_submodule_path = self.bulma_submodule_path.as_posix()
 
         scss_string += f'@import "{sass_bulma_submodule_path}/utilities/_all";\n'
 
