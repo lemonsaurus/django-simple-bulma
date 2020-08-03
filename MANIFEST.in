@@ -1,2 +1,4 @@
 include LICENSE
 recursive-include django_simple_bulma *
+prune django_simple_bulma/bulma
+graft django_simple_bulma/bulma/sass
