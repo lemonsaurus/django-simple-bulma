@@ -13,6 +13,13 @@ from django.conf import settings
 from django.contrib.staticfiles.finders import BaseFinder
 from django.core.files.storage import FileSystemStorage
 
+from .utils import (
+    get_js_files,
+    get_sass_files,
+    is_enabled,
+    simple_bulma_path,
+)
+
 
 class SimpleBulmaFinder(BaseFinder):
     """
@@ -30,26 +37,36 @@ class SimpleBulmaFinder(BaseFinder):
         except AttributeError:
             self.bulma_settings = {}
 
-        self.simple_bulma_path = Path(__file__).resolve().parent
-        self.bulma_submodule_path = self.simple_bulma_path / 'bulma' / 'sass'
+        self.bulma_submodule_path = simple_bulma_path / "bulma" / "sass"
         self.custom_scss = self.bulma_settings.get("custom_scss", [])
-        self.extensions = self.bulma_settings.get("extensions", "_all")
         self.variables = self.bulma_settings.get("variables", {})
-        self.output_style = self.bulma_settings.get("output_style", 'nested')
-        self.storage = FileSystemStorage(self.simple_bulma_path)
+        self.output_style = self.bulma_settings.get("output_style", "nested")
+        self.storage = FileSystemStorage(simple_bulma_path)
+
+    def _get_extension_imports(self) -> str:
+        """Return a string that, in SASS, imports all enabled extensions"""
+        scss_imports = ""
+
+        for ext in (simple_bulma_path / "extensions").iterdir():
+
+            if is_enabled(ext):
+                for src in get_sass_files(ext):
+                    scss_imports += f"@import '{src.as_posix()}';\n"
+
+        return scss_imports
 
     def _get_bulma_css(self) -> str:
         """Compiles the bulma css file and returns its relative path."""
         # Start by unpacking the users custom variables
-        scss_string = '@charset "utf-8";\n'
+        scss_string = "@charset 'utf-8';\n"
         for var, value in self.variables.items():
             scss_string += f"${var}: {value};\n"
 
         # SASS wants paths with forward slash:
-        sass_bulma_path = self.simple_bulma_path.as_posix()
-        sass_bulma_submodule_path = self.bulma_submodule_path.as_posix()
+        sass_bulma_submodule_path = self.bulma_submodule_path \
+            .relative_to(simple_bulma_path).as_posix()
 
-        scss_string += f'@import "{sass_bulma_submodule_path}/utilities/_all";\n'
+        scss_string += f"@import '{sass_bulma_submodule_path}/utilities/_all';\n"
 
         # Now load bulma dynamically.
         # Doing this instead of just referencing bulma.sass is preperation for issue #6
@@ -59,23 +76,16 @@ class SimpleBulmaFinder(BaseFinder):
             if dirname.name == "utilities":
                 continue
 
-            scss_string += f'@import "{sass_bulma_submodule_path}/{dirname.name}/_all";\n'
+            scss_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_all';\n"
 
         # Now load in the extensions that the user wants
-        if self.extensions == "_all":
-            scss_string += f'@import "{sass_bulma_path}/extensions/_all";\n'
-        elif isinstance(self.extensions, list):
-            for extension in self.extensions:
-
-                # Check if the extension exists
-                extensions_folder = self.simple_bulma_path / "extensions"
-                extensions = [extension.stem[1:] for extension in extensions_folder.iterdir()]
-                if extension in extensions:
-                    scss_string += f'@import "{sass_bulma_path}/extensions/_{extension}";\n'
+        scss_string += self._get_extension_imports()
 
         # Store this as a css file
         if hasattr(sass, "libsass_version"):
-            css_string = sass.compile(string=scss_string, output_style=self.output_style)
+            css_string = sass.compile(string=scss_string,
+                                      output_style=self.output_style,
+                                      include_paths=[simple_bulma_path.as_posix()])
         else:
             # If the user has the sass module installed in addition to libsass,
             # warn the user and fail hard.
@@ -88,8 +98,8 @@ class SimpleBulmaFinder(BaseFinder):
                 "not both `sass` and `libsass`, or this application will not work."
             )
 
-        css_path = self.simple_bulma_path / "css" / "bulma.css"
-        with open(css_path, "w") as bulma_css:
+        css_path = simple_bulma_path / "css" / "bulma.css"
+        with open(css_path, "w", encoding="utf-8") as bulma_css:
             bulma_css.write(css_string)
 
         return "css/bulma.css"
@@ -114,7 +124,7 @@ class SimpleBulmaFinder(BaseFinder):
                     )
 
             # SASS wants paths with forward slash:
-            scss_path = str(scss_path).replace('\\', '/')
+            scss_path = str(scss_path).replace("\\", "/")
 
             # Now load up the scss file
             scss_string = f'@import "{scss_path}";'
@@ -123,7 +133,7 @@ class SimpleBulmaFinder(BaseFinder):
             # already happened earlier, during the Bulma compilation
             css_string = sass.compile(string=scss_string, output_style=self.output_style)
 
-            css_path = self.simple_bulma_path / relative_path.parent
+            css_path = simple_bulma_path / relative_path.parent
             css_path.mkdir(exist_ok=True)
             css_path = f"{css_path}/{relative_path.stem}.css"
 
@@ -136,20 +146,8 @@ class SimpleBulmaFinder(BaseFinder):
 
     def _get_bulma_js(self) -> List[str]:
         """Return a list of all the js files that are needed for the users selected extensions."""
-        js_files = []
-        js_folder = self.simple_bulma_path / "js"
 
-        if self.extensions == "_all":
-            for filename in js_folder.iterdir():
-                js_files.append(f"js/{filename.name}")
-        else:
-            for filename in js_folder.iterdir():
-                extension_name = str(filename.stem)
-
-                if extension_name in self.extensions:
-                    js_files.append(f"js/{filename.name}")
-
-        return js_files
+        return list(get_js_files())
 
     @staticmethod
     def find_relative_staticfiles(path: Union[str, Path]) -> Union[Path, None]:
@@ -174,7 +172,7 @@ class SimpleBulmaFinder(BaseFinder):
         If the ``all`` parameter is False (default) return only the first found
         file path; if True, return a list of all found files paths.
         """
-        absolute_path = str(self.simple_bulma_path / path)
+        absolute_path = str(simple_bulma_path / path)
 
         if all:
             return [absolute_path]
