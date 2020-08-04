@@ -28,7 +28,6 @@ sass_files_searchs = (
 
 def is_enabled(extension: Union[Path, str]) -> bool:
     """Return whether an extension is enabled or not"""
-
     if isinstance(extension, Path):
         return extensions == "_all" or extension.name in extensions
     return extensions == "_all" or extension in extensions
@@ -36,7 +35,6 @@ def is_enabled(extension: Union[Path, str]) -> bool:
 
 def get_js_files() -> Generator[str, None, None]:
     """Yield all the js files that are needed for the users selected extensions."""
-
     # For every extension...
     for ext in (simple_bulma_path / "extensions").iterdir():
         # ...check if it is enabled...
@@ -56,7 +54,6 @@ def get_js_files() -> Generator[str, None, None]:
 
 def get_sass_files(ext: Path) -> List[Path]:
     """Given the path to an extension, find and yield all files that should be imported"""
-
     for rel_path, glob in sass_files_searchs:
         src_files = list((ext / rel_path).rglob(glob))
 

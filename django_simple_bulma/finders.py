@@ -146,7 +146,6 @@ class SimpleBulmaFinder(BaseFinder):
 
     def _get_bulma_js(self) -> List[str]:
         """Return a list of all the js files that are needed for the users selected extensions."""
-
         return list(get_js_files())
 
     @staticmethod
