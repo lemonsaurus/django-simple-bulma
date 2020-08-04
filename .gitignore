@@ -3,5 +3,6 @@
 .venv
 
 build/
-dist/
+dist/*
+!dist/js
 django_simple_bulma.egg-info/
