@@ -79,7 +79,6 @@ We currently support these extensions:
 - bulma-collapsible
 - bulma-checkradio
 - bulma-divider
-- bulma-iconpicker
 - bulma-megamenu
 - bulma-pageloader
 - bulma-pricingtable
