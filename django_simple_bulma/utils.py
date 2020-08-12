@@ -8,9 +8,9 @@ from django.conf import settings
 # If BULMA_SETTINGS has not been declared if no extensions
 # have been defined, default to all extensions.
 if hasattr(settings, "BULMA_SETTINGS"):
-    extensions = settings.BULMA_SETTINGS.get("extensions", "_all")
+    extensions = settings.BULMA_SETTINGS.get("extensions", [])
 else:
-    extensions = "_all"
+    extensions = []
 
 simple_bulma_path = Path(__file__).resolve().parent
 
@@ -29,8 +29,8 @@ sass_files_searchs = (
 def is_enabled(extension: Union[Path, str]) -> bool:
     """Return whether an extension is enabled or not"""
     if isinstance(extension, Path):
-        return extensions == "_all" or extension.name in extensions
-    return extensions == "_all" or extension in extensions
+        return extensions == "all" or extension.name in extensions
+    return extensions == "all" or extension in extensions
 
 
 def get_js_files() -> Generator[str, None, None]:
