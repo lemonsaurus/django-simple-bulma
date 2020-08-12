@@ -1,4 +1,4 @@
-"""Django Simple Bulma utilities. Ultimately helps insure DRY code."""
+"""Django Simple Bulma utilities. Ultimately helps ensure DRY code."""
 
 from pathlib import Path
 from typing import Generator, List, Union
