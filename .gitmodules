@@ -22,9 +22,6 @@
 [submodule "bulma-quickview"]
 	path = django_simple_bulma/extensions/bulma-quickview
 	url = https://github.com/Wikiki/bulma-quickview.git
-[submodule "bulma-iconpicker"]
-	path = django_simple_bulma/extensions/bulma-iconpicker
-	url = https://github.com/Wikiki/bulma-iconpicker.git
 [submodule "bulma-pricingtable"]
 	path = django_simple_bulma/extensions/bulma-pricingtable
 	url = https://github.com/Wikiki/bulma-pricingtable.git
