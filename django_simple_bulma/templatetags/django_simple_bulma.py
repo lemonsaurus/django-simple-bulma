@@ -29,7 +29,10 @@ def bulma() -> SafeString:
     """Build static files required for Bulma."""
     # Build the html to include the stylesheet
     css = static("css/bulma.css")
-    html = [f'<link rel="stylesheet" href="{css}">']
+    html = [
+        f'<link rel="preload" href="{css}" as="style">',
+        f'<link rel="stylesheet" href="{css}">',
+    ]
 
     # Build html to include all the js files required.
     for filename in js_folder.iterdir():
@@ -37,7 +40,10 @@ def bulma() -> SafeString:
         extension_name = filename.stem
 
         if extension_name in extensions or extensions == "_all":
-            html.append(f'{" " * 8}<script type="text/javascript" src="{js_file}"></script>')
+            html.append(
+                f'{" " * 8}<link rel="preload" type="text/javascript" href="{js_file}" as="script">'
+            )
+            html.append(f'{" " * 8}<script defer type="text/javascript" src="{js_file}"></script>')
 
     return mark_safe("\n".join(html))  # noqa
 
@@ -51,6 +57,11 @@ def font_awesome() -> SafeString:
     eventually return the latest version.
     """
     cdn_link = (
+        '<link rel="preload" '
+        'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
+        'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
+        'crossorigin="anonymous" '
+        'as="style">\n'
         '<link rel="stylesheet" '
         'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
         'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
