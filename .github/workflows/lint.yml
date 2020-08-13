@@ -5,7 +5,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     env:
-      PRE_COMMIT_HOME: ${{ GITHUB_WORKSPACE }}/pre-commit-cache
+      PRE_COMMIT_HOME: ${{ env.GITHUB_WORKSPACE }}/pre-commit-cache
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
