@@ -4,24 +4,13 @@ Template tags for the Django templating engine.
 These are loaded when {% load django_simple_bulma %} is called.
 """
 
-from pathlib import Path
-
 from django import template
-from django.conf import settings
 from django.templatetags.static import static
 from django.utils.safestring import SafeString, mark_safe
 
-
-# If BULMA_SETTINGS has not been declared if no extensions
-# have been defined, default to all extensions.
-if hasattr(settings, "BULMA_SETTINGS"):
-    extensions = settings.BULMA_SETTINGS.get("extensions", "_all")
-else:
-    extensions = "_all"
+from ..utils import get_js_files
 
 register = template.Library()
-simple_bulma_path = Path(__file__).resolve().parent.parent
-js_folder = simple_bulma_path / "js"
 
 
 @register.simple_tag
@@ -35,15 +24,8 @@ def bulma() -> SafeString:
     ]
 
     # Build html to include all the js files required.
-    for filename in js_folder.iterdir():
-        js_file = static(f"js/{filename.name}")
-        extension_name = filename.stem
-
-        if extension_name in extensions or extensions == "_all":
-            html.append(
-                f'{" " * 8}<link rel="preload" type="text/javascript" href="{js_file}" as="script">'
-            )
-            html.append(f'{" " * 8}<script defer type="text/javascript" src="{js_file}"></script>')
+    for js_file in map(static, get_js_files()):
+        html.append(f'<script defer type="text/javascript" src="{js_file}"></script>')
 
     return mark_safe("\n".join(html))  # noqa
 
