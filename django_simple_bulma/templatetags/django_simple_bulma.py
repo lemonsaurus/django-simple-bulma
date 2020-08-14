@@ -27,7 +27,7 @@ def bulma() -> SafeString:
     for js_file in map(static, get_js_files()):
         html.append(f'<script defer type="text/javascript" src="{js_file}"></script>')
 
-    return mark_safe("\n".join(html))  # noqa
+    return mark_safe("\n".join(html))
 
 
 @register.simple_tag
@@ -50,4 +50,4 @@ def font_awesome() -> SafeString:
         'crossorigin="anonymous">'
     )
 
-    return mark_safe(cdn_link)  # noqa
+    return mark_safe(cdn_link)

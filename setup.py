@@ -48,9 +48,10 @@ setup(
             "flake8-import-order~=0.18",
             "flake8-tidy-imports~=4.0",
             "flake8-todo~=0.7",
-            "flake8-string-format~=0.2",
+            "flake8-string-format~=0.3",
             "pdoc~=0.3",
-            "pre-commit~=1.18",
+            "pep8-naming~=0.9",
+            "pre-commit~=2.1",
             "PyGithub~=1.43",
             "wheel~=0.33",
         ]

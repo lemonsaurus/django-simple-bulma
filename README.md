@@ -20,22 +20,22 @@ To get `django-simple-bulma`, up and running for your Django project, follow the
       'django_simple_bulma',
       #...
     ]
-    ``` 
+    ```
   - Add `django_simple_bulma.finders.SimpleBulmaFinder` to your `STATICFILES_FINDERS`. This normally holds two default handlers that you will probably want to keep, so unless you have any other custom Finders, it should look like this:
     ```python
     STATICFILES_FINDERS = [
       # First add the two default Finders, since this will overwrite the default.
       'django.contrib.staticfiles.finders.FileSystemFinder',
       'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-  
+
       # Now add our custom SimpleBulma one.
       'django_simple_bulma.finders.SimpleBulmaFinder',
     ]
     ```
-- Run `python manage.py collectstatic` command in order to build Bulma and move it to your `staticfiles` folder. Please note that you will need to use this command every time you make a change to the configuration, as this is the only way to rebuild the Bulma css file. If you are not using `collectstatic`, [read up on it](https://stackoverflow.com/questions/34586114/whats-the-point-of-djangos-collectstatic) and [start using it](https://docs.djangoproject.com/en/2.1/ref/contrib/staticfiles/). 
+- Run `python manage.py collectstatic` command in order to build Bulma and move it to your `staticfiles` folder. Please note that you will need to use this command every time you make a change to the configuration, as this is the only way to rebuild the Bulma css file. If you are not using `collectstatic`, [read up on it](https://stackoverflow.com/questions/34586114/whats-the-point-of-djangos-collectstatic) and [start using it](https://docs.djangoproject.com/en/2.1/ref/contrib/staticfiles/).
 
   This app works fine with [Whitenoise](http://whitenoise.evans.io/en/stable/), which is a great way to serve static files without needing to mess with your webserver.
-  
+
 `django-simple-bulma` should now be working! In order to import it into your template, first load the app with `{% load django_simple_bulma %}`, and then use the `{% bulma %}` template tag. If you're planning on using icons, you should also import FontAwesome by using `{% font_awesome %}`.
   ```html
     <head>
@@ -131,12 +131,12 @@ path to your `.scss` file, using the following strategy:
   directory structure below it will be used to contain the resulting `.css` file
 * Otherwise, if the path contains `static/`, assume that the base path ends there and use the rest of the path
   below it to contain the resulting `.css` file.
- 
+
 If both of these strategies fail to figure out what base path to use, an exception will be raised.
 
 Troubleshooting
 ---------------
 
-- If you have the module `sass` installed, please note that it is incompatible with this project. There is a namespace conflict between `sass` and `libsass` which will make `django-simple-bulma` crash when you attempt to do a `collectstatic`. To solve this, just uninstall `sass` and use `libsass` instead. 
+- If you have the module `sass` installed, please note that it is incompatible with this project. There is a namespace conflict between `sass` and `libsass` which will make `django-simple-bulma` crash when you attempt to do a `collectstatic`. To solve this, just uninstall `sass` and use `libsass` instead.
 
 If you run into any other problems with this app, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to help you with it. Alternatively, head over to our discord server at https://discord.gg/python and we'll help you figure it out over chat.
