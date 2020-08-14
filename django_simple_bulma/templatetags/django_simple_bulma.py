@@ -18,7 +18,10 @@ def bulma() -> SafeString:
     """Build static files required for Bulma."""
     # Build the html to include the stylesheet
     css = static("css/bulma.css")
-    html = [f'<link rel="stylesheet" href="{css}">']
+    html = [
+        f'<link rel="preload" href="{css}" as="style">',
+        f'<link rel="stylesheet" href="{css}">',
+    ]
 
     # Build html to include all the js files required.
     for js_file in map(static, get_js_files()):
@@ -36,6 +39,11 @@ def font_awesome() -> SafeString:
     eventually return the latest version.
     """
     cdn_link = (
+        '<link rel="preload" '
+        'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
+        'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
+        'crossorigin="anonymous" '
+        'as="style">\n'
         '<link rel="stylesheet" '
         'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
         'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
