@@ -6,7 +6,7 @@ django-simple-bulma
 
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.0**, **Bulma-Extensions v4.0.0**, and **FontAwesome v5.6.3**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
+This project currently uses **Bulma v0.9.0** and **FontAwesome v5.6.3**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
 
 Installation
 ------------
@@ -57,7 +57,7 @@ In order to do this, we'll simply create a dictionary inside your `settings.py` 
 # Custom settings for django-simple-bulma
 BULMA_SETTINGS = {
     "extensions": [
-        "bulma-accordion",
+        "bulma-collapsible",
         "bulma-calendar",
     ],
     "variables": {
@@ -70,14 +70,36 @@ BULMA_SETTINGS = {
 
 You may here define any variable found on the [Bulma variables](https://bulma.io/documentation/customize/variables/) page, and you may use any valid SASS or CSS as the value. For example, `hsl(217, 71%, 53%)` would be a valid value for a color variable, as would `#ffff00`. Please note that any syntactically incorrect values may prevent Bulma from building correctly, so be careful what you add here unless you know exactly what you're doing.
 
-If the `extensions` key is not found, it will default to loading **all extensions**. If you don't want any extensions, simply set it to an empty list.
+If the `extensions` key is not found, it will default to not loading any extensions. If you want all extensions, simply set it to the string `"all"`.
+
+We currently support these extensions:
+- bulma-badge
+- bulma-calendar
+- bulma-carousel
+- bulma-collapsible
+- bulma-checkradio
+- bulma-divider
+- bulma-megamenu
+- bulma-pageloader
+- bulma-pricingtable
+- bulma-quickview
+- bulma-ribbon
+- bulma-slider
+- bulma-steps
+- bulma-switch
+- bulma-tagsinput
+- bulma-timeline
+- bulma-tooltip
+- Cool-Checkboxes-for-Bulma.io (include it as bulma-coolcheckboxes)
+
+If an extension you want to use is missing, feel free to [create an issue](https://github.com/python-discord/django-simple-bulma/issues) and we will be happy to add it. Alternatively, add it yourself and create a pull request (see [this pr](https://github.com/python-discord/django-simple-bulma/pull/55) for some context on how to go about doing that).
 
 The `output_style` determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as
 to reduce the final file size.
 
 Additional scripts
 ------------------
-For your convenience, we also give you the option to add other quality of life improvements to your Bulma app. If you are not specifying any extensions in `BULMA_SETTINGS`, these will all be loaded by default. If you are, you may want to add these as well if they sound useful to you.
+For your convenience, we also give you the option to add other quality of life improvements to your Bulma app. You may want to add these as well if they sound useful to you.
 
 * `bulma-fileupload` will handle displaying the filename in your [file upload inputs](https://bulma.io/documentation/form/file/).
 * `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for mobile users. We use a slightly updated version of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) - simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should be expanded and collapsed by the button.

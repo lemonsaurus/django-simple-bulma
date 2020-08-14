@@ -1,2 +1,14 @@
 include LICENSE
 recursive-include django_simple_bulma *
+
+prune django_simple_bulma/bulma
+graft django_simple_bulma/bulma/sass
+
+prune django_simple_bulma/extensions
+graft django_simple_bulma/extensions/*/dist/js
+graft django_simple_bulma/extensions/*/src
+prune django_simple_bulma/extensions/*/src/docs
+prune django_simple_bulma/extensions/*/src/demo
+
+graft django_simple_bulma/extensions/bulma-coolcheckboxes/dist
+include django_simple_bulma/extensions/bulma-megamenu/megamenu.css
