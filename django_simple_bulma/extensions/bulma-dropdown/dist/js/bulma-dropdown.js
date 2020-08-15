@@ -1,6 +1,4 @@
 (function() {
-    window.dropdowns = {};
-
     function handle_event(e) {
         show();
 
@@ -33,7 +31,5 @@
         }
 
         element.addEventListener("click", handle_event);
-
-        window.dropdowns[menu_element.id] = element;
     }
 })();
