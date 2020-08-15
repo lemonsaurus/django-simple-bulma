@@ -64,7 +64,8 @@ BULMA_SETTINGS = {
         "primary": "#000000",
         "size-1": "6rem",
     },
-    "output_style": "compressed"
+    "output_style": "compressed",
+    "fontawesome_token": "e761a01be3",
 }
 ```
 
@@ -96,6 +97,8 @@ If an extension you want to use is missing, feel free to [create an issue](https
 
 The `output_style` determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as
 to reduce the final file size.
+
+Your `fontawesome_token` is the identifier part of your FontAwesome kit src <code><a>https://kit.fontawesome.com/<u>e761a01be3</u>.js</a></code> (not your API token). If you leave out this option, FontAwesome v5.14.0 will be used instead.
 
 Additional scripts
 ------------------

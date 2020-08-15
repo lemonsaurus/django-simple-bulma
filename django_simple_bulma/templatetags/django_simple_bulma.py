@@ -8,7 +8,10 @@ from django import template
 from django.templatetags.static import static
 from django.utils.safestring import SafeString, mark_safe
 
-from ..utils import get_js_files
+from ..utils import (
+    fontawesome_token,
+    get_js_files,
+)
 
 register = template.Library()
 
@@ -33,21 +36,32 @@ def bulma() -> SafeString:
 @register.simple_tag
 def font_awesome() -> SafeString:
     """
-    Return the latest FontAwesome CDN link.
+    Return the FontAwesome CDN link.
 
-    Currently just returns 5.6.3, but will
-    eventually return the latest version.
+    Returns whatever kit has been specified in BULMA_SETTINGS.
+    If none is provided, default to version 5.14.0
     """
-    cdn_link = (
-        '<link rel="preload" '
-        'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
-        'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
-        'crossorigin="anonymous" '
-        'as="style">\n'
-        '<link rel="stylesheet" '
-        'href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" '
-        'integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" '
-        'crossorigin="anonymous">'
-    )
+    if fontawesome_token:
+        cdn_link = (
+            '<link rel="preload" '
+            f'href="https://kit.fontawesome.com/{fontawesome_token}.js" '
+            'crossorigin="anonymous" '
+            'as="script">\n'
+            '<script defer '
+            f'src="https://kit.fontawesome.com/{fontawesome_token}.js" '
+            'crossorigin="anonymous"></script>'
+        )
+    else:
+        cdn_link = (
+            '<link rel="preload" '
+            'href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" '
+            'integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" '
+            'crossorigin="anonymous" '
+            'as="style">\n'
+            '<link rel="stylesheet" '
+            'href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" '
+            'integrity="sha384-HzLeBuhoNPvSl5KYnjx0BT+WB0QEEqLprO+NBkkk5gbc67FTaL7XIGa2w1L0Xbgc" '
+            'crossorigin="anonymous">'
+        )
 
     return mark_safe(cdn_link)
