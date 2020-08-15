@@ -1,14 +1,13 @@
 (function() {
-    function handle_event(e) {
-        show();
+    function handle_event_wrapper(show, hide) {
+        const handle_event = (e) => {
+            if (show()) {
+                hide();
+            }
+            e.stopPropagation();
+        }
 
-        function clickEvent() {
-            hide();
-            document.body.removeEventListener("click", clickEvent);
-        };
-
-        document.body.addEventListener("click", clickEvent);
-        e.stopPropagation();
+        return handle_event;
     }
 
     let elements = document.getElementsByClassName("dropdown");
@@ -20,16 +19,20 @@
             continue;
         }
 
-        let menu_element = element.getElementsByClassName("dropdown-menu")[0];
-
-        function show() {
+        const show = () => {
+            let active = false;
+            if (element.classList.contains("is-active")) {
+                active = true;
+            }
             element.classList.add("is-active");
+            return active;
         }
 
-        function hide() {
+        const hide = () => {
             element.classList.remove("is-active");
         }
 
-        element.addEventListener("click", handle_event);
+        element.addEventListener("click", handle_event_wrapper(show, hide));
+        document.body.addEventListener("click", hide);
     }
 })();
