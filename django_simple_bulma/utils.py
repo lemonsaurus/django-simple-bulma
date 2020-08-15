@@ -9,8 +9,10 @@ from django.conf import settings
 # have been defined, default to all extensions.
 if hasattr(settings, "BULMA_SETTINGS"):
     extensions = settings.BULMA_SETTINGS.get("extensions", [])
+    fontawesome_token = settings.BULMA_SETTINGS.get("fontawesome_token", "")
 else:
     extensions = []
+    fontawesome_token = ""
 
 simple_bulma_path = Path(__file__).resolve().parent
 
