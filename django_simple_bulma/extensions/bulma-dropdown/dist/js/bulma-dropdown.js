@@ -10,7 +10,6 @@
         };
 
         document.body.addEventListener("click", clickEvent);
-
         e.stopPropagation();
     }
 
