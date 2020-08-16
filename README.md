@@ -71,6 +71,7 @@ BULMA_SETTINGS = {
 
 You may here define any variable found on the [Bulma variables](https://bulma.io/documentation/customize/variables/) page, and you may use any valid SASS or CSS as the value. For example, `hsl(217, 71%, 53%)` would be a valid value for a color variable, as would `#ffff00`. Please note that any syntactically incorrect values may prevent Bulma from building correctly, so be careful what you add here unless you know exactly what you're doing.
 
+#### Extensions
 If the `extensions` key is not found, it will default to not loading any extensions. If you want all extensions, simply set it to the string `"all"`.
 
 We currently support these extensions:
@@ -91,14 +92,22 @@ We currently support these extensions:
 - bulma-tagsinput
 - bulma-timeline
 - bulma-tooltip
-- Cool-Checkboxes-for-Bulma.io (include it as bulma-coolcheckboxes)
+- bulma-coolcheckboxes (Cool-Checkboxes-for-Bulma.io)
 
 If an extension you want to use is missing, feel free to [create an issue](https://github.com/python-discord/django-simple-bulma/issues) and we will be happy to add it. Alternatively, add it yourself and create a pull request (see [this pr](https://github.com/python-discord/django-simple-bulma/pull/55) for some context on how to go about doing that).
 
-The `output_style` determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as
-to reduce the final file size.
 
-Your `fontawesome_token` is the identifier part of your FontAwesome kit src <code><a>https://kit.fontawesome.com/<u>e761a01be3</u>.js</a></code> (not your API token). This is used by the `{% font_awesome %}` template tag to insert a <link> tag for you. If you don't specify a `fontawesome_token`, the template tag will still work, but will then use an older version of FontAwesome (v5.14.0).
+#### CSS style
+The `output_style` parameter determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as to reduce the final file size.
+
+#### FontAwesome
+The optional `fontawesome_token` parameter allows you to specify your personal FontAwesome kit, which is necessary for FontAwesome v6 and up. This should be set to the identifier part of your FontAwesome kit script src parameter. For example, if your FontAwesome kit looks like this:
+```html
+<script src="https://kit.fontawesome.com/e761a01be3.js" crossorigin="anonymous"></script>
+```
+Then your `fontawesome_token` should be **e761a01be3**.
+
+This is used by the `{% font_awesome %}` template tag to set up FontAwesome for you. If you don't specify a `fontawesome_token`, **the template tag will still work**, but will then use an older version of FontAwesome (v5.14.0). 
 
 Additional scripts
 ------------------
