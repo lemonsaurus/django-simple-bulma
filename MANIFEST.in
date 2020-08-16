@@ -11,4 +11,4 @@ prune django_simple_bulma/extensions/*/src/docs
 prune django_simple_bulma/extensions/*/src/demo
 
 graft django_simple_bulma/extensions/bulma-coolcheckboxes/dist
-include django_simple_bulma/extensions/bulma-megamenu/megamenu.css
+include django_simple_bulma/extensions/bulma-megamenu/megamenu.scss
