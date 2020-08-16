@@ -6,7 +6,7 @@ django-simple-bulma
 
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.0** and **FontAwesome v5.6.3**. If you want features that are only available in newer versions of these frameworks, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to update it.
+This project currently uses **Bulma v0.9.0**, and is automatically updated with every new release. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
 
 Installation
 ------------
@@ -36,7 +36,7 @@ To get `django-simple-bulma`, up and running for your Django project, follow the
 
   This app works fine with [Whitenoise](http://whitenoise.evans.io/en/stable/), which is a great way to serve static files without needing to mess with your webserver.
 
-`django-simple-bulma` should now be working! In order to import it into your template, first load the app with `{% load django_simple_bulma %}`, and then use the `{% bulma %}` template tag. If you're planning on using icons, you should also import FontAwesome by using `{% font_awesome %}`.
+`django-simple-bulma` should now be working! In order to import it into your template, first load the app with `{% load django_simple_bulma %}`, and then use the `{% bulma %}` template tag. If you're planning on using icons, you might also want to import FontAwesome by using `{% font_awesome %}`.
   ```html
     <head>
         <!-- ... -->
@@ -98,7 +98,7 @@ If an extension you want to use is missing, feel free to [create an issue](https
 The `output_style` determines the style of the resulting CSS file. It can be any of `"nested"` (default), `"expanded"`, `"compact"`, and `"compressed"`. It is recommended to use `"compressed"` in production as
 to reduce the final file size.
 
-Your `fontawesome_token` is the identifier part of your FontAwesome kit src <code><a>https://kit.fontawesome.com/<u>e761a01be3</u>.js</a></code> (not your API token). If you leave out this option, FontAwesome v5.14.0 will be used instead.
+Your `fontawesome_token` is the identifier part of your FontAwesome kit src <code><a>https://kit.fontawesome.com/<u>e761a01be3</u>.js</a></code> (not your API token). This is used by the `{% font_awesome %}` template tag to insert a <link> tag for you. If you don't specify a `fontawesome_token`, the template tag will still work, but will then use an older version of FontAwesome (v5.14.0).
 
 Additional scripts
 ------------------
@@ -109,7 +109,7 @@ For your convenience, we also give you the option to add other quality of life i
 * `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 * `bulma-dropdown` will open/close dropdowns using the `is-active` class. It mimics how the dropdowns function on the [documentation page](https://bulma.io/documentation/components/dropdown/#hoverable-or-toggable).
 
-Additional functionality
+Compiling additional SCSS
 ------------------------
 
 If you're writing custom SCSS for your application, `django-simple-bulma` does provide a very basic mechanism for compiling
