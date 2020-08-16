@@ -20,12 +20,11 @@
         }
 
         const show = () => {
-            let active = false;
             if (element.classList.contains("is-active")) {
-                active = true;
+                return true;
             }
             element.classList.add("is-active");
-            return active;
+            return false;
         }
 
         const hide = () => {
