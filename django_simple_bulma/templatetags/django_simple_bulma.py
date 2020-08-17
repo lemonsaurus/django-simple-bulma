@@ -11,16 +11,25 @@ from django.utils.safestring import SafeString, mark_safe
 from ..utils import (
     fontawesome_token,
     get_js_files,
+    logger,
+    themes,
 )
 
 register = template.Library()
 
 
 @register.simple_tag
-def bulma() -> SafeString:
+def bulma(theme: str = "") -> SafeString:
     """Build static files required for Bulma."""
+    if theme and theme not in themes:
+        logger.warning(
+            f"Theme '{theme}' does not match any of the detected themes: {', '.join(themes)}. "
+            "Using default theme instead."
+        )
+        theme = ""
+
     # Build the html to include the stylesheet
-    css = static("css/bulma.css")
+    css = static(f"css/{theme + '_' if theme else ''}bulma.css")
     html = [
         f'<link rel="preload" href="{css}" as="style">',
         f'<link rel="stylesheet" href="{css}">',

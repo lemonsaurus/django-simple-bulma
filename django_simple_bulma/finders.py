@@ -18,6 +18,7 @@ from .utils import (
     get_sass_files,
     is_enabled,
     simple_bulma_path,
+    themes,
 )
 
 
@@ -55,40 +56,18 @@ class SimpleBulmaFinder(BaseFinder):
 
         return scss_imports
 
-    def _get_bulma_css(self) -> str:
-        """Compiles the bulma css file and returns its relative path."""
-        # Start by unpacking the users custom variables
-        scss_string = "@charset 'utf-8';\n"
-        for var, value in self.variables.items():
+    def _unpack_variables(self, variables: dict) -> str:
+        """Unpacks SASS variables from a dictionary to a compilable string"""
+        scss_string = ""
+        for var, value in variables.items():
             scss_string += f"${var}: {value};\n"
+        return scss_string
 
-        # SASS wants paths with forward slash:
-        sass_bulma_submodule_path = self.bulma_submodule_path \
-            .relative_to(simple_bulma_path).as_posix()
-
-        scss_string += f"@import '{sass_bulma_submodule_path}/utilities/_all';\n"
-
-        # Now load bulma dynamically.
-        # Doing this instead of just referencing bulma.sass is preperation for issue #6
-        for dirname in self.bulma_submodule_path.iterdir():
-
-            # We already added this earlier
-            if dirname.name == "utilities":
-                continue
-
-            scss_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_all';\n"
-
-        # Now load in the extensions that the user wants
-        scss_string += self._get_extension_imports()
-
-        # Store this as a css file
-        if hasattr(sass, "libsass_version"):
-            css_string = sass.compile(string=scss_string,
-                                      output_style=self.output_style,
-                                      include_paths=[simple_bulma_path.as_posix()])
-        else:
-            # If the user has the sass module installed in addition to libsass,
-            # warn the user and fail hard.
+    def _get_bulma_css(self) -> List[str]:
+        """Compiles the bulma css files for each theme and returns their relative paths."""
+        # If the user has the sass module installed in addition to libsass,
+        # warn the user and fail hard.
+        if not hasattr(sass, "libsass_version"):
             raise UserWarning(
                 "There was an error compiling your Bulma CSS. This error is "
                 "probably caused by having the `sass` module installed, as the two modules "
@@ -98,11 +77,51 @@ class SimpleBulmaFinder(BaseFinder):
                 "not both `sass` and `libsass`, or this application will not work."
             )
 
-        css_path = simple_bulma_path / "css" / "bulma.css"
-        with open(css_path, "w", encoding="utf-8") as bulma_css:
-            bulma_css.write(css_string)
+        # SASS wants paths with forward slash:
+        sass_bulma_submodule_path = self.bulma_submodule_path \
+            .relative_to(simple_bulma_path).as_posix()
 
-        return "css/bulma.css"
+        bulma_string = f"@import '{sass_bulma_submodule_path}/utilities/_all';\n"
+
+        # Now load bulma dynamically.
+        for dirname in self.bulma_submodule_path.iterdir():
+
+            # We already added this earlier
+            if dirname.name == "utilities":
+                continue
+
+            bulma_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_all';\n"
+
+        # Now load in the extensions that the user wants
+        extensions_string = self._get_extension_imports()
+
+        # Generate SASS strings for each theme
+        # The default theme is treated as ""
+        theme_paths = []
+        for theme in [""] + themes:
+            scss_string = "@charset 'utf-8';\n"
+
+            # Unpack this theme's custom variables
+            variables = self.variables
+            if theme:
+                variables = settings.BULMA_SETTINGS[f"{theme}_variables"]
+            scss_string += self._unpack_variables(variables)
+
+            scss_string += bulma_string
+            scss_string += extensions_string
+
+            # Store this as a css file
+            css_string = sass.compile(string=scss_string,
+                                    output_style=self.output_style,
+                                    include_paths=[simple_bulma_path.as_posix()])
+
+            theme_path = f"css/{theme + '_' if theme else ''}bulma.css"
+            css_path = simple_bulma_path / theme_path
+            with open(css_path, "w", encoding="utf-8") as bulma_css:
+                bulma_css.write(css_string)
+            theme_paths.append(theme_path)
+
+        return theme_paths
 
     def _get_custom_css(self) -> str:
         """Compiles any custom-specified SASS and returns its relative path."""
@@ -179,7 +198,7 @@ class SimpleBulmaFinder(BaseFinder):
 
     def list(self, _: List[str]) -> Tuple[str, FileSystemStorage]:
         """Return a two item iterable consisting of the relative path and storage instance."""
-        files = [self._get_bulma_css()]
+        files = self._get_bulma_css()
         files.extend(self._get_custom_css())
         files.extend(self._get_bulma_js())
 
