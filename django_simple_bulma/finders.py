@@ -112,8 +112,8 @@ class SimpleBulmaFinder(BaseFinder):
 
             # Store this as a css file
             css_string = sass.compile(string=scss_string,
-                                    output_style=self.output_style,
-                                    include_paths=[simple_bulma_path.as_posix()])
+                                      output_style=self.output_style,
+                                      include_paths=[simple_bulma_path.as_posix()])
 
             theme_path = f"css/{theme + '_' if theme else ''}bulma.css"
             css_path = simple_bulma_path / theme_path
