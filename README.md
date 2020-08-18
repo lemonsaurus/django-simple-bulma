@@ -116,7 +116,7 @@ The optional `fontawesome_token` parameter allows you to specify your personal F
 ```
 Then your `fontawesome_token` should be **e761a01be3**.
 
-This is used by the `{% font_awesome %}` template tag to set up FontAwesome for you. If you don't specify a `fontawesome_token`, **the template tag will still work**, but will then use an older version of FontAwesome (v5.14.0). 
+This is used by the `{% font_awesome %}` template tag to set up FontAwesome for you. If you don't specify a `fontawesome_token`, **the template tag will still work**, but will then use an older version of FontAwesome (v5.14.0).
 
 Additional scripts
 ------------------

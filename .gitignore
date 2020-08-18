@@ -1,6 +1,7 @@
 *.pyc
 .idea
 .venv
+.vscode
 
 build/
 dist/*
