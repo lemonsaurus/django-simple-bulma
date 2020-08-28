@@ -17,8 +17,9 @@ else:
 simple_bulma_path = Path(__file__).resolve().parent
 
 # (Path, str) pairs describing a relative path in an extension and a glob pattern to search for
-sass_files_searchs = (
+sass_files_searches = (
     (Path("src/sass"), "_all.sass"),
+    (Path("src/sass"), "index.sass"),
     (Path("src/sass"), "*.sass"),
     (Path("src"), "*.s[ac]ss"),
     (Path("dist"), "*.sass"),
@@ -56,7 +57,7 @@ def get_js_files() -> Generator[str, None, None]:
 
 def get_sass_files(ext: Path) -> List[Path]:
     """Given the path to an extension, find and yield all files that should be imported"""
-    for rel_path, glob in sass_files_searchs:
+    for rel_path, glob in sass_files_searches:
         src_files = list((ext / rel_path).rglob(glob))
 
         for i, src in enumerate(src_files):
