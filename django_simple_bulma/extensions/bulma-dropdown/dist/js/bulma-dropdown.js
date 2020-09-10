@@ -1,4 +1,4 @@
-(function() {
+document.addEventListener('DOMContentLoaded', () => {
     function handle_event_wrapper(show, hide) {
         const handle_event = (e) => {
             if (show()) {
@@ -34,4 +34,4 @@
         element.addEventListener("click", handle_event_wrapper(show, hide));
         document.body.addEventListener("click", hide);
     }
-})();
+});
