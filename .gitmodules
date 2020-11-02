@@ -16,9 +16,6 @@
 [submodule "bulma-calendar"]
 	path = django_simple_bulma/extensions/bulma-calendar
 	url = https://github.com/Wikiki/bulma-calendar.git
-[submodule "bulma-tooltip"]
-	path = django_simple_bulma/extensions/bulma-tooltip
-	url = https://github.com/Wikiki/bulma-tooltip.git
 [submodule "bulma-quickview"]
 	path = django_simple_bulma/extensions/bulma-quickview
 	url = https://github.com/Wikiki/bulma-quickview.git
@@ -55,3 +52,6 @@
 [submodule "bulma-collapsible"]
 	path = django_simple_bulma/extensions/bulma-collapsible
 	url = https://github.com/CreativeBulma/bulma-collapsible.git
+[submodule "bulma-tooltip"]
+	path = django_simple_bulma/extensions/bulma-tooltip
+	url = https://github.com/creativebulma/bulma-tooltip.git
