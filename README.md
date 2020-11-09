@@ -6,7 +6,7 @@ django-simple-bulma
 
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.0**, and is automatically updated with every new release. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
+This project currently uses **Bulma v0.9.1**, and is automatically updated with every new release. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
 
 Installation
 ------------
