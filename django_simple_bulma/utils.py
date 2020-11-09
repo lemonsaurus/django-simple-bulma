@@ -1,15 +1,26 @@
 """Django Simple Bulma utilities. Ultimately helps ensure DRY code."""
 
+import logging
+import re
 from pathlib import Path
 from typing import Generator, List, Union
 
 from django.conf import settings
+
+# Captures any word characters before "_variables"
+# Basically equivalent to "\w+_variables"
+variables_name_re = re.compile(r"^(?P<name>\w+)_variables$")
+themes = []
 
 # If BULMA_SETTINGS has not been declared if no extensions
 # have been defined, default to all extensions.
 if hasattr(settings, "BULMA_SETTINGS"):
     extensions = settings.BULMA_SETTINGS.get("extensions", [])
     fontawesome_token = settings.BULMA_SETTINGS.get("fontawesome_token", "")
+    for key in settings.BULMA_SETTINGS:
+        match = variables_name_re.match(key)
+        if match:
+            themes.append(match.group("name"))
 else:
     extensions = []
     fontawesome_token = ""
@@ -27,6 +38,8 @@ sass_files_searches = (
     (Path("dist"), "*.css"),
     (Path(""), "*.s[ac]ss"),
 )
+
+logger = logging.getLogger("django-simple-bulma")
 
 
 def is_enabled(extension: Union[Path, str]) -> bool:

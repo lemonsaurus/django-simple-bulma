@@ -64,12 +64,21 @@ BULMA_SETTINGS = {
         "primary": "#000000",
         "size-1": "6rem",
     },
+    "alt_variables": {
+        "primary": "#fff",
+        "scheme-main": "#000",
+    },
     "output_style": "compressed",
     "fontawesome_token": "e761a01be3",
 }
 ```
 
 You may here define any variable found on the [Bulma variables](https://bulma.io/documentation/customize/variables/) page, and you may use any valid SASS or CSS as the value. For example, `hsl(217, 71%, 53%)` would be a valid value for a color variable, as would `#ffff00`. Please note that any syntactically incorrect values may prevent Bulma from building correctly, so be careful what you add here unless you know exactly what you're doing.
+
+#### Multiple themes
+If you want multiple different configurations of variables, then you should define them as separate themes. Define a new theme by providing a key that matches the regex `\w+_variables` (e.g. `alt_variables` or `dark_variables`), unique stylesheets will then be generated using the variables at that key.
+
+To use these stylesheets in a template, pass the theme name to the `{% bulma %}` tag either as a string `{% bulma 'alt' %}` or as a template variable `{% bulma theme %}`.
 
 #### Extensions
 If the `extensions` key is not found, it will default to not loading any extensions. If you want all extensions, simply set it to the string `"all"`.
