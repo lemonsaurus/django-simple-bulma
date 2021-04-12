@@ -122,7 +122,7 @@ For your convenience, we also give you the option to add other quality of life i
 * `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for mobile users. We use a slightly updated version of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) - simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should be expanded and collapsed by the button.
 * `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 * `bulma-dropdown` will open/close dropdowns using the `is-active` class. It mimics how the dropdowns function on the [documentation page](https://bulma.io/documentation/components/dropdown/#hoverable-or-toggable).
-* `bulma-modal` will handle opening and closing modals. Just assign the `modal-button` class to a `<button>`, and make sure it has a `data-target` attribute that matches the `id` of the modal that you want to open. See [the example code from Bulma's documentation](https://bulma.io/documentation/components/modal/) for modal element code. 
+* `bulma-modal` will handle opening and closing modals. Just assign the `modal-button` class to a `<button>`, and make sure it has a `data-target` attribute that matches the `id` of the modal that you want to open. See [the example code from Bulma's documentation](https://bulma.io/documentation/components/modal/) for modal element code.
 
 Compiling additional SCSS
 ------------------------

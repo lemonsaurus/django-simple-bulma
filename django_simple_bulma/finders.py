@@ -45,7 +45,7 @@ class SimpleBulmaFinder(BaseFinder):
         self.storage = FileSystemStorage(simple_bulma_path)
 
     def _get_extension_imports(self) -> str:
-        """Return a string that, in SASS, imports all enabled extensions"""
+        """Return a string that, in SASS, imports all enabled extensions."""
         scss_imports = ""
 
         for ext in (simple_bulma_path / "extensions").iterdir():
@@ -57,7 +57,7 @@ class SimpleBulmaFinder(BaseFinder):
         return scss_imports
 
     def _unpack_variables(self, variables: dict) -> str:
-        """Unpacks SASS variables from a dictionary to a compilable string"""
+        """Unpacks SASS variables from a dictionary to a compilable string."""
         scss_string = ""
         for var, value in variables.items():
             scss_string += f"${var}: {value};\n"

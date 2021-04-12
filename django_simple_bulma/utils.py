@@ -43,7 +43,7 @@ logger = logging.getLogger("django-simple-bulma")
 
 
 def is_enabled(extension: Union[Path, str]) -> bool:
-    """Return whether an extension is enabled or not"""
+    """Return whether an extension is enabled or not."""
     if isinstance(extension, Path):
         return extensions == "all" or extension.name in extensions
     return extensions == "all" or extension in extensions
@@ -69,7 +69,7 @@ def get_js_files() -> Generator[str, None, None]:
 
 
 def get_sass_files(ext: Path) -> List[Path]:
-    """Given the path to an extension, find and yield all files that should be imported"""
+    """Given the path to an extension, find and yield all files that should be imported."""
     for rel_path, glob in sass_files_searches:
         src_files = list((ext / rel_path).rglob(glob))
 
