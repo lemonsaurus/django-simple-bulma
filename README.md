@@ -2,7 +2,7 @@ django-simple-bulma
 ===================
 `django-simple-bulma` is a Django application that makes [Bulma](https://bulma.io) and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.1**, and is automatically updated with every new release. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
+This project currently uses **Bulma v0.9.2**, and is automatically updated with every new release. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
 
 Installation
 ------------
@@ -122,6 +122,7 @@ For your convenience, we also give you the option to add other quality of life i
 * `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for mobile users. We use a slightly updated version of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) - simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should be expanded and collapsed by the button.
 * `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/) by clicking on the X button.
 * `bulma-dropdown` will open/close dropdowns using the `is-active` class. It mimics how the dropdowns function on the [documentation page](https://bulma.io/documentation/components/dropdown/#hoverable-or-toggable).
+* `bulma-modal` will handle opening and closing modals. Just assign the `modal-button` class to a `<button>`, and make sure it has a `data-target` attribute that matches the `id` of the modal that you want to open. See [the example code from Bulma's documentation](https://bulma.io/documentation/components/modal/) for modal element code.
 
 Compiling additional SCSS
 ------------------------
