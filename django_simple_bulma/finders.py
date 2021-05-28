@@ -44,7 +44,14 @@ class SimpleBulmaFinder(BaseFinder):
         self.output_style = self.bulma_settings.get("output_style", "nested")
         self.storage = FileSystemStorage(simple_bulma_path)
 
-    def _get_extension_imports(self) -> str:
+        # Make a list of all the finders except this one.
+        # We use this in the custom SCSS handler.
+        other_finders = settings.STATICFILES_FINDERS.copy()
+        other_finders.remove("django_simple_bulma.finders.SimpleBulmaFinder")
+        self.other_finders = [get_finder(finder) for finder in other_finders]
+
+    @staticmethod
+    def _get_extension_imports() -> str:
         """Return a string that, in SASS, imports all enabled extensions."""
         scss_imports = ""
 
@@ -56,12 +63,34 @@ class SimpleBulmaFinder(BaseFinder):
 
         return scss_imports
 
-    def _unpack_variables(self, variables: dict) -> str:
+    @staticmethod
+    def _unpack_variables(variables: dict) -> str:
         """Unpacks SASS variables from a dictionary to a compilable string."""
         scss_string = ""
         for var, value in variables.items():
             scss_string += f"${var}: {value};\n"
         return scss_string
+
+    @staticmethod
+    def _get_bulma_js() -> List[str]:
+        """Return a list of all the js files that are needed for the users selected extensions."""
+        return list(get_js_files())
+
+    @staticmethod
+    def find_relative_staticfiles(path: Union[str, Path]) -> Union[Path, None]:
+        """
+        Returns a given path, relative to one of the paths in STATICFILES_DIRS.
+
+        Returns None if the given path isn't available within STATICFILES_DIRS.
+        """
+        if not isinstance(path, Path):
+            path = Path(abspath(path))
+
+        for directory in settings.STATICFILES_DIRS:
+            directory = Path(abspath(directory))
+
+            if directory in path.parents:
+                return path.relative_to(directory)
 
     def _get_bulma_css(self) -> List[str]:
         """Compiles the bulma css files for each theme and returns their relative paths."""
@@ -132,12 +161,8 @@ class SimpleBulmaFinder(BaseFinder):
             relative_path = scss_path.split("static/", 1)[-1]
 
             # Check that we can find this file with one of the other finders.
-            other_finders = settings.STATICFILES_FINDERS
-            other_finders.remove("django_simple_bulma.finders.SimpleBulmaFinder")
-            other_finders = [get_finder(finder) for finder in other_finders]
             absolute_path = None
-
-            for finder in other_finders:
+            for finder in self.other_finders:
                 if absolute_path := finder.find(relative_path):
                     break
 
@@ -171,26 +196,6 @@ class SimpleBulmaFinder(BaseFinder):
             paths.append(f"{relative_path.parent}/{relative_path.stem}.css")
 
         return paths
-
-    def _get_bulma_js(self) -> List[str]:
-        """Return a list of all the js files that are needed for the users selected extensions."""
-        return list(get_js_files())
-
-    @staticmethod
-    def find_relative_staticfiles(path: Union[str, Path]) -> Union[Path, None]:
-        """
-        Returns a given path, relative to one of the paths in STATICFILES_DIRS.
-
-        Returns None if the given path isn't available within STATICFILES_DIRS.
-        """
-        if not isinstance(path, Path):
-            path = Path(abspath(path))
-
-        for directory in settings.STATICFILES_DIRS:
-            directory = Path(abspath(directory))
-
-            if directory in path.parents:
-                return path.relative_to(directory)
 
     def find(self, path: str, all: bool = False) -> Union[List[str], str]:
         """
