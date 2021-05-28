@@ -128,32 +128,41 @@ class SimpleBulmaFinder(BaseFinder):
         paths = []
 
         for scss_path in self.custom_scss:
-            # Check that we can process this
-            relative_path = self.find_relative_staticfiles(scss_path)
+            # Simplify the path to be only the relative path, if they've included the whole thing.
+            relative_path = scss_path.split("static/", 1)[-1]
 
-            if relative_path is None:
-                if "static/" in scss_path:
-                    relative_path = Path(scss_path.split("static/", 1)[-1])
-                else:
-                    raise ValueError(
-                        "We couldn't figure out where the static directory for the given SCSS "
-                        f"path is: \"{scss_path}\". If the given path doesn't contain "
-                        "\"static/\", then you may need to add it to your STATICFILES_DIRS "
-                        "setting."
-                    )
+            # Check that we can find this file with one of the other finders.
+            other_finders = settings.STATICFILES_FINDERS
+            other_finders.remove("django_simple_bulma.finders.SimpleBulmaFinder")
+            other_finders = [get_finder(finder) for finder in other_finders]
+            absolute_path = None
 
-            # SASS wants paths with forward slash:
-            scss_path = str(scss_path).replace("\\", "/")
+            for finder in other_finders:
+                if absolute_path := finder.find(relative_path):
+                    break
+
+            # Raise an error if we can't find it.
+            if absolute_path is None:
+                raise ValueError(
+                    f"Unable to locate the SCSS file \"{scss_path}\". Make sure the file exists, "
+                    "and ensure that one of the other configured Finders are able to locate it. \n"
+                    "See https://docs.djangoproject.com/en/3.2/ref/contrib/staticfiles/ for more "
+                    "information about how static files are discovered."
+                )
+
+            # Prepare the paths. SASS wants forwardslash string, the rest needs a Path.
+            absolute_path = str(absolute_path).replace("\\", "/")
+            relative_path = Path(relative_path)
 
             # Now load up the scss file
-            scss_string = f'@import "{scss_path}";'
+            scss_string = f'@import "{absolute_path}";'
 
             # Store this as a css file - we don't check and raise here because it would have
             # already happened earlier, during the Bulma compilation
             css_string = sass.compile(string=scss_string, output_style=self.output_style)
 
             css_path = simple_bulma_path / relative_path.parent
-            css_path.mkdir(exist_ok=True)
+            css_path.mkdir(parents=True, exist_ok=True)
             css_path = f"{css_path}/{relative_path.stem}.css"
 
             with open(css_path, "w") as css_file:

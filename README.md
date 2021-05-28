@@ -124,34 +124,36 @@ For your convenience, we also give you the option to add other quality of life i
 * `bulma-dropdown` will open/close dropdowns using the `is-active` class. It mimics how the dropdowns function on the [documentation page](https://bulma.io/documentation/components/dropdown/#hoverable-or-toggable).
 * `bulma-modal` will handle opening and closing modals. Just assign the `modal-button` class to a `<button>`, and make sure it has a `data-target` attribute that matches the `id` of the modal that you want to open. See [the example code from Bulma's documentation](https://bulma.io/documentation/components/modal/) for modal element code.
 
-Compiling additional SCSS
+Compiling custom SCSS
 ------------------------
 
-If you're writing custom SCSS for your application, `django-simple-bulma` does provide a very basic mechanism for compiling
-it for you. This is provided because, currently, `django-simple-bulma` will cause issues with current Django apps that exist
+If you're writing custom SCSS for your application, `django-simple-bulma` provides a mechanism for compiling
+it for you. This is provided mainly because `django-simple-bulma` may cause conflicts and issues with other tools
 to compile SCSS for you.
 
 To use this feature, please specify the `custom_css` key when defining your `BULMA_SETTINGS`. This should be a list
-of strings, containing relative paths to `.scss` files to be compiled.
+of strings, containing _relative paths_ to `.scss` files to be compiled.
 
 ```python
 BULMA_SETTINGS = {
     "custom_scss": [
-        "myapp/static/css/base/base.scss"
+        "css/base/base.scss",                  # This is okay
+        "my_app/static/css/base/base.scss",    # This also is okay
+        "C:\Users\MainDawg\my_app\static\..."  # Don't do this, though.
     ],
 }
 ```
 
-**Please note**: The default Django behavior when collecting static files is to keep the containing file structure for
-them when they're copied over to the final static files directory. We attempt to do the same thing by parsing the given
-path to your `.scss` file, using the following strategy:
+The default Django behavior when collecting static files is to keep the containing file structure for
+them when they're copied over to the final staticfiles directory. We do the same thing, so all directories and 
+subdirectories will still be intact in your staticfiles folder after they've been collected.
 
-* If a containing path exists in the `STATICFILES_DIRS` setting, assume that this is the base path to use, and the
-  directory structure below it will be used to contain the resulting `.css` file
-* Otherwise, if the path contains `static/`, assume that the base path ends there and use the rest of the path
-  below it to contain the resulting `.css` file.
-
-If both of these strategies fail to figure out what base path to use, an exception will be raised.
+Here's the strategy the finder uses:
+* If your path contains `static/`, assume that the base path ends there and use the rest of the path as a relative 
+  path to the resource. 
+* Use whatever Finders you have enabled in your `settings.py` to search for the file using that relative path.
+* If the path is found using one of these Finders, compile it to css and collect it.
+* Otherwise, raise a `ValueException` asking you to double-check the filepath.
 
 Troubleshooting
 ---------------
