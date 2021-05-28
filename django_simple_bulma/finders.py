@@ -10,7 +10,7 @@ from typing import List, Tuple, Union
 
 import sass
 from django.conf import settings
-from django.contrib.staticfiles.finders import BaseFinder
+from django.contrib.staticfiles.finders import BaseFinder, get_finder
 from django.core.files.storage import FileSystemStorage
 
 from .utils import (
