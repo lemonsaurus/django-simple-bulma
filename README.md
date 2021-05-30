@@ -220,4 +220,4 @@ Troubleshooting
 
 If you run into any other problems with this app,
 please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and I'll will be happy to help
-you with it. You can also find me at at https://discord.gg/python as `lemon#0001`.
+you with it. You can also find me on Discord as `lemon#0001` - either at [#django-simple-bulma in the lemonsaurus discord](https://discord.gg/Rk5DAZvwfZ) or at https://discord.gg/python.
