@@ -111,24 +111,24 @@ set it to the string `"all"`.
 
 We currently support these extensions:
 
-- bulma-badge
-- bulma-calendar
-- bulma-carousel
-- bulma-collapsible
-- bulma-checkradio
-- bulma-divider
-- bulma-megamenu
-- bulma-pageloader
-- bulma-pricingtable
-- bulma-quickview
-- bulma-ribbon
-- bulma-slider
-- bulma-steps
-- bulma-switch
-- bulma-tagsinput
-- bulma-timeline
-- bulma-tooltip
-- bulma-coolcheckboxes (Cool-Checkboxes-for-Bulma.io)
+- [bulma-badge](https://github.com/CreativeBulma/bulma-badge/)
+- [bulma-calendar](https://github.com/Wikiki/bulma-calendar)
+- [bulma-carousel](https://github.com/Wikiki/bulma-carousel)
+- [bulma-collapsible](https://github.com/CreativeBulma/bulma-collapsible)
+- [bulma-checkradio](https://github.com/Wikiki/bulma-checkradio)
+- [bulma-divider](https://github.com/CreativeBulma/bulma-divider)
+- [bulma-megamenu](https://github.com/hunzaboy/bulma-megamenu)
+- [bulma-pageloader](https://github.com/Wikiki/bulma-pageloader)
+- [bulma-pricingtable](https://github.com/Wikiki/bulma-pricingtable)
+- [bulma-quickview](https://github.com/Wikiki/bulma-quickview)
+- [bulma-ribbon](https://github.com/Wikiki/bulma-ribbon)
+- [bulma-slider](https://github.com/Wikiki/bulma-slider)
+- [bulma-steps](https://github.com/Wikiki/bulma-steps)
+- [bulma-switch](https://github.com/Wikiki/bulma-switch)
+- [bulma-tagsinput](https://github.com/CreativeBulma/bulma-tagsinput)
+- [bulma-timeline](https://github.com/Wikiki/bulma-timeline)
+- [bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)
+- [bulma-coolcheckboxes (Cool-Checkboxes-for-Bulma.io)](https://github.com/hunzaboy/Cool-Checkboxes-for-Bulma.io)
 
 If an extension you want to use is missing, feel free
 to [create an issue](https://github.com/python-discord/django-simple-bulma/issues) and we will be happy to add it.
