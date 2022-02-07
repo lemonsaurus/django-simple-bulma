@@ -30,7 +30,7 @@ def bulma(theme: str = "") -> SafeString:
     css = static(f"css/{theme + '_' if theme else ''}bulma.css")
     html = [
         f'<link rel="preload" href="{css}" as="style">',
-        f'<link rel="stylesheet" href="{css}">',
+        f'<link rel="stylesheet" href="{css}" id="bulma-css-{theme or "default"}">',
     ]
 
     # Build html to include all the js files required.
