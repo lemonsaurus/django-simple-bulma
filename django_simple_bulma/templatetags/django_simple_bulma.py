@@ -28,9 +28,11 @@ def bulma(theme: str = "") -> SafeString:
 
     # Build the html to include the stylesheet
     css = static(f"css/{theme + '_' if theme else ''}bulma.css")
+    stylesheet_id = f"bulma-css-{theme}" if theme else "bulma-css"
+
     html = [
         f'<link rel="preload" href="{css}" as="style">',
-        f'<link rel="stylesheet" href="{css}">',
+        f'<link rel="stylesheet" href="{css}" id="{stylesheet_id}">',
     ]
 
     # Build html to include all the js files required.
