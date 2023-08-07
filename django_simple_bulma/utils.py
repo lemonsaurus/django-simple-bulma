@@ -26,6 +26,10 @@ else:
     fontawesome_token = ""
 
 simple_bulma_path = Path(__file__).resolve().parent
+collapsible_runner_path = (
+    simple_bulma_path / "extensions" /
+    "bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+)
 
 # (Path, str) pairs describing a relative path in an extension and a glob pattern to search for
 sass_files_searches = (
@@ -72,9 +76,8 @@ def get_js_files() -> Generator[str, None, None]:
             extensions.append(ext.name)
 
     # If we've got only bulma-collapsible, we need the runner, too.
-    if "bulma-collapsible" in extensions and not "bulma-collapsible-runner" in extensions:
-        yield simple_bulma_path / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
-
+    if "bulma-collapsible" in extensions and "bulma-collapsible-runner" not in extensions:
+        yield collapsible_runner_path
 
 
 def get_sass_files(ext: Path) -> List[Path]:
