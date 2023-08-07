@@ -52,6 +52,7 @@ def is_enabled(extension: Union[Path, str]) -> bool:
 def get_js_files() -> Generator[str, None, None]:
     """Yield all the js files that are needed for the users selected extensions."""
     # For every extension...
+    extensions = []
     for ext in (simple_bulma_path / "extensions").iterdir():
         # ...check if it is enabled...
         if is_enabled(ext):
@@ -66,6 +67,14 @@ def get_js_files() -> Generator[str, None, None]:
                 next(dist_folder.rglob("*.js"), None)
             if js_file:
                 yield js_file.relative_to(simple_bulma_path).as_posix()
+
+            # Add the name of the extension to the list of enabled extensions
+            extensions.append(ext.name)
+
+    # If we've got only bulma-collapsible, we need the runner, too.
+    if "bulma-collapsible" in extensions and not "bulma-collapsible-runner" in extensions:
+        yield simple_bulma_path / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+
 
 
 def get_sass_files(ext: Path) -> List[Path]:
