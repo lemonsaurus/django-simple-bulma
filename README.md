@@ -103,7 +103,7 @@ stylesheets will then be generated using the variables at that key.
 
 To use these stylesheets in a template, pass the theme name to the `{% bulma %}` tag either as a
 string `{% bulma 'alt' %}` or as a template variable `{% bulma theme %}`. When calling the `bulma` template
-more than once in the same document (for example for implementing a dark theme switch), you will want to pass `include_js=False` to 
+more than once in the same document (for example for implementing a dark theme switch), you will want to pass `include_js=False` to
 at least one of these to prevent duplicate loading of JavaScript resources.
 
 #### Extensions
