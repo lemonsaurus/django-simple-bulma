@@ -27,8 +27,8 @@ else:
 
 simple_bulma_path = Path(__file__).resolve().parent
 collapsible_runner_path = (
-    simple_bulma_path / "extensions" /
-    "bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+    simple_bulma_path / "extensions"
+    "/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
 )
 
 # (Path, str) pairs describing a relative path in an extension and a glob pattern to search for
