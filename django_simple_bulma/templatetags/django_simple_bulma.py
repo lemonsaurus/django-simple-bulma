@@ -12,8 +12,20 @@ register = template.Library()
 
 
 @register.simple_tag
-def bulma(theme: str = "") -> SafeString:
-    """Build static files required for Bulma."""
+def bulma(theme: str = "", *, include_js: bool = True) -> SafeString:
+    """Build static files required for Bulma.
+
+    Parameters:
+        theme:
+            CSS theme to load. If the given theme can not be found, a warning
+            will be logged and the library will fall back to the default theme.
+
+    Keyword arguments:
+        include_js:
+            Whether to include directives to load Bulma's JavaScript resources
+            in the result. Useful to prevent duplicate loading of JS when
+            calling this tag more than once on the same resource.
+    """
     from ..utils import (
         get_js_files,
         logger,
@@ -36,8 +48,9 @@ def bulma(theme: str = "") -> SafeString:
     ]
 
     # Build html to include all the js files required.
-    for js_file in map(static, get_js_files()):
-        html.append(f'<script defer type="text/javascript" src="{js_file}"></script>')
+    if include_js:
+        for js_file in map(static, get_js_files()):
+            html.append(f'<script defer type="text/javascript" src="{js_file}"></script>')
 
     return mark_safe("\n".join(html))
 
