@@ -64,7 +64,7 @@ you might also want to import FontAwesome by using `{% font_awesome %}`.
 Customization
 -------------
 Bulma looks nice by default, but most users will want to customize its look and feel. For this, we've provided a super
-simple way to change the [Bulma variables](https://bulma.io/documentation/customize/variables/) and to choose
+simple way to change the [Bulma variables](https://bulma.io/documentation/customize/list-of-sass-variables/) and to choose
 which [Bulma extensions](https://wikiki.github.io/) you want to load into your project.
 
 In order to do this, we'll simply create a dictionary inside your `settings.py` called `BULMA_SETTINGS`, and configure
