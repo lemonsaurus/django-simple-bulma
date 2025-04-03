@@ -4,7 +4,7 @@ django-simple-bulma
 and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as
 possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.2**, and is automatically updated with every new release. If a new version has
+This project currently uses **Bulma v0.9.4**, and is automatically updated with every new release. If a new version has
 come out with features you'd like to make use of,
 please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a
 release to update it.
