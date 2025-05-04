@@ -197,7 +197,7 @@ class SimpleBulmaFinder(BaseFinder):
 
         return paths
 
-    def find(self, path: str, all: bool = False) -> Union[List[str], str]:
+    def find(self, path: str, find_all: bool = False, **kwargs: any) -> Union[List[str], str]:
         """
         Given a relative file path, find an absolute file path.
 
@@ -206,9 +206,7 @@ class SimpleBulmaFinder(BaseFinder):
         """
         absolute_path = str(simple_bulma_path / path)
 
-        if all:
-            return [absolute_path]
-        return absolute_path
+        return [absolute_path] if find_all else absolute_path
 
     def list(self, _: List[str]) -> Tuple[str, FileSystemStorage]:
         """Return a two item iterable consisting of the relative path and storage instance."""
