@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v5.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
@@ -8,15 +8,10 @@ repos:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
   - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.5.1
+    rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
-  - repo: local
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.2.0
     hooks:
       - id: flake8
-        name: Flake8
-        description: This hook runs flake8 in the active python environment.
-        entry: flake8
-        language: python
-        types: [python]
-        require_serial: true
