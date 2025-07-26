@@ -197,16 +197,19 @@ class SimpleBulmaFinder(BaseFinder):
 
         return paths
 
-    def find(self, path: str, all: bool = False) -> Union[List[str], str]:
+    def find(self, path: str, find_all: bool = False, all: bool = False) -> Union[List[str], str]:
         """
         Given a relative file path, find an absolute file path.
 
-        If the ``all`` parameter is False (default) return only the first found
-        file path; if True, return a list of all found files paths.
+        Django 5.2 uses the ``find_all` instead of the ``all`` keyword argument.
+
+        If the ``find_all`` or ``all`` parameter is False (default) return only
+        the first found file path; if True, return a list of all found files
+        paths.
         """
         absolute_path = str(simple_bulma_path / path)
 
-        if all:
+        if find_all or all:
             return [absolute_path]
         return absolute_path
 
