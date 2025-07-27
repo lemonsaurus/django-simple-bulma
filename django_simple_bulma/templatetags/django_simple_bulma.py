@@ -65,7 +65,6 @@ def font_awesome() -> SafeString:
     If none is provided, default to version 5.14.0
     """
     from django.conf import settings
-    
     # Get fontawesome_token dynamically to support override_settings in tests
     try:
         if hasattr(settings, "BULMA_SETTINGS"):
@@ -74,7 +73,6 @@ def font_awesome() -> SafeString:
             fontawesome_token = ""
     except Exception:
         fontawesome_token = ""
-        
     if fontawesome_token:
         cdn_link = (
             '<link rel="preload" '

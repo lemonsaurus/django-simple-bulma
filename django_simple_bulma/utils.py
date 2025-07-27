@@ -46,6 +46,7 @@ def get_themes() -> list:
         pass
     return themes
 
+
 # (Path, str) pairs describing a relative path in an extension and a glob pattern to search for
 sass_files_searches = (
     (Path("src/sass"), "_all.sass"),
@@ -71,7 +72,7 @@ def is_enabled(extension: Union[Path, str]) -> bool:
             current_extensions = []
     except Exception:
         current_extensions = []
-    
+
     if isinstance(extension, Path):
         return current_extensions == "all" or extension.name in current_extensions
     return current_extensions == "all" or extension in current_extensions
@@ -100,10 +101,12 @@ def get_js_files() -> Generator[str, None, None]:
             extensions.append(ext.name)
 
     # If we've got only bulma-collapsible, we need the runner, too.
-    if "bulma-collapsible" in extensions and not "bulma-collapsible-runner" in extensions:
-        runner_js = simple_bulma_path / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+    if "bulma-collapsible" in extensions and "bulma-collapsible-runner" not in extensions:
+        runner_js = (
+            simple_bulma_path
+            / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+        )
         yield runner_js.relative_to(simple_bulma_path).as_posix()
-
 
 
 def get_sass_files(ext: Path) -> List[Path]:
