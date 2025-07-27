@@ -17,8 +17,21 @@ jobs:
         submodules: recursive
         token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Check if PR already updates submodules
+      id: pr_check
+      run: |
+        # Check if this PR already contains submodule updates
+        if git diff origin/main...HEAD --name-only | grep -E '\.(gitmodules|extensions)' > /dev/null; then
+          echo "pr_updates_submodules=true" >> $GITHUB_OUTPUT
+          echo "This PR already updates submodules - skipping check"
+        else
+          echo "pr_updates_submodules=false" >> $GITHUB_OUTPUT
+          echo "PR does not update submodules - checking for available updates"
+        fi
+
     - name: Check for available submodule updates
       id: check
+      if: steps.pr_check.outputs.pr_updates_submodules == 'false'
       run: |
         # Update submodules to see what's available (without committing)
         git submodule update --recursive --remote
@@ -41,14 +54,14 @@ jobs:
         fi
         
     - name: Comment on PR if updates needed
-      if: steps.check.outputs.needs_update == 'true'
+      if: steps.pr_check.outputs.pr_updates_submodules == 'false' && steps.check.outputs.needs_update == 'true'
       uses: actions/github-script@v7
       with:
         script: |
           const commands = `${{ steps.check.outputs.commands }}`;
-          const body = `## 🔄 Submodule Updates Available
+          const body = `## 🔄 Submodule Updates Required
           
-          This PR can be updated to use the latest versions of git submodules.
+          This PR must be updated to use the latest versions of git submodules before it can be merged.
           
           **To update submodules, run these commands:**
           \`\`\`bash
@@ -63,3 +76,10 @@ jobs:
             repo: context.repo.repo,
             body: body
           });
+
+    - name: Fail CI if submodule updates are needed
+      if: steps.pr_check.outputs.pr_updates_submodules == 'false' && steps.check.outputs.needs_update == 'true'
+      run: |
+        echo "❌ Submodule updates are required before this PR can be merged."
+        echo "Please run the commands provided in the PR comment to update submodules."
+        exit 1
