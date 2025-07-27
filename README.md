@@ -4,7 +4,7 @@ django-simple-bulma
 and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as
 possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.4**, and is automatically updated with every new release. If a new version has
+This project currently uses **Bulma v1.0+**, and is automatically updated with every new release. If a new version has
 come out with features you'd like to make use of,
 please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a
 release to update it.
@@ -74,8 +74,8 @@ it there. Here's an example of what that looks like:
 # Custom settings for django-simple-bulma
 BULMA_SETTINGS = {
   "extensions": [
-    "bulma-collapsible",
     "bulma-calendar",
+    "bulma-tooltip",
   ],
   "variables": {
     "primary": "#000000",
@@ -111,26 +111,12 @@ at least one of these to prevent duplicate loading of JavaScript resources.
 If the `extensions` key is not found, it will default to not loading any extensions. If you want all extensions, simply
 set it to the string `"all"`.
 
-We currently support these extensions:
+We currently support these actively maintained extensions compatible with Bulma 1.0+:
 
-- [bulma-badge](https://github.com/CreativeBulma/bulma-badge/)
-- [bulma-calendar](https://github.com/Wikiki/bulma-calendar)
-- [bulma-carousel](https://github.com/Wikiki/bulma-carousel)
-- [bulma-collapsible](https://github.com/CreativeBulma/bulma-collapsible)
-- [bulma-checkradio](https://github.com/Wikiki/bulma-checkradio)
-- [bulma-divider](https://github.com/CreativeBulma/bulma-divider)
-- [bulma-megamenu](https://github.com/hunzaboy/bulma-megamenu)
-- [bulma-pageloader](https://github.com/Wikiki/bulma-pageloader)
-- [bulma-pricingtable](https://github.com/Wikiki/bulma-pricingtable)
-- [bulma-quickview](https://github.com/Wikiki/bulma-quickview)
-- [bulma-ribbon](https://github.com/Wikiki/bulma-ribbon)
-- [bulma-slider](https://github.com/Wikiki/bulma-slider)
-- [bulma-steps](https://github.com/Wikiki/bulma-steps)
-- [bulma-switch](https://github.com/Wikiki/bulma-switch)
-- [bulma-tagsinput](https://github.com/CreativeBulma/bulma-tagsinput)
-- [bulma-timeline](https://github.com/Wikiki/bulma-timeline)
-- [bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)
-- [bulma-coolcheckboxes (Cool-Checkboxes-for-Bulma.io)](https://github.com/hunzaboy/Cool-Checkboxes-for-Bulma.io)
+- [bulma-calendar](https://github.com/michael-hack/bulma-calendar) - Calendar and datepicker components
+- [bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip) - Tooltip components
+
+**Note**: As of this version, we have streamlined our extension support to focus only on actively maintained, Bulma 1.0+ compatible extensions. Many of the previously supported extensions are no longer maintained or compatible with modern Bulma versions.
 
 If an extension you want to use is missing, feel free
 to [create an issue](https://github.com/python-discord/django-simple-bulma/issues) and we will be happy to add it.
