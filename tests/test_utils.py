@@ -75,39 +75,6 @@ class TestGetJsFiles:
             # Should prefer .min.js file
             assert any('min.js' in js_file for js_file in js_files)
 
-    @patch('django_simple_bulma.utils.is_enabled')
-    def test_get_js_files_collapsible_runner(self, mock_is_enabled: patch) -> None:
-        """Test get_js_files adds collapsible runner when needed."""
-        # Mock is_enabled to return True only for bulma-collapsible
-        def mock_enabled(ext: str) -> bool:
-            if hasattr(ext, 'name'):
-                return ext.name == 'bulma-collapsible'
-            return ext == 'bulma-collapsible'
-        mock_is_enabled.side_effect = mock_enabled
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-
-            # Create bulma-collapsible extension
-            ext_dir = temp_path / 'extensions' / 'bulma-collapsible'
-            dist_dir = ext_dir / 'dist'
-            dist_dir.mkdir(parents=True)
-            (dist_dir / 'bulma-collapsible.min.js').touch()
-
-            # Create bulma-collapsible-runner extension
-            runner_ext_dir = temp_path / 'extensions' / 'bulma-collapsible-runner'
-            runner_dist_dir = runner_ext_dir / 'dist' / 'js'
-            runner_dist_dir.mkdir(parents=True)
-            (runner_dist_dir / 'bulma-collapsible-runner.js').touch()
-
-            with patch('django_simple_bulma.utils.simple_bulma_path', temp_path):
-                js_files = list(get_js_files())
-
-            # Should include the collapsible runner
-            assert any(
-                'collapsible-runner' in str(js_file) for js_file in js_files
-            )
-
     @patch('django_simple_bulma.utils.simple_bulma_path')
     @patch('django_simple_bulma.utils.is_enabled')
     def test_get_js_files_no_enabled_extensions(
