@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout the repo and the submodules.
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -27,7 +27,7 @@ jobs:
         python setup.py sdist bdist_wheel
 
     - name: Publish package
-      uses: pypa/gh-action-pypi-publish@v1.4.1
+      uses: pypa/gh-action-pypi-publish@v1.12.2
       with:
         user: __token__
         password: ${{ secrets.PYPI_TOKEN }}
