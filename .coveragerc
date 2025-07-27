@@ -1,0 +1,19 @@
+[run]
+source = django_simple_bulma
+omit = 
+    */migrations/*
+    */venv/*
+    */env/*
+    tests/*
+    setup.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+[html]
+directory = htmlcov

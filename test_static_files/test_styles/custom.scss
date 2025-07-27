@@ -1,0 +1,23 @@
+/* Test custom SCSS file for integration tests */
+
+$test-color: #ff6b6b;
+
+.test-custom-class {
+    color: $test-color;
+    font-size: 18px;
+    
+    &:hover {
+        color: darken($test-color, 10%);
+    }
+    
+    .nested-element {
+        background-color: lighten($test-color, 30%);
+        padding: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .test-custom-class {
+        font-size: 16px;
+    }
+}
