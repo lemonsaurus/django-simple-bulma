@@ -1,6 +1,6 @@
 [run]
 source = django_simple_bulma
-omit = 
+omit =
     */migrations/*
     */venv/*
     */env/*
