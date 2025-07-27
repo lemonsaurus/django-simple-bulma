@@ -1,4 +1,4 @@
-name: Lint and Test
+name: Lint
 on:
   push:
     branches: [main]
@@ -33,5 +33,3 @@ jobs:
           pip install .[dev]
       - name: Run pre-commit hooks
         run: pre-commit run --all-files
-      - name: Run tests
-        run: pytest -v

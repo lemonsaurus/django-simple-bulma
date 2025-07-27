@@ -1,5 +1,6 @@
 [run]
 source = django_simple_bulma
+relative_files = true
 omit =
     */migrations/*
     */venv/*
