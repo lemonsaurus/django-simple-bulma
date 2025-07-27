@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Generator, List, Union
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 # Captures any word characters before "_variables"
 # Basically equivalent to "\w+_variables"
@@ -25,7 +26,7 @@ try:
     else:
         extensions = []
         fontawesome_token = ""
-except Exception:
+except (ImproperlyConfigured, AttributeError):
     # Django settings not configured yet (e.g., during testing)
     extensions = []
     fontawesome_token = ""
@@ -42,7 +43,7 @@ def get_themes() -> list:
                 match = variables_name_re.match(key)
                 if match:
                     themes.append(match.group("name"))
-    except Exception:
+    except (ImproperlyConfigured, AttributeError):
         pass
     return themes
 
@@ -70,7 +71,7 @@ def is_enabled(extension: Union[Path, str]) -> bool:
             current_extensions = settings.BULMA_SETTINGS.get("extensions", [])
         else:
             current_extensions = []
-    except Exception:
+    except (ImproperlyConfigured, AttributeError):
         current_extensions = []
 
     if isinstance(extension, Path):
