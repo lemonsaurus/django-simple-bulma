@@ -29,8 +29,9 @@ def bulma(theme: str = "", *, include_js: bool = True) -> SafeString:
     from ..utils import (
         get_js_files,
         logger,
-        themes,
+        get_themes,
     )
+    themes = get_themes()
     if theme and theme not in themes:
         logger.warning(
             f"Theme '{theme}' does not match any of the detected themes: {', '.join(themes)}. "

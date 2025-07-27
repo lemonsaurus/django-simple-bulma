@@ -32,6 +32,20 @@ except Exception:
 
 simple_bulma_path = Path(__file__).resolve().parent
 
+
+def get_themes() -> list:
+    """Get the list of available themes dynamically."""
+    themes = []
+    try:
+        if hasattr(settings, "BULMA_SETTINGS"):
+            for key in settings.BULMA_SETTINGS:
+                match = variables_name_re.match(key)
+                if match:
+                    themes.append(match.group("name"))
+    except Exception:
+        pass
+    return themes
+
 # (Path, str) pairs describing a relative path in an extension and a glob pattern to search for
 sass_files_searches = (
     (Path("src/sass"), "_all.sass"),

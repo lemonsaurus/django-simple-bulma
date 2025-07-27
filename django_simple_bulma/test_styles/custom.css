@@ -1,0 +1,5 @@
+.custom-class {
+  color: red;
+  font-size: 16px; }
+  .custom-class .nested {
+    background: blue; }

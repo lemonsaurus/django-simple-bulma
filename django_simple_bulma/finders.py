@@ -16,9 +16,9 @@ from django.core.files.storage import FileSystemStorage
 from .utils import (
     get_js_files,
     get_sass_files,
+    get_themes,
     is_enabled,
     simple_bulma_path,
-    themes,
 )
 
 
@@ -127,6 +127,7 @@ class SimpleBulmaFinder(BaseFinder):
         # Generate SASS strings for each theme
         # The default theme is treated as ""
         theme_paths = []
+        themes = get_themes()
         for theme in [""] + themes:
             scss_string = "@charset 'utf-8';\n"
 
@@ -163,7 +164,9 @@ class SimpleBulmaFinder(BaseFinder):
             # Check that we can find this file with one of the other finders.
             absolute_path = None
             for finder in self.other_finders:
-                if absolute_path := finder.find(relative_path):
+                found_path = finder.find(relative_path)
+                if found_path and found_path != []:  # Ensure it's not empty list
+                    absolute_path = found_path
                     break
 
             # Raise an error if we can't find it.

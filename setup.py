@@ -57,6 +57,7 @@ setup(
             "pytest>=7.0,<9.0",
             "pytest-django>=4.5,<5.0",
             "pytest-mock>=3.6,<4.0",
+            "coverage[toml]>=6.0,<8.0",
         ]
     },
     include_package_data=True,

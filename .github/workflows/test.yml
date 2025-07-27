@@ -59,9 +59,10 @@ jobs:
           coverage report --show-missing
           coverage xml
 
-      - name: Upload coverage to codecov
-        if: matrix.python-version == '3.9' && matrix.django-version == '4.2'
-        uses: codecov/codecov-action@v4
+      - name: Comment coverage on PR
+        if: github.event_name == 'pull_request' && matrix.python-version == '3.9' && matrix.django-version == '4.2'
+        uses: py-cov-action/python-coverage-comment-action@v3
         with:
-          file: ./coverage.xml
-          fail_ci_if_error: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MINIMUM_GREEN: 85
+          MINIMUM_ORANGE: 70

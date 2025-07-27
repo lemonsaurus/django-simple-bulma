@@ -1,6 +1,5 @@
 """Django settings for django-simple-bulma tests."""
 
-import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -51,3 +50,10 @@ BULMA_SETTINGS = {
 }
 
 USE_TZ = True
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+}

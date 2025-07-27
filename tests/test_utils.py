@@ -209,8 +209,7 @@ class TestSettingsLoading:
 
     def test_no_bulma_settings(self):
         """Test behavior when BULMA_SETTINGS is not defined."""
-        with override_settings():
-            delattr(override_settings.wrapped, 'BULMA_SETTINGS')
+        with override_settings(BULMA_SETTINGS=None):
             
             # Reload utils to pick up the change
             import importlib

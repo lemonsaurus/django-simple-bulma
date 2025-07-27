@@ -2,7 +2,7 @@
 
 import pytest
 import tempfile
-from pathlib import Path
+import os
 
 from django.core.management import call_command
 from django.template import Context, Template
@@ -16,21 +16,22 @@ class TestCollectstaticIntegration:
     def test_collectstatic_creates_bulma_css(self):
         """Test that collectstatic creates bulma.css file."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 BULMA_SETTINGS={'extensions': [], 'variables': {'primary': '#007bff'}}
             ):
                 # This should create the CSS files
                 call_command('collectstatic', '--noinput', verbosity=0)
                 
                 # Check that bulma.css was created
-                bulma_css = static_root / 'css' / 'bulma.css'
-                assert bulma_css.exists()
+                bulma_css = os.path.join(static_root, 'css', 'bulma.css')
+                assert os.path.exists(bulma_css)
                 
                 # Check that the file has actual content
-                content = bulma_css.read_text()
+                with open(bulma_css, 'r') as f:
+                    content = f.read()
                 assert len(content) > 100  # Should be substantial CSS
                 assert '$primary' not in content  # Variables should be compiled
 
@@ -38,10 +39,10 @@ class TestCollectstaticIntegration:
     def test_collectstatic_with_themes(self):
         """Test collectstatic with multiple themes."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 BULMA_SETTINGS={
                     'extensions': [],
                     'variables': {'primary': '#007bff'},
@@ -52,20 +53,20 @@ class TestCollectstaticIntegration:
                 call_command('collectstatic', '--noinput', verbosity=0)
                 
                 # Check default theme
-                assert (static_root / 'css' / 'bulma.css').exists()
+                assert os.path.exists(os.path.join(static_root, 'css', 'bulma.css'))
                 
                 # Check themed CSS files
-                assert (static_root / 'css' / 'dark_bulma.css').exists()
-                assert (static_root / 'css' / 'light_bulma.css').exists()
+                assert os.path.exists(os.path.join(static_root, 'css', 'dark_bulma.css'))
+                assert os.path.exists(os.path.join(static_root, 'css', 'light_bulma.css'))
 
     @pytest.mark.django_db
     def test_collectstatic_with_extensions(self):
         """Test collectstatic includes extension files."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 BULMA_SETTINGS={
                     'extensions': ['bulma-tooltip'],  # This extension should exist
                     'variables': {},
@@ -74,12 +75,13 @@ class TestCollectstaticIntegration:
                 call_command('collectstatic', '--noinput', verbosity=0)
                 
                 # Should have main CSS
-                assert (static_root / 'css' / 'bulma.css').exists()
+                assert os.path.exists(os.path.join(static_root, 'css', 'bulma.css'))
                 
                 # Should have some extension JS files (if tooltip has them)
-                extensions_dir = static_root / 'extensions'
-                if extensions_dir.exists():
-                    js_files = list(extensions_dir.rglob('*.js'))
+                extensions_dir = os.path.join(static_root, 'extensions')
+                if os.path.exists(extensions_dir):
+                    import glob
+                    js_files = glob.glob(os.path.join(extensions_dir, '**', '*.js'), recursive=True)
                     # Tooltip extension might not have JS, so this is optional
                     # assert len(js_files) > 0
 
@@ -91,10 +93,10 @@ class TestTemplateRenderingIntegration:
     def test_bulma_tag_renders_with_static_files(self):
         """Test bulma template tag renders correctly with static files."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 STATIC_URL='/static/',
                 BULMA_SETTINGS={'extensions': [], 'variables': {}}
             ):
@@ -113,10 +115,10 @@ class TestTemplateRenderingIntegration:
     def test_bulma_tag_with_theme_integration(self):
         """Test bulma template tag with theme integration."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 STATIC_URL='/static/',
                 BULMA_SETTINGS={
                     'extensions': [],
@@ -156,15 +158,16 @@ class TestCustomScssIntegration:
     def test_custom_scss_compilation(self):
         """Test that custom SCSS files are compiled correctly."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
-            staticfiles_dir = Path(temp_dir) / 'staticfiles'
-            staticfiles_dir.mkdir()
+            static_root = os.path.join(temp_dir, 'static')
+            staticfiles_dir = os.path.join(temp_dir, 'staticfiles')
+            os.makedirs(staticfiles_dir)
             
             # Create a custom SCSS file
-            test_styles_dir = staticfiles_dir / 'test_styles'
-            test_styles_dir.mkdir()
-            custom_scss = test_styles_dir / 'custom.scss'
-            custom_scss.write_text("""
+            test_styles_dir = os.path.join(staticfiles_dir, 'test_styles')
+            os.makedirs(test_styles_dir)
+            custom_scss = os.path.join(test_styles_dir, 'custom.scss')
+            with open(custom_scss, 'w') as f:
+                f.write("""
             .custom-class {
                 color: red;
                 font-size: 16px;
@@ -175,8 +178,8 @@ class TestCustomScssIntegration:
             """)
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
-                STATICFILES_DIRS=[str(staticfiles_dir)],
+                STATIC_ROOT=static_root,
+                STATICFILES_DIRS=[staticfiles_dir],
                 BULMA_SETTINGS={
                     'extensions': [],
                     'variables': {},
@@ -186,11 +189,12 @@ class TestCustomScssIntegration:
                 call_command('collectstatic', '--noinput', verbosity=0)
                 
                 # Check that custom CSS was created
-                custom_css = static_root / 'test_styles' / 'custom.css'
-                assert custom_css.exists()
+                custom_css = os.path.join(static_root, 'test_styles', 'custom.css')
+                assert os.path.exists(custom_css)
                 
                 # Check content was compiled
-                content = custom_css.read_text()
+                with open(custom_css, 'r') as f:
+                    content = f.read()
                 assert '.custom-class' in content
                 assert 'color: red' in content
                 # Nested selectors should be flattened
@@ -204,10 +208,10 @@ class TestErrorHandlingIntegration:
     def test_collectstatic_with_missing_custom_scss(self):
         """Test collectstatic fails gracefully with missing custom SCSS."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 BULMA_SETTINGS={
                     'extensions': [],
                     'variables': {},
@@ -223,15 +227,16 @@ class TestErrorHandlingIntegration:
     def test_collectstatic_with_invalid_sass(self):
         """Test collectstatic handles SASS compilation errors."""
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
-            staticfiles_dir = Path(temp_dir) / 'staticfiles'
-            staticfiles_dir.mkdir()
+            static_root = os.path.join(temp_dir, 'static')
+            staticfiles_dir = os.path.join(temp_dir, 'staticfiles')
+            os.makedirs(staticfiles_dir)
             
             # Create invalid SCSS
-            test_styles_dir = staticfiles_dir / 'test_styles'
-            test_styles_dir.mkdir()
-            invalid_scss = test_styles_dir / 'invalid.scss'
-            invalid_scss.write_text("""
+            test_styles_dir = os.path.join(staticfiles_dir, 'test_styles')
+            os.makedirs(test_styles_dir)
+            invalid_scss = os.path.join(test_styles_dir, 'invalid.scss')
+            with open(invalid_scss, 'w') as f:
+                f.write("""
             .invalid {
                 color: ;  /* Invalid CSS */
                 font-size: invalid-value;
@@ -239,8 +244,8 @@ class TestErrorHandlingIntegration:
             """)
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
-                STATICFILES_DIRS=[str(staticfiles_dir)],
+                STATIC_ROOT=static_root,
+                STATICFILES_DIRS=[staticfiles_dir],
                 BULMA_SETTINGS={
                     'extensions': [],
                     'variables': {},
@@ -287,10 +292,10 @@ class TestPerformanceIntegration:
         import time
         
         with tempfile.TemporaryDirectory() as temp_dir:
-            static_root = Path(temp_dir) / 'static'
+            static_root = os.path.join(temp_dir, 'static')
             
             with override_settings(
-                STATIC_ROOT=str(static_root),
+                STATIC_ROOT=static_root,
                 BULMA_SETTINGS={
                     'extensions': ['bulma-tooltip', 'bulma-calendar'],
                     'variables': {'primary': '#007bff'},
@@ -305,7 +310,7 @@ class TestPerformanceIntegration:
                 assert end_time - start_time < 30  # 30 seconds max
                 
                 # Should have created files
-                assert (static_root / 'css' / 'bulma.css').exists()
+                assert os.path.exists(os.path.join(static_root, 'css', 'bulma.css'))
 
     @pytest.mark.django_db
     def test_template_rendering_performance(self):
