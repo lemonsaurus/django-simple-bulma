@@ -7,3 +7,8 @@ build/
 dist/*
 !dist/js
 django_simple_bulma.egg-info/
+
+
+# AI stuff
+.claude
+CLAUDE.*
