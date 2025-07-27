@@ -4,10 +4,7 @@ django-simple-bulma
 and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as
 possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v1.0+**, and is automatically updated with every new release. If a new version has
-come out with features you'd like to make use of,
-please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a
-release to update it.
+This project currently uses **Bulma v1.0+**, and is automatically updated with every new release. **Version 3.0** represents a major upgrade that focuses on actively maintained extensions and Bulma 1.0+ compatibility. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
 
 Installation
 ------------
@@ -198,6 +195,127 @@ Here's the strategy the finder uses:
 * Use whatever Finders you have enabled in your `settings.py` to search for the file using that relative path.
 * If the path is found using one of these Finders, compile it to css and collect it.
 * Otherwise, raise a `ValueException` asking you to double-check the filepath.
+
+Migration Guide: v2.x to v3.0
+------------------------------
+
+**django-simple-bulma v3.0** includes significant changes to support Bulma 1.0+ and focuses on actively maintained extensions only. This is a **breaking change** that requires migration steps.
+
+### What's Changed
+
+- **Bulma version**: Upgraded from v0.9.4 to v1.0+
+- **Extension support**: Streamlined from 18+ extensions to 2 actively maintained extensions
+- **Compatibility**: All extensions are now Bulma 1.0+ compatible and actively maintained
+
+### Removed Extensions
+
+The following extensions have been **removed** due to being unmaintained or incompatible with Bulma 1.0+:
+
+- `bulma-badge`
+- `bulma-carousel` 
+- `bulma-checkradio`
+- `bulma-collapsible`
+- `bulma-coolcheckboxes`
+- `bulma-divider`
+- `bulma-megamenu`
+- `bulma-pageloader`
+- `bulma-pricingtable`
+- `bulma-quickview`
+- `bulma-ribbon`
+- `bulma-slider`
+- `bulma-steps`
+- `bulma-switch`
+- `bulma-tagsinput`
+- `bulma-timeline`
+
+### Supported Extensions (v3.0+)
+
+Only actively maintained, Bulma 1.0+ compatible extensions are now supported:
+
+- **[bulma-calendar](https://github.com/michael-hack/bulma-calendar)**: Calendar and datepicker components
+- **[bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)**: Tooltip components
+
+### Migration Steps
+
+#### 1. Update Your BULMA_SETTINGS
+
+Remove any unsupported extensions from your configuration:
+
+```python
+# Before (v2.x)
+BULMA_SETTINGS = {
+    "extensions": [
+        "bulma-collapsible",    # ❌ No longer supported
+        "bulma-calendar",       # ✅ Still supported (new maintained version)
+        "bulma-tooltip",        # ✅ Still supported  
+        "bulma-tagsinput",      # ❌ No longer supported
+        "bulma-badge",          # ❌ No longer supported
+        # ... other removed extensions
+    ],
+    # ... other settings remain the same
+}
+
+# After (v3.0+)
+BULMA_SETTINGS = {
+    "extensions": [
+        "bulma-calendar",       # ✅ Updated to maintained version
+        "bulma-tooltip",        # ✅ Updated to maintained version
+    ],
+    # ... other settings remain the same
+}
+```
+
+#### 2. Alternative Solutions for Removed Extensions
+
+If you were using removed extensions, consider these alternatives:
+
+**For form controls (checkradio, switch, slider):**
+- Use native HTML5 form inputs with custom CSS
+- Consider other CSS frameworks or standalone components
+
+**For layout components (collapsible, steps, timeline):**
+- Implement with custom CSS and vanilla JavaScript
+- Use Vue.js, React, or other component libraries
+
+**For UI elements (badge, ribbon, divider):**
+- Implement with custom CSS classes
+- Many of these can be recreated with simple Bulma utilities
+
+**For advanced components (carousel, modal, dropdown):**
+- Use the built-in JavaScript helpers already included in django-simple-bulma
+- Consider standalone JavaScript libraries
+
+#### 3. Test Your Application
+
+After updating your settings:
+
+1. Run `python manage.py collectstatic` to rebuild your CSS
+2. Test that your forms and UI components still work as expected
+3. Verify that only supported extensions are being loaded
+4. Check for any styling regressions
+
+#### 4. Update Custom CSS (if needed)
+
+If you have custom CSS that depends on removed extensions:
+
+1. Remove any `@import` statements referencing removed extensions
+2. Replace extension-specific classes with custom implementations
+3. Test your styling changes across different screen sizes
+
+### Benefits of v3.0
+
+- **Better reliability**: Only maintained extensions reduce security and compatibility risks
+- **Bulma 1.0+ support**: Access to latest Bulma features and improvements
+- **Faster builds**: Fewer extensions mean faster static file compilation
+- **Future-proof**: Maintained extensions are more likely to stay compatible with future Bulma versions
+
+### Getting Help
+
+If you encounter issues during migration:
+
+1. Check the [GitHub issues](https://github.com/python-discord/django-simple-bulma/issues) for similar problems
+2. Review the documentation for the maintained extensions
+3. Consider contributing to help improve the migration experience
 
 Troubleshooting
 ---------------
