@@ -28,18 +28,20 @@ class TestSimpleBulmaFinderInit:
         assert finder.output_style == 'compressed'
         assert isinstance(finder.storage, FileSystemStorage)
 
+    @override_settings()
     def test_init_without_settings(self):
         """Test finder initialization without BULMA_SETTINGS."""
-        with override_settings():
-            # Remove BULMA_SETTINGS
-            delattr(override_settings.wrapped, 'BULMA_SETTINGS')
+        # Test without BULMA_SETTINGS at all
+        from django.conf import settings
+        if hasattr(settings, 'BULMA_SETTINGS'):
+            delattr(settings, 'BULMA_SETTINGS')
             
-            finder = SimpleBulmaFinder()
-            
-            assert finder.bulma_settings == {}
-            assert finder.custom_scss == []
-            assert finder.variables == {}
-            assert finder.output_style == 'nested'
+        finder = SimpleBulmaFinder()
+        
+        assert finder.bulma_settings == {}
+        assert finder.custom_scss == []
+        assert finder.variables == {}
+        assert finder.output_style == 'nested'
 
     @override_settings(STATICFILES_FINDERS=[
         'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -127,35 +129,35 @@ class TestSimpleBulmaFinderSassCompilation:
     """Test SASS compilation in SimpleBulmaFinder."""
 
     @patch('django_simple_bulma.finders.sass')
-    @patch('django_simple_bulma.finders.simple_bulma_path')
     @patch('builtins.open', new_callable=mock_open)
-    def test_get_bulma_css_basic_compilation(self, mock_file, mock_path, mock_sass):
+    def test_get_bulma_css_basic_compilation(self, mock_file, mock_sass):
         """Test basic CSS compilation."""
         mock_sass.libsass_version = "0.19.0"  # Ensure libsass is detected
         mock_sass.compile.return_value = "compiled css content"
         
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
-            mock_path.__truediv__.return_value = temp_path
-            mock_path.as_posix.return_value = str(temp_path)
             
             # Create bulma submodule structure
             bulma_dir = temp_path / 'bulma' / 'sass'
             utilities_dir = bulma_dir / 'utilities'
             utilities_dir.mkdir(parents=True)
             
-            # Mock iterdir for bulma_submodule_path
-            mock_path.__truediv__.return_value.iterdir.return_value = [utilities_dir]
+            # Create extensions directory (needed by _get_extension_imports)
+            extensions_dir = temp_path / 'extensions'
+            extensions_dir.mkdir(parents=True)
             
-            finder = SimpleBulmaFinder()
-            finder.bulma_submodule_path = bulma_dir
-            
-            with patch('django_simple_bulma.finders.themes', []):
-                result = finder._get_bulma_css()
-            
-            assert len(result) == 1
-            assert result[0] == 'css/bulma.css'
-            mock_sass.compile.assert_called()
+            # Mock the simple_bulma_path to return our temp directory
+            with patch('django_simple_bulma.finders.simple_bulma_path', temp_path):
+                finder = SimpleBulmaFinder()
+                finder.bulma_submodule_path = bulma_dir
+                
+                with patch('django_simple_bulma.finders.get_themes', return_value=[]):
+                    result = finder._get_bulma_css()
+                
+                assert len(result) == 1
+                assert result[0] == 'css/bulma.css'
+                mock_sass.compile.assert_called()
 
     @patch('django_simple_bulma.finders.sass')
     def test_get_bulma_css_sass_module_conflict(self, mock_sass):
@@ -172,30 +174,32 @@ class TestSimpleBulmaFinderSassCompilation:
         assert "libsass` module" in str(exc_info.value)
 
     @patch('django_simple_bulma.finders.sass')
-    @patch('django_simple_bulma.finders.simple_bulma_path')
-    @patch('django_simple_bulma.finders.settings')
     @patch('builtins.open', new_callable=mock_open)
-    def test_get_bulma_css_with_themes(self, mock_file, mock_settings, mock_path, mock_sass):
+    @override_settings(BULMA_SETTINGS={
+        'alt_variables': {'primary': '#fff'}, 
+        'dark_variables': {'primary': '#000'}
+    })
+    def test_get_bulma_css_with_themes(self, mock_file, mock_sass):
         """Test CSS compilation with multiple themes."""
         mock_sass.libsass_version = "0.19.0"
         mock_sass.compile.return_value = "compiled css"
         
-        # Mock settings for themes
-        mock_settings.BULMA_SETTINGS = {
-            'alt_variables': {'primary': '#fff'},
-            'dark_variables': {'primary': '#000'}
-        }
-        
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
-            mock_path.__truediv__.return_value = temp_path
-            mock_path.as_posix.return_value = str(temp_path)
             
-            finder = SimpleBulmaFinder()
-            finder.bulma_submodule_path = temp_path / 'sass'
-            finder.bulma_submodule_path.mkdir(parents=True)
+            # Create bulma submodule structure
+            bulma_dir = temp_path / 'bulma' / 'sass'
+            utilities_dir = bulma_dir / 'utilities'
+            utilities_dir.mkdir(parents=True)
             
-            with patch('django_simple_bulma.finders.themes', ['alt', 'dark']):
+            # Create extensions directory (needed by _get_extension_imports)
+            extensions_dir = temp_path / 'extensions'
+            extensions_dir.mkdir(parents=True)
+            
+            with patch('django_simple_bulma.finders.simple_bulma_path', temp_path):
+                finder = SimpleBulmaFinder()
+                finder.bulma_submodule_path = bulma_dir
+                
                 result = finder._get_bulma_css()
             
             # Should generate CSS for default + 2 themes

@@ -22,6 +22,7 @@ class TestBulmaTemplateTag:
         assert 'defer type="text/javascript"' in result
 
     @pytest.mark.django_db
+    @override_settings(BULMA_SETTINGS={'dark_variables': {'primary': '#333'}})
     def test_bulma_tag_with_theme(self):
         """Test bulma tag with specific theme."""
         template = Template("{% load django_simple_bulma %}{% bulma 'dark' %}")
@@ -41,7 +42,7 @@ class TestBulmaTemplateTag:
         assert 'script' not in result
 
     @pytest.mark.django_db
-    @patch('django_simple_bulma.templatetags.django_simple_bulma.logger')
+    @patch('django_simple_bulma.utils.logger')
     def test_bulma_tag_invalid_theme_warning(self, mock_logger):
         """Test bulma tag logs warning for invalid theme."""
         template = Template("{% load django_simple_bulma %}{% bulma 'nonexistent' %}")
@@ -53,7 +54,7 @@ class TestBulmaTemplateTag:
         assert "Theme 'nonexistent' does not match" in mock_logger.warning.call_args[0][0]
 
     @pytest.mark.django_db
-    @patch('django_simple_bulma.utils.themes', ['dark', 'light'])
+    @override_settings(BULMA_SETTINGS={'dark_variables': {'primary': '#333'}, 'light_variables': {'primary': '#fff'}})
     def test_bulma_tag_with_valid_theme(self):
         """Test bulma tag with valid theme from themes list."""
         template = Template("{% load django_simple_bulma %}{% bulma 'dark' %}")
@@ -108,7 +109,7 @@ class TestFontAwesomeTemplateTag:
         assert isinstance(result, SafeString)
 
     @pytest.mark.django_db
-    @patch('django_simple_bulma.utils.fontawesome_token', '')
+    @override_settings(BULMA_SETTINGS={'fontawesome_token': ''})
     def test_font_awesome_empty_token(self):
         """Test font_awesome with empty token uses fallback."""
         result = font_awesome()

@@ -63,9 +63,18 @@ logger = logging.getLogger("django-simple-bulma")
 
 def is_enabled(extension: Union[Path, str]) -> bool:
     """Return whether an extension is enabled or not."""
+    # Get extensions dynamically to support override_settings in tests
+    try:
+        if hasattr(settings, "BULMA_SETTINGS"):
+            current_extensions = settings.BULMA_SETTINGS.get("extensions", [])
+        else:
+            current_extensions = []
+    except Exception:
+        current_extensions = []
+    
     if isinstance(extension, Path):
-        return extensions == "all" or extension.name in extensions
-    return extensions == "all" or extension in extensions
+        return current_extensions == "all" or extension.name in current_extensions
+    return current_extensions == "all" or extension in current_extensions
 
 
 def get_js_files() -> Generator[str, None, None]:
@@ -92,7 +101,8 @@ def get_js_files() -> Generator[str, None, None]:
 
     # If we've got only bulma-collapsible, we need the runner, too.
     if "bulma-collapsible" in extensions and not "bulma-collapsible-runner" in extensions:
-        yield simple_bulma_path / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+        runner_js = simple_bulma_path / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
+        yield runner_js.relative_to(simple_bulma_path).as_posix()
 
 
 
