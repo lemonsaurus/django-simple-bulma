@@ -11,25 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
-        django-version: ['2.2', '3.0', '3.1', '3.2', '4.0', '4.1', '4.2', '5.0']
-        exclude:
-          # Django 2.2 and 3.0 don't support Python 3.10+
-          - python-version: '3.10'
-            django-version: '2.2'
-          - python-version: '3.10'
-            django-version: '3.0'
-          - python-version: '3.11'
-            django-version: '2.2'
-          - python-version: '3.11'
-            django-version: '3.0'
-          - python-version: '3.11'
-            django-version: '3.1'
-          # Django 5.0+ requires Python 3.10+
-          - python-version: '3.8'
-            django-version: '5.0'
-          - python-version: '3.9'
-            django-version: '5.0'
+        python-version: ['3.12', '3.13']
+        django-version: ['4.2', '5.2']
 
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +35,7 @@ jobs:
           pytest -v --tb=short
 
       - name: Run tests with coverage
-        if: matrix.python-version == '3.9' && matrix.django-version == '4.2'
+        if: matrix.python-version == '3.12' && matrix.django-version == '4.2'
         run: |
           pip install coverage
           coverage run -m pytest
@@ -60,7 +43,7 @@ jobs:
           coverage xml
 
       - name: Comment coverage on PR
-        if: github.event_name == 'pull_request' && matrix.python-version == '3.9' && matrix.django-version == '4.2'
+        if: github.event_name == 'pull_request' && matrix.python-version == '3.12' && matrix.django-version == '4.2'
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
