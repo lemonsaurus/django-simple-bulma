@@ -212,7 +212,7 @@ Migration Guide: v2.x to v3.0
 The following extensions have been **removed** due to being unmaintained or incompatible with Bulma 1.0+:
 
 - `bulma-badge`
-- `bulma-carousel` 
+- `bulma-carousel`
 - `bulma-checkradio`
 - `bulma-collapsible`
 - `bulma-coolcheckboxes`
