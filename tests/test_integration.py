@@ -36,6 +36,29 @@ class TestCollectstaticIntegration:
                 assert '$primary' not in content  # Variables should be compiled
 
     @pytest.mark.django_db
+    def test_collectstatic_with_bulma_block_list(self) -> None:
+        """Test that collectstatic includes bulma-block-list extension."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, 'static')
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                BULMA_SETTINGS={'extensions': ['bulma-block-list'], 'variables': {}}
+            ):
+                # This should create the CSS files including extension
+                call_command('collectstatic', '--noinput', verbosity=0)
+
+                # Check that bulma.css was created
+                bulma_css = os.path.join(static_root, 'css', 'bulma.css')
+                assert os.path.exists(bulma_css)
+
+                # Check that the file contains block-list styles
+                with open(bulma_css, 'r') as f:
+                    content = f.read()
+                assert '.block-list' in content
+                assert 'is-highlighted' in content
+
+    @pytest.mark.django_db
     @pytest.mark.skip(
         reason="Theme compilation requires Dart Sass, not supported with Bulma 1.0+ and libsass"
     )
