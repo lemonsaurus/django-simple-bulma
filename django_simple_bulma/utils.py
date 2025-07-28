@@ -49,14 +49,15 @@ def get_themes() -> list:
 
 
 # (Path, str) pairs describing a relative path in an extension and a glob pattern to search for
+# Prioritize pre-built CSS files over SCSS files for better compatibility
 sass_files_searches = (
+    (Path("dist"), "*.min.css"),
+    (Path("dist"), "*.css"),
     (Path("src/sass"), "_all.sass"),
     (Path("src/sass"), "index.sass"),
     (Path("src/sass"), "*.sass"),
     (Path("src"), "*.s[ac]ss"),
     (Path("dist"), "*.sass"),
-    (Path("dist"), "*.min.css"),
-    (Path("dist"), "*.css"),
     (Path(""), "*.s[ac]ss"),
 )
 
@@ -100,14 +101,6 @@ def get_js_files() -> Generator[str, None, None]:
 
             # Add the name of the extension to the list of enabled extensions
             extensions.append(ext.name)
-
-    # If we've got only bulma-collapsible, we need the runner, too.
-    if "bulma-collapsible" in extensions and "bulma-collapsible-runner" not in extensions:
-        runner_js = (
-            simple_bulma_path
-            / "extensions/bulma-collapsible-runner/dist/js/bulma-collapsible-runner.js"
-        )
-        yield runner_js.relative_to(simple_bulma_path).as_posix()
 
 
 def get_sass_files(ext: Path) -> List[Path]:

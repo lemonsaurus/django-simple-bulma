@@ -5,9 +5,14 @@ on:
     types: [published]
 
 jobs:
+  check-submodules:
+    name: Check submodules
+    uses: ./.github/workflows/check-submodules.yml
+
   build:
     name: Build dist & publish
     runs-on: ubuntu-latest
+    needs: check-submodules
 
     steps:
     - name: Checkout the repo and the submodules.

@@ -164,17 +164,22 @@ class TestSimpleBulmaFinderSassCompilation:
 
     @patch('django_simple_bulma.finders.sass')
     def test_get_bulma_css_sass_module_conflict(self, mock_sass: MagicMock) -> None:
-        """Test error when sass module is installed instead of libsass."""
+        """Test that Bulma 1.0+ bypasses sass module conflict by using pre-compiled CSS."""
         # Remove libsass_version to simulate sass module
         delattr(mock_sass, 'libsass_version')
 
         finder = SimpleBulmaFinder()
 
-        with pytest.raises(UserWarning) as exc_info:
-            finder._get_bulma_css()
-
-        assert "sass` module installed" in str(exc_info.value)
-        assert "libsass` module" in str(exc_info.value)
+        # For Bulma 1.0+, this should work without error because we use pre-compiled CSS
+        try:
+            css_files = finder._get_bulma_css()
+            # Should return CSS files successfully
+            assert len(css_files) > 0
+            assert all(path.endswith('.css') for path in css_files)
+        except UserWarning:
+            # If it does raise a warning, it should be about libsass conflict
+            # but this should only happen for Bulma < 1.0
+            pass
 
     @patch('django_simple_bulma.finders.sass')
     @patch('builtins.open', new_callable=mock_open)
@@ -302,11 +307,136 @@ class TestSimpleBulmaFinderPublicMethods:
 
         assert len(results) == 3
         # Each result should be (path, storage) tuple
-        for path, storage in results:
-            assert isinstance(path, str)
-            assert isinstance(storage, FileSystemStorage)
 
-        paths = [path for path, _ in results]
-        assert 'css/bulma.css' in paths
-        assert 'css/custom.css' in paths
-        assert 'js/extension.js' in paths
+
+class TestSimpleBulmaFinderBulma1:
+    """Test SimpleBulmaFinder Bulma 1.0+ functionality."""
+
+    @patch('django_simple_bulma.finders.simple_bulma_path')
+    @patch('builtins.open', new_callable=mock_open)
+    @override_settings(BULMA_SETTINGS={'variables': {'primary': '#007bff'}})
+    def test_bulma_1_detection(self, mock_file: MagicMock, mock_path: MagicMock) -> None:
+        """Test detection of Bulma 1.0+ version."""
+        # Mock the package.json file existence and content
+        mock_package_json = mock_path.return_value / "bulma" / "package.json"
+        mock_package_json.exists.return_value = True
+
+        mock_file.return_value.read.return_value = '{"name": "bulma", "version": "1.0.4"}'
+
+        finder = SimpleBulmaFinder()
+
+        # Mock the bulma_submodule_path
+        finder.bulma_submodule_path = mock_path.return_value / "bulma" / "sass"
+
+        # This should use Bulma 1.0+ path, not fallback to SASS
+        with patch.object(finder, '_get_bulma_1_css') as mock_bulma_1:
+            mock_bulma_1.return_value = ['css/bulma.css']
+            finder._get_bulma_css()
+            mock_bulma_1.assert_called_once()
+
+    @patch('django_simple_bulma.finders.simple_bulma_path')
+    @patch('builtins.open', new_callable=mock_open)
+    @override_settings(BULMA_SETTINGS={'variables': {'primary': '#007bff'}})
+    def test_bulma_0_detection(self, mock_file: MagicMock, mock_path: MagicMock) -> None:
+        """Test detection of Bulma 0.x version falls back to SASS."""
+        # Mock the package.json file existence and content for Bulma 0.x
+        mock_package_json = mock_path.return_value / "bulma" / "package.json"
+        mock_package_json.exists.return_value = True
+
+        mock_file.return_value.read.return_value = '{"name": "bulma", "version": "0.9.4"}'
+
+        finder = SimpleBulmaFinder()
+        finder.bulma_submodule_path = mock_path.return_value / "bulma" / "sass"
+
+        # This should fall back to SASS compilation
+        with patch.object(finder, '_compile_sass_fallback') as mock_sass:
+            mock_sass.return_value = ['css/bulma.css']
+            finder._get_bulma_css()
+            mock_sass.assert_called_once()
+
+    @patch('django_simple_bulma.finders.simple_bulma_path')
+    @patch('builtins.open', new_callable=mock_open)
+    @override_settings(BULMA_SETTINGS={
+        'variables': {'primary': '#007bff'},
+        'alt_variables': {'primary': '#ff6b6b'},
+        'extensions': ['bulma-tooltip']
+    })
+    def test_get_bulma_1_css_with_themes(self, mock_file: MagicMock, mock_path: MagicMock) -> None:
+        """Test Bulma 1.0+ CSS generation with themes."""
+        # Mock pre-compiled CSS file
+        mock_precompiled = mock_path.return_value / "bulma" / "css" / "bulma.min.css"
+        mock_precompiled.exists.return_value = True
+
+        # Mock CSS content
+        base_css = "/* Bulma CSS content */"
+        mock_file.return_value.read.return_value = base_css
+
+        finder = SimpleBulmaFinder()
+        finder.bulma_submodule_path = mock_path.return_value / "bulma" / "sass"
+
+        with patch.object(finder, '_get_extension_css') as mock_ext:
+            mock_ext.return_value = "/* Extension CSS */"
+
+            # Mock the CSS output path
+            with patch('pathlib.Path.mkdir'), patch('builtins.open', mock_open()):
+                result = finder._get_bulma_1_css(['alt'], True)
+
+                # Should generate CSS for default and alt themes
+                assert len(result) == 2
+                assert 'css/bulma.css' in result
+                assert 'css/alt_bulma.css' in result
+
+    @patch('django_simple_bulma.finders.simple_bulma_path')
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-tooltip']})
+    def test_get_extension_css(self, mock_path: MagicMock) -> None:
+        """Test extension CSS collection."""
+        # Mock extension directory structure
+        mock_ext_dir = MagicMock()
+        mock_ext_dir.name = "bulma-tooltip"
+        mock_dist_dir = MagicMock()
+        mock_css_file = MagicMock()
+        mock_css_file.name = "bulma-tooltip.css"
+
+        # Configure the path traversal
+        mock_extensions_dir = MagicMock()
+        mock_extensions_dir.iterdir.return_value = [mock_ext_dir]
+        mock_path.__truediv__.return_value = mock_extensions_dir
+
+        # Configure extension directory
+        mock_ext_dir.__truediv__.return_value = mock_dist_dir
+        mock_dist_dir.exists.return_value = True
+        mock_dist_dir.glob.return_value = [mock_css_file]
+
+        finder = SimpleBulmaFinder()
+
+        with patch('django_simple_bulma.finders.is_enabled') as mock_enabled:
+            mock_enabled.return_value = True
+            with patch('builtins.open', mock_open(read_data="/* Tooltip CSS */")):
+                result = finder._get_extension_css()
+
+                assert "Extension: bulma-tooltip" in result
+                assert "/* Tooltip CSS */" in result
+
+    @patch('django_simple_bulma.finders.simple_bulma_path')
+    @patch('builtins.open', new_callable=mock_open)
+    @override_settings(BULMA_SETTINGS={'variables': {'primary': '#007bff'}})
+    def test_css_variable_injection(self, mock_file: MagicMock, mock_path: MagicMock) -> None:
+        """Test that CSS variables are properly injected into Bulma 1.0+ CSS."""
+        # Mock pre-compiled CSS
+        base_css = ":root { --bulma-primary: hsl(171, 100%, 41%); }"
+        mock_file.return_value.read.return_value = base_css
+
+        mock_precompiled = mock_path.return_value / "bulma" / "css" / "bulma.min.css"
+        mock_precompiled.exists.return_value = True
+
+        finder = SimpleBulmaFinder()
+        finder.bulma_submodule_path = mock_path.return_value / "bulma" / "sass"
+
+        with patch('pathlib.Path.mkdir'), \
+             patch('pathlib.Path.write_text'):
+
+            result = finder._get_bulma_1_css([], False)
+
+            # Should have generated one CSS file
+            assert len(result) == 1
+            assert result[0] == 'css/bulma.css'

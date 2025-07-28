@@ -4,10 +4,7 @@ django-simple-bulma
 and [Bulma-Extensions](https://wikiki.github.io/) available to use in your Django project with as little setup as
 possible. The goal of this project is to make it as easy as possible to use Bulma with Django.
 
-This project currently uses **Bulma v0.9.4**, and is automatically updated with every new release. If a new version has
-come out with features you'd like to make use of,
-please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a
-release to update it.
+This project currently uses **Bulma v1.0.4**, and is automatically updated with every new release. **Version 3.0** represents a major upgrade that focuses on actively maintained extensions and Bulma 1.0+ compatibility. If a new version has come out with features you'd like to make use of, please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and we will be happy to make a release to update it.
 
 Installation
 ------------
@@ -74,8 +71,8 @@ it there. Here's an example of what that looks like:
 # Custom settings for django-simple-bulma
 BULMA_SETTINGS = {
   "extensions": [
-    "bulma-collapsible",
     "bulma-calendar",
+    "bulma-tooltip",
   ],
   "variables": {
     "primary": "#000000",
@@ -111,26 +108,12 @@ at least one of these to prevent duplicate loading of JavaScript resources.
 If the `extensions` key is not found, it will default to not loading any extensions. If you want all extensions, simply
 set it to the string `"all"`.
 
-We currently support these extensions:
+We currently support these actively maintained extensions compatible with Bulma 1.0+:
 
-- [bulma-badge](https://github.com/CreativeBulma/bulma-badge/)
-- [bulma-calendar](https://github.com/Wikiki/bulma-calendar)
-- [bulma-carousel](https://github.com/Wikiki/bulma-carousel)
-- [bulma-collapsible](https://github.com/CreativeBulma/bulma-collapsible)
-- [bulma-checkradio](https://github.com/Wikiki/bulma-checkradio)
-- [bulma-divider](https://github.com/CreativeBulma/bulma-divider)
-- [bulma-megamenu](https://github.com/hunzaboy/bulma-megamenu)
-- [bulma-pageloader](https://github.com/Wikiki/bulma-pageloader)
-- [bulma-pricingtable](https://github.com/Wikiki/bulma-pricingtable)
-- [bulma-quickview](https://github.com/Wikiki/bulma-quickview)
-- [bulma-ribbon](https://github.com/Wikiki/bulma-ribbon)
-- [bulma-slider](https://github.com/Wikiki/bulma-slider)
-- [bulma-steps](https://github.com/Wikiki/bulma-steps)
-- [bulma-switch](https://github.com/Wikiki/bulma-switch)
-- [bulma-tagsinput](https://github.com/CreativeBulma/bulma-tagsinput)
-- [bulma-timeline](https://github.com/Wikiki/bulma-timeline)
-- [bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)
-- [bulma-coolcheckboxes (Cool-Checkboxes-for-Bulma.io)](https://github.com/hunzaboy/Cool-Checkboxes-for-Bulma.io)
+- [bulma-calendar](https://github.com/michael-hack/bulma-calendar) - Calendar and datepicker components (v7.1.1+)
+- [bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip) - Tooltip components (v1.2.0+)
+
+**Note**: As of this version, we have streamlined our extension support to focus only on actively maintained, Bulma 1.0+ compatible extensions. Many of the previously supported extensions are no longer maintained or compatible with modern Bulma versions.
 
 If an extension you want to use is missing, feel free
 to [create an issue](https://github.com/python-discord/django-simple-bulma/issues) and we will be happy to add it.
@@ -160,26 +143,6 @@ This is used by the `{% font_awesome %}` template tag to set up FontAwesome for 
 a `fontawesome_token`, **the template tag will still work**, but will then use an older version of FontAwesome (v5.14.0)
 .
 
-Additional scripts
-------------------
-For your convenience, we also give you the option to add other quality of life improvements to your Bulma app. You may
-want to add these as well if they sound useful to you.
-
-* `bulma-fileupload` will handle displaying the filename in
-  your [file upload inputs](https://bulma.io/documentation/form/file/).
-* `bulma-navbar-burger` will hook up your `navbar-burger`s and `navbar-menu`s automatically, to provide a toggle for
-  mobile users. We use a slightly updated version
-  of [the example from Bulma's documentation](https://bulma.io/documentation/components/navbar/#navbarJsExample) -
-  simply add a `data-target` attribute to your `navbar-burger` that refers to the `id` of the `navbar-menu` that should
-  be expanded and collapsed by the button.
-* `bulma-notifications` will allow you to close [notifications](https://bulma.io/documentation/elements/notification/)
-  by clicking on the X button.
-* `bulma-dropdown` will open/close dropdowns using the `is-active` class. It mimics how the dropdowns function on
-  the [documentation page](https://bulma.io/documentation/components/dropdown/#hoverable-or-toggable).
-* `bulma-modal` will handle opening and closing modals. Just assign the `modal-button` class to a `<button>`, and make
-  sure it has a `data-target` attribute that matches the `id` of the modal that you want to open.
-  See [the example code from Bulma's documentation](https://bulma.io/documentation/components/modal/) for modal element
-  code.
 
 Compiling custom SCSS
 ------------------------
@@ -188,7 +151,7 @@ If you're writing custom SCSS for your application, `django-simple-bulma` provid
 This is provided mainly because `django-simple-bulma` may cause conflicts and issues with other tools to compile SCSS
 for you.
 
-To use this feature, please specify the `custom_css` key when defining your `BULMA_SETTINGS`. This should be a list of
+To use this feature, please specify the `custom_scss` key when defining your `BULMA_SETTINGS`. This should be a list of
 strings, containing _relative paths_ to `.scss` files to be compiled.
 
 ```python
@@ -213,6 +176,123 @@ Here's the strategy the finder uses:
 * If the path is found using one of these Finders, compile it to css and collect it.
 * Otherwise, raise a `ValueException` asking you to double-check the filepath.
 
+Migration Guide: v2.x to v3.0
+------------------------------
+
+**django-simple-bulma v3.0** includes significant changes to support Bulma 1.0+ and focuses on actively maintained extensions only. This is a **breaking change** that requires migration steps.
+
+### What's Changed
+
+- **Bulma version**: Upgraded from v0.9.4 to v1.0+
+- **Extension support**: Streamlined from 18+ extensions to 2 actively maintained extensions
+- **Compatibility**: All extensions are now Bulma 1.0+ compatible and actively maintained
+
+### Removed Extensions
+
+The following extensions have been **removed** due to being unmaintained or incompatible with Bulma 1.0+:
+
+- `bulma-badge`
+- `bulma-carousel`
+- `bulma-checkradio`
+- `bulma-collapsible`
+- `bulma-coolcheckboxes`
+- `bulma-divider`
+- `bulma-megamenu`
+- `bulma-pageloader`
+- `bulma-pricingtable`
+- `bulma-quickview`
+- `bulma-ribbon`
+- `bulma-slider`
+- `bulma-steps`
+- `bulma-switch`
+- `bulma-tagsinput`
+- `bulma-timeline`
+
+### Supported Extensions (v3.0+)
+
+Only actively maintained, Bulma 1.0+ compatible extensions are now supported:
+
+- **[bulma-calendar](https://github.com/michael-hack/bulma-calendar)**: Calendar and datepicker components (v7.1.1+)
+- **[bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)**: Tooltip components (v1.2.0+)
+
+
+## Migration Steps
+
+### Update Your BULMA_SETTINGS
+
+Remove any unsupported extensions from your configuration:
+
+```python
+# Before (v2.x)
+BULMA_SETTINGS = {
+    "extensions": [
+        "bulma-collapsible",    # ❌ No longer supported
+        "bulma-calendar",       # ✅ Still supported (new maintained version)
+        "bulma-tooltip",        # ✅ Still supported  
+        "bulma-tagsinput",      # ❌ No longer supported
+        "bulma-badge",          # ❌ No longer supported
+        # ... other removed extensions
+    ],
+    # ... other settings remain the same
+}
+
+# After (v3.0+)
+BULMA_SETTINGS = {
+    "extensions": [
+        "bulma-calendar",       # ✅ Updated to maintained version
+        "bulma-tooltip",        # ✅ Updated to maintained version
+    ],
+    # ... other settings remain the same
+}
+```
+
+### Alternative Solutions for Removed Extensions
+
+If you were using removed extensions, here are specific, modern alternatives that work well with Bulma:
+
+**For form controls (checkradio, switch, slider):**
+- **Custom CSS Solutions**: Use [Pretty Checkbox](https://lokesh-coder.github.io/pretty-checkbox/) (pure CSS library) or [CSS-Tricks custom checkboxes guide](https://css-tricks.com/zero-trickery-custom-radios-and-checkboxes/)
+- **Modern HTML5**: Native `<input type="range">` for sliders, styled with CSS custom properties
+- **Accessibility-first**: [Modern CSS Solutions for radio buttons](https://moderncss.dev/pure-css-custom-styled-radio-buttons/) with built-in accessibility
+
+**For carousel components:**
+- **[Swiper](https://swiperjs.com/)**: Modern, performant carousel with Bulma CSS compatibility
+- **[Embla Carousel](https://www.embla-carousel.com/)**: Lightweight, framework-agnostic carousel library  
+- **[Glider.js](https://nickpiscitelli.github.io/Glider.js/)**: Fast, dependency-free carousel with responsive breakpoints
+
+**For layout components (collapsible, steps, timeline):**
+- **Collapsible**: Use Bulma's [`is-hidden` modifier](https://bulma.io/documentation/modifiers/display-responsive/) with custom JavaScript toggle functions
+- **Steps**: Build with Bulma's [breadcrumb component](https://bulma.io/documentation/components/breadcrumb/) styling or custom flexbox layouts
+- **Timeline**: CSS-only solutions using [flexbox utilities](https://bulma.io/documentation/helpers/flexbox-helpers/) and [Bulma's spacing helpers](https://bulma.io/documentation/helpers/spacing-helpers/)
+
+**For UI elements (badge, ribbon, divider):**
+- **Badge**: Use Bulma's [`tag` component](https://bulma.io/documentation/elements/tag/) or [`notification is-small`](https://bulma.io/documentation/elements/notification/) for badge-like elements
+- **Ribbon**: CSS-only ribbon effects using `::before`/`::after` pseudo-elements with [Bulma colors](https://bulma.io/documentation/overview/colors/)
+- **Divider**: Use [`hr` element](https://bulma.io/documentation/elements/other/#horizontal-rule) with custom CSS or [title component](https://bulma.io/documentation/elements/title/) styling
+
+**For advanced components:**
+- **Modal/Dropdown**: Use the built-in JavaScript helpers already included in django-simple-bulma or Bulma's [`modal`](https://bulma.io/documentation/components/modal/)/[`dropdown`](https://bulma.io/documentation/components/dropdown/) components
+- **Pageloader**: CSS-only loading animations using Bulma's [`loader` mixin](https://bulma.io/documentation/elements/button/#loading-button) and custom positioning
+- **Quickview**: Implement with Bulma's [`modal` component](https://bulma.io/documentation/components/modal/) and custom JavaScript
+
+### Test Your Application
+
+After updating your settings:
+
+1. Run `python manage.py collectstatic` to rebuild your CSS
+2. Test that your forms and UI components still work as expected
+3. Verify that only supported extensions are being loaded
+4. Check for any styling regressions
+
+### Update Custom CSS (if needed)
+
+If you have custom CSS that depends on removed extensions:
+
+1. Remove any `@import` statements referencing removed extensions
+2. Replace extension-specific classes with custom implementations
+3. Test your styling changes across different screen sizes
+
+
 Troubleshooting
 ---------------
 
@@ -221,5 +301,5 @@ Troubleshooting
   a `collectstatic`. To solve this, just uninstall `sass` and use `libsass` instead.
 
 If you run into any other problems with this app,
-please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and I'll will be happy to help
+please [create an issue](https://github.com/python-discord/django-simple-bulma/issues), and I will be happy to help
 you with it. You can also find me on Discord as `lemon#0001` at https://discord.gg/python.

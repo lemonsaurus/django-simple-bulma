@@ -13,6 +13,7 @@ from django.conf import settings
 from django.contrib.staticfiles.finders import BaseFinder, get_finder
 from django.core.files.storage import FileSystemStorage
 
+from .css_variables import convert_sass_variables_to_css
 from .utils import (
     get_js_files,
     get_sass_files,
@@ -93,9 +94,133 @@ class SimpleBulmaFinder(BaseFinder):
                 return path.relative_to(directory)
 
     def _get_bulma_css(self) -> List[str]:
-        """Compiles the bulma css files for each theme and returns their relative paths."""
-        # If the user has the sass module installed in addition to libsass,
-        # warn the user and fail hard.
+        """
+        Gets or compiles the bulma css files for each theme and returns their relative paths.
+
+        For Bulma 1.0+, uses pre-compiled CSS with CSS variable injection for customization.
+        This provides better performance and backwards compatibility with existing themes.
+        """
+        # Get current configuration
+        current_extensions = (
+            settings.BULMA_SETTINGS.get("extensions", [])
+            if hasattr(settings, "BULMA_SETTINGS") else []
+        )
+        has_extensions = bool(current_extensions)
+        themes = get_themes()
+
+        # Check Bulma version
+        version_file = self.bulma_submodule_path.parent / "package.json"
+        is_bulma_1_plus = False
+        if version_file.exists():
+            import json
+            with open(version_file, "r", encoding="utf-8") as f:
+                package_data = json.load(f)
+                version = package_data.get("version", "0.0.0")
+                is_bulma_1_plus = version.startswith("1.")
+
+        # For Bulma 1.0+, use pre-compiled CSS with CSS variable customization
+        if is_bulma_1_plus:
+            return self._get_bulma_1_css(themes, has_extensions)
+
+        # For older Bulma versions, fall back to SASS compilation
+        return self._compile_sass_fallback()
+
+    def _get_bulma_1_css(self, themes: List[str], has_extensions: bool) -> List[str]:
+        """
+        Generate CSS files for Bulma 1.0+ using pre-compiled CSS with CSS variable injection.
+
+        Args:
+            themes: List of theme names (e.g., ['dark', 'light'])
+            has_extensions: Whether extensions are enabled
+
+        Returns:
+            List of relative paths to generated CSS files
+        """
+        theme_paths = []
+        bulma_root = self.bulma_submodule_path.parent
+        precompiled_css = bulma_root / "css" / "bulma.min.css"
+
+        if not precompiled_css.exists():
+            raise FileNotFoundError(
+                f"Pre-compiled Bulma CSS not found at {precompiled_css}. "
+                f"This file should be available in the Bulma 1.0+ distribution at "
+                f"css/bulma.min.css. Please ensure the Bulma submodule is updated "
+                f"to version 1.0+ and contains the pre-compiled CSS files."
+            )
+
+        # Read the base pre-compiled CSS
+        with open(precompiled_css, "r", encoding="utf-8") as f:
+            base_css = f.read()
+
+        # Process default theme first (empty string means default)
+        theme_names = [""] + themes
+
+        for theme in theme_names:
+            # Get variables for this theme
+            variables = self.variables.copy()  # Default variables
+            if theme:
+                # Override with theme-specific variables
+                theme_key = f"{theme}_variables"
+                if hasattr(settings, "BULMA_SETTINGS") and theme_key in settings.BULMA_SETTINGS:
+                    variables.update(settings.BULMA_SETTINGS[theme_key])
+
+            # Generate CSS variable overrides
+            css_variables = convert_sass_variables_to_css(variables)
+
+            # Collect extension CSS
+            extension_css = ""
+            if has_extensions:
+                extension_css = self._get_extension_css()
+
+            # Combine all CSS
+            final_css = base_css
+            if css_variables:
+                final_css = css_variables + "\n" + final_css
+            if extension_css:
+                final_css = final_css + "\n" + extension_css
+
+            # Write theme CSS file
+            theme_filename = f"{theme + '_' if theme else ''}bulma.css"
+            theme_path = f"css/{theme_filename}"
+            css_path = simple_bulma_path / theme_path
+            css_path.parent.mkdir(parents=True, exist_ok=True)
+
+            with open(css_path, "w", encoding="utf-8") as f:
+                f.write(final_css)
+
+            theme_paths.append(theme_path)
+
+        return theme_paths
+
+    def _get_extension_css(self) -> str:
+        """
+        Collect CSS from enabled extensions.
+
+        Returns:
+            Combined CSS from all enabled extensions
+        """
+        extension_css_parts = []
+
+        for ext_dir in (simple_bulma_path / "extensions").iterdir():
+            if is_enabled(ext_dir):
+                # Look for CSS files in the extension
+                dist_dir = ext_dir / "dist"
+                if dist_dir.exists():
+                    for css_file in dist_dir.glob("*.css"):
+                        if not css_file.name.endswith(".min.css"):  # Prefer non-minified
+                            try:
+                                with open(css_file, "r", encoding="utf-8") as f:
+                                    extension_css_parts.append(f"/* Extension: {ext_dir.name} */")
+                                    extension_css_parts.append(f.read())
+                            except (IOError, UnicodeDecodeError):
+                                # Skip files that can't be read
+                                continue
+
+        return "\n".join(extension_css_parts)
+
+    def _compile_sass_fallback(self) -> List[str]:
+        """Legacy SASS compilation method (for Bulma < 1.0 compatibility)."""
+        # Check for proper libsass installation
         if not hasattr(sass, "libsass_version"):
             raise UserWarning(
                 "There was an error compiling your Bulma CSS. This error is "
@@ -110,7 +235,7 @@ class SimpleBulmaFinder(BaseFinder):
         sass_bulma_submodule_path = self.bulma_submodule_path \
             .relative_to(simple_bulma_path).as_posix()
 
-        bulma_string = f"@import '{sass_bulma_submodule_path}/utilities/_all';\n"
+        bulma_string = f"@import '{sass_bulma_submodule_path}/utilities/_index';\n"
 
         # Now load bulma dynamically.
         for dirname in self.bulma_submodule_path.iterdir():
@@ -119,7 +244,7 @@ class SimpleBulmaFinder(BaseFinder):
             if dirname.name == "utilities":
                 continue
 
-            bulma_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_all';\n"
+            bulma_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_index';\n"
 
         # Now load in the extensions that the user wants
         extensions_string = self._get_extension_imports()

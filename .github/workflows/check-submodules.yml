@@ -1,0 +1,106 @@
+name: Check Submodules
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_call:
+
+jobs:
+  check-submodules:
+    name: Check if submodules need updates
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository with submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Check if PR already updates submodules
+      id: pr_check
+      run: |
+        # Check if this PR already contains submodule updates
+        if git diff origin/main...HEAD --name-only | grep -E '\.(gitmodules|extensions)' > /dev/null; then
+          echo "pr_updates_submodules=true" >> $GITHUB_OUTPUT
+          echo "This PR already updates submodules - skipping check"
+        else
+          echo "pr_updates_submodules=false" >> $GITHUB_OUTPUT
+          echo "PR does not update submodules - checking for available updates"
+        fi
+
+    - name: Check for available submodule updates
+      id: check
+      if: steps.pr_check.outputs.pr_updates_submodules == 'false'
+      run: |
+        # Update submodules to see what's available (without committing)
+        git submodule update --recursive --remote
+
+        # Check if there are any changes
+        if git diff --quiet; then
+          echo "needs_update=false" >> $GITHUB_OUTPUT
+          echo "No submodule updates available"
+        else
+          echo "needs_update=true" >> $GITHUB_OUTPUT
+          echo "Submodule updates are available:"
+          git diff --name-only
+
+          # Get the exact commands needed
+          echo "commands<<EOF" >> $GITHUB_OUTPUT
+          echo "git submodule update --recursive --remote" >> $GITHUB_OUTPUT
+          echo "git add ." >> $GITHUB_OUTPUT
+          echo 'git commit -m "chore: update submodules to latest versions"' >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Clean up old submodule comments and post new one
+      if: steps.pr_check.outputs.pr_updates_submodules == 'false' && steps.check.outputs.needs_update == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const commands = `${{ steps.check.outputs.commands }}`;
+
+          // First, find and delete old submodule update comments
+          const comments = await github.rest.issues.listComments({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+
+          for (const comment of comments.data) {
+            if (comment.user.login === 'github-actions[bot]' &&
+                comment.body.includes('🔄 Submodule Updates')) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+              });
+              console.log(`Deleted old submodule comment: ${comment.id}`);
+            }
+          }
+
+          // Then post the new comment
+          const body = `## 🔄 Submodule Updates Required
+
+          This PR must be updated to use the latest versions of git submodules before it can be merged.
+
+          **To update submodules, run these commands:**
+          \`\`\`bash
+          ${commands}
+          \`\`\`
+
+          This will ensure your PR uses the most recent versions of Bulma and extensions.`;
+
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: body
+          });
+
+    - name: Fail CI if submodule updates are needed
+      if: steps.pr_check.outputs.pr_updates_submodules == 'false' && steps.check.outputs.needs_update == 'true'
+      run: |
+        echo "❌ Submodule updates are required before this PR can be merged."
+        echo "Please run the commands provided in the PR comment to update submodules."
+        exit 1

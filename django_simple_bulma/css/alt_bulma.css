@@ -1,8 +1,8 @@
 :root {
-  --bulma-primary-h: 211deg;
+  --bulma-primary-h: 0deg;
   --bulma-primary-s: 100%;
-  --bulma-primary-l: 50%;
-  --bulma-family-primary: Arial;
+  --bulma-primary-l: 71%;
+  --bulma-family-primary: Helvetica;
 }
 
 @charset "UTF-8";

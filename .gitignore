@@ -8,6 +8,9 @@ dist/*
 !dist/js
 django_simple_bulma.egg-info/
 
+# Coverage reports
+.coverage
+htmlcov/
 
 # AI stuff
 .claude

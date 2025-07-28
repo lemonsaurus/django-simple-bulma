@@ -1,27 +1,9 @@
 [submodule "bulma"]
 	path = django_simple_bulma/bulma
 	url = https://github.com/jgthms/bulma.git
-[submodule "bulma-tagsinput"]
-	path = django_simple_bulma/extensions/bulma-tagsinput
-	url = https://github.com/CreativeBulma/bulma-tagsinput.git
-[submodule "bulma-divider"]
-	path = django_simple_bulma/extensions/bulma-divider
-	url = https://github.com/CreativeBulma/bulma-divider.git
-[submodule "bulma-badge"]
-	path = django_simple_bulma/extensions/bulma-badge
-	url = https://github.com/CreativeBulma/bulma-badge.git
 [submodule "bulma-calendar"]
 	path = django_simple_bulma/extensions/bulma-calendar
-	url = https://github.com/Wikiki/bulma-calendar.git
-[submodule "bulma-megamenu"]
-	path = django_simple_bulma/extensions/bulma-megamenu
-	url = https://github.com/hunzaboy/bulma-megamenu.git
-[submodule "Cool-Checkboxes-for-Bulma.io"]
-	path = django_simple_bulma/extensions/bulma-coolcheckboxes
-	url = https://github.com/hunzaboy/Cool-Checkboxes-for-Bulma.io.git
-[submodule "bulma-collapsible"]
-	path = django_simple_bulma/extensions/bulma-collapsible
-	url = https://github.com/CreativeBulma/bulma-collapsible.git
+	url = https://github.com/michael-hack/bulma-calendar.git
 [submodule "bulma-tooltip"]
 	path = django_simple_bulma/extensions/bulma-tooltip
-	url = https://github.com/creativebulma/bulma-tooltip.git
+	url = https://github.com/CreativeBulma/bulma-tooltip.git
