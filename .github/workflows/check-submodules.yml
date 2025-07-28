@@ -53,12 +53,33 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
         fi
 
-    - name: Comment on PR if updates needed
+    - name: Clean up old submodule comments and post new one
       if: steps.pr_check.outputs.pr_updates_submodules == 'false' && steps.check.outputs.needs_update == 'true'
       uses: actions/github-script@v7
       with:
         script: |
           const commands = `${{ steps.check.outputs.commands }}`;
+          
+          // First, find and delete old submodule update comments
+          const comments = await github.rest.issues.listComments({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+          
+          for (const comment of comments.data) {
+            if (comment.user.login === 'github-actions[bot]' && 
+                comment.body.includes('🔄 Submodule Updates')) {
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+              });
+              console.log(`Deleted old submodule comment: ${comment.id}`);
+            }
+          }
+          
+          // Then post the new comment
           const body = `## 🔄 Submodule Updates Required
 
           This PR must be updated to use the latest versions of git submodules before it can be merged.
@@ -70,7 +91,7 @@ jobs:
 
           This will ensure your PR uses the most recent versions of Bulma and extensions.`;
 
-          github.rest.issues.createComment({
+          await github.rest.issues.createComment({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
