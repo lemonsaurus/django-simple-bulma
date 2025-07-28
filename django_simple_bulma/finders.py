@@ -14,6 +14,7 @@ from django.contrib.staticfiles.finders import BaseFinder, get_finder
 from django.core.files.storage import FileSystemStorage
 
 from .utils import (
+    extensions,
     get_js_files,
     get_sass_files,
     get_themes,
@@ -93,9 +94,31 @@ class SimpleBulmaFinder(BaseFinder):
                 return path.relative_to(directory)
 
     def _get_bulma_css(self) -> List[str]:
-        """Compiles the bulma css files for each theme and returns their relative paths."""
-        # If the user has the sass module installed in addition to libsass,
-        # warn the user and fail hard.
+        """Gets or compiles the bulma css files for each theme and returns their relative paths."""
+        # Check if we can use pre-compiled CSS (when no custom variables or extensions)
+        has_custom_variables = bool(self.variables)
+        has_extensions = bool(extensions)
+        has_themes = bool(get_themes())
+
+        # If no customization is needed, use pre-compiled CSS
+        if not has_custom_variables and not has_extensions and not has_themes:
+            # bulma_submodule_path points to /sass, but CSS is in /css
+            bulma_root = self.bulma_submodule_path.parent
+            precompiled_css = bulma_root / "css" / "bulma.min.css"
+            if precompiled_css.exists():
+                # Copy pre-compiled CSS to our location
+                theme_path = "css/bulma.css"
+                css_path = simple_bulma_path / theme_path
+                css_path.parent.mkdir(parents=True, exist_ok=True)
+
+                with open(precompiled_css, "r", encoding="utf-8") as src:
+                    with open(css_path, "w", encoding="utf-8") as dst:
+                        dst.write(src.read())
+
+                return [theme_path]
+
+        # If we need customization, we must compile with SASS
+        # But Bulma 1.0+ requires Dart Sass, not libsass
         if not hasattr(sass, "libsass_version"):
             raise UserWarning(
                 "There was an error compiling your Bulma CSS. This error is "
@@ -106,11 +129,34 @@ class SimpleBulmaFinder(BaseFinder):
                 "not both `sass` and `libsass`, or this application will not work."
             )
 
+        # Check for Bulma 1.0+ compatibility issue
+        version_file = self.bulma_submodule_path / "package.json"
+        if version_file.exists():
+            import json
+            with open(version_file, "r", encoding="utf-8") as f:
+                package_data = json.load(f)
+                version = package_data.get("version", "0.0.0")
+                if version.startswith("1."):
+                    raise UserWarning(
+                        "Bulma 1.0+ requires Dart Sass for compilation, but django-simple-bulma "
+                        "currently uses libsass which is incompatible with the modern SASS syntax."
+                        "\n"
+                        "For basic usage without custom variables or extensions, pre-compiled CSS "
+                        "will be used automatically. For customization, please use "
+                        "django-simple-bulma v2.x with Bulma 0.9.x, or wait for a future version "
+                        "that supports Dart Sass."
+                    )
+
+        # Fallback SASS compilation (will likely fail with Bulma 1.0+)
+        return self._compile_sass_fallback()
+
+    def _compile_sass_fallback(self) -> List[str]:
+        """Legacy SASS compilation method (for Bulma < 1.0 compatibility)."""
         # SASS wants paths with forward slash:
         sass_bulma_submodule_path = self.bulma_submodule_path \
             .relative_to(simple_bulma_path).as_posix()
 
-        bulma_string = f"@import '{sass_bulma_submodule_path}/utilities/_all';\n"
+        bulma_string = f"@import '{sass_bulma_submodule_path}/utilities/_index';\n"
 
         # Now load bulma dynamically.
         for dirname in self.bulma_submodule_path.iterdir():
@@ -119,7 +165,7 @@ class SimpleBulmaFinder(BaseFinder):
             if dirname.name == "utilities":
                 continue
 
-            bulma_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_all';\n"
+            bulma_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_index';\n"
 
         # Now load in the extensions that the user wants
         extensions_string = self._get_extension_imports()
