@@ -1,0 +1,90 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-simple-bulma"
+version = "2.7.0"
+description = "Django application to add the Bulma CSS framework and its extensions"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Python Discord", email = "staff@pythondiscord.com"},
+]
+maintainers = [
+    {name = "Python Discord", email = "staff@pythondiscord.com"},
+]
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.2",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=4.2",
+    "libsass~=0.19",
+]
+
+[project.urls]
+Homepage = "https://github.com/python-discord/django-simple-bulma"
+Repository = "https://github.com/python-discord/django-simple-bulma"
+Issues = "https://github.com/python-discord/django-simple-bulma/issues"
+
+[project.optional-dependencies]
+dev = [
+    "flake8>=5.0,<7.0",
+    "flake8-annotations>=2.0,<4.0",
+    "flake8-bugbear>=22.0,<25.0",
+    "flake8-docstrings>=1.6,<2.0",
+    "flake8-import-order>=0.18,<1.0",
+    "flake8-tidy-imports>=4.0,<5.0",
+    "flake8-todo>=0.7,<1.0",
+    "flake8-string-format>=0.3,<1.0",
+    "pdoc~=0.3",
+    "pep8-naming~=0.9",
+    "pre-commit~=2.1",
+    "PyGithub~=1.43",
+    "wheel~=0.33",
+    "pytest>=7.0,<9.0",
+    "pytest-django>=4.5,<5.0",
+    "pytest-mock>=3.6,<4.0",
+    "coverage[toml]>=6.0,<8.0",
+]
+
+[tool.hatch.build]
+include = [
+    "django_simple_bulma/**",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["django_simple_bulma"]
+
+[tool.uv]
+dev-dependencies = [
+    "flake8>=5.0,<7.0",
+    "flake8-annotations>=2.0,<4.0",
+    "flake8-bugbear>=22.0,<25.0",
+    "flake8-docstrings>=1.6,<2.0",
+    "flake8-import-order>=0.18,<1.0",
+    "flake8-tidy-imports>=4.0,<5.0",
+    "flake8-todo>=0.7,<1.0",
+    "flake8-string-format>=0.3,<1.0",
+    "pdoc~=0.3",
+    "pep8-naming~=0.9",
+    "pre-commit~=2.1",
+    "PyGithub~=1.43",
+    "wheel~=0.33",
+    "pytest>=7.0,<9.0",
+    "pytest-django>=4.5,<5.0",
+    "pytest-mock>=3.6,<4.0",
+    "coverage[toml]>=6.0,<8.0",
+]
