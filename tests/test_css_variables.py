@@ -1,6 +1,5 @@
 """Tests for CSS variable conversion utilities."""
 import pytest
-
 from django_simple_bulma.css_variables import (
     convert_sass_variables_to_css,
     get_variable_mapping,
