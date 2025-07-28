@@ -42,18 +42,6 @@ jobs:
       run: |
         # UV can set versions directly in pyproject.toml
         uv version ${{ steps.get_version.outputs.VERSION }}
-        
-        # Also update setup.py for backwards compatibility
-        uv run --no-sync python -c "
-import re
-version = '${{ steps.get_version.outputs.VERSION }}'
-with open('setup.py', 'r') as f:
-    content = f.read()
-content = re.sub(r'version=\".*?\"', f'version=\"{version}\"', content)
-with open('setup.py', 'w') as f:
-    f.write(content)
-print(f'Updated setup.py version to {version}')
-        "
 
     - name: Build package
       run: uv build
