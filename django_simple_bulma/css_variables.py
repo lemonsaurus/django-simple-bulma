@@ -23,6 +23,7 @@ def hex_to_hsl(hex_color: str) -> Tuple[int, int, int]:
         - lightness is 0-100 percent
     """
     # Handle named colors - convert to hex first
+    # Extended set based on CSS Color Module Level 4 for broader compatibility
     named_colors = {
         'white': '#ffffff',
         'black': '#000000',
@@ -38,6 +39,14 @@ def hex_to_hsl(hex_color: str) -> Tuple[int, int, int]:
         'brown': '#a52a2a',
         'gray': '#808080',
         'grey': '#808080',
+        'lime': '#00ff00',
+        'aqua': '#00ffff',
+        'fuchsia': '#ff00ff',
+        'maroon': '#800000',
+        'navy': '#000080',
+        'olive': '#808000',
+        'silver': '#c0c0c0',
+        'teal': '#008080',
     }
 
     # Normalize hex color
@@ -102,15 +111,16 @@ def is_color_value(value: str) -> bool:
     Returns:
         True if the value appears to be a color
     """
-    # Hex color
-    if re.match(r'^#[0-9a-fA-F]{3,6}$', value):
+    # Hex color - strict validation for 3 or 6 character hex values
+    if re.match(r'^#[0-9a-fA-F]{3}$', value) or re.match(r'^#[0-9a-fA-F]{6}$', value):
         return True
 
-    # Named colors
+    # Named colors - extended set for broader compatibility
     named_colors = {
         'white', 'black', 'red', 'green', 'blue', 'yellow',
         'cyan', 'magenta', 'orange', 'purple', 'pink', 'brown',
-        'gray', 'grey'
+        'gray', 'grey', 'lime', 'aqua', 'fuchsia', 'maroon',
+        'navy', 'olive', 'silver', 'teal'
     }
     if value.lower() in named_colors:
         return True

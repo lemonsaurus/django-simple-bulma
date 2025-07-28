@@ -141,7 +141,12 @@ class SimpleBulmaFinder(BaseFinder):
         precompiled_css = bulma_root / "css" / "bulma.min.css"
 
         if not precompiled_css.exists():
-            raise FileNotFoundError(f"Pre-compiled Bulma CSS not found at {precompiled_css}")
+            raise FileNotFoundError(
+                f"Pre-compiled Bulma CSS not found at {precompiled_css}. "
+                f"This file should be available in the Bulma 1.0+ distribution at "
+                f"css/bulma.min.css. Please ensure the Bulma submodule is updated "
+                f"to version 1.0+ and contains the pre-compiled CSS files."
+            )
 
         # Read the base pre-compiled CSS
         with open(precompiled_css, "r", encoding="utf-8") as f:
