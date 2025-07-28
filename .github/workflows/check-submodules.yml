@@ -59,16 +59,16 @@ jobs:
       with:
         script: |
           const commands = `${{ steps.check.outputs.commands }}`;
-          
+
           // First, find and delete old submodule update comments
           const comments = await github.rest.issues.listComments({
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
           });
-          
+
           for (const comment of comments.data) {
-            if (comment.user.login === 'github-actions[bot]' && 
+            if (comment.user.login === 'github-actions[bot]' &&
                 comment.body.includes('🔄 Submodule Updates')) {
               await github.rest.issues.deleteComment({
                 owner: context.repo.owner,
@@ -78,7 +78,7 @@ jobs:
               console.log(`Deleted old submodule comment: ${comment.id}`);
             }
           }
-          
+
           // Then post the new comment
           const body = `## 🔄 Submodule Updates Required
 

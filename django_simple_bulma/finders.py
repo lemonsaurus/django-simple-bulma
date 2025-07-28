@@ -14,7 +14,6 @@ from django.contrib.staticfiles.finders import BaseFinder, get_finder
 from django.core.files.storage import FileSystemStorage
 
 from .utils import (
-    extensions,
     get_js_files,
     get_sass_files,
     get_themes,
@@ -97,7 +96,12 @@ class SimpleBulmaFinder(BaseFinder):
         """Gets or compiles the bulma css files for each theme and returns their relative paths."""
         # Check if we can use pre-compiled CSS (when no custom variables or extensions)
         has_custom_variables = bool(self.variables)
-        has_extensions = bool(extensions)
+        # Get extensions directly from settings to avoid caching issues
+        current_extensions = (
+            settings.BULMA_SETTINGS.get("extensions", [])
+            if hasattr(settings, "BULMA_SETTINGS") else []
+        )
+        has_extensions = bool(current_extensions)
         has_themes = bool(get_themes())
 
         # If no customization is needed, use pre-compiled CSS
