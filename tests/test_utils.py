@@ -214,3 +214,42 @@ class TestModuleConstants:
             assert len(search) == 2
             assert isinstance(search[0], Path)
             assert isinstance(search[1], str)
+
+
+class TestBulmaBlockListIntegration:
+    """Test bulma-block-list extension integration."""
+
+    def test_bulma_block_list_extension_exists(self) -> None:
+        """Test that bulma-block-list extension directory exists."""
+        block_list_path = simple_bulma_path / "extensions" / "bulma-block-list"
+        assert block_list_path.exists()
+        assert block_list_path.is_dir()
+
+    def test_bulma_block_list_has_src_scss(self) -> None:
+        """Test that bulma-block-list has SCSS source files in src folder."""
+        block_list_path = simple_bulma_path / "extensions" / "bulma-block-list"
+        scss_file = block_list_path / "src" / "block-list.scss"
+        assert scss_file.exists()
+
+        # Verify it contains block-list styles
+        with open(scss_file, "r", encoding="utf-8") as f:
+            content = f.read()
+            assert ".block-list" in content
+
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-block-list']})
+    def test_bulma_block_list_is_enabled(self) -> None:
+        """Test that bulma-block-list can be enabled."""
+        assert is_enabled('bulma-block-list') is True
+
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-block-list']})
+    def test_bulma_block_list_scss_files_discovered(self) -> None:
+        """Test that bulma-block-list SCSS source files are discovered."""
+        block_list_path = simple_bulma_path / "extensions" / "bulma-block-list"
+        sass_files = get_sass_files(block_list_path)
+
+        assert len(sass_files) > 0
+        # The system should find src/*.scss files for this extension
+        assert any(
+            "src" in str(sass_file) and "block-list" in str(sass_file)
+            for sass_file in sass_files
+        )

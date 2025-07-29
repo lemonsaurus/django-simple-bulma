@@ -7,3 +7,6 @@
 [submodule "bulma-tooltip"]
 	path = django_simple_bulma/extensions/bulma-tooltip
 	url = https://github.com/CreativeBulma/bulma-tooltip.git
+[submodule "django_simple_bulma/extensions/bulma-block-list"]
+	path = django_simple_bulma/extensions/bulma-block-list
+	url = https://github.com/chrisrhymes/bulma-block-list.git
