@@ -74,7 +74,6 @@ BULMA_SETTINGS = {
     "bulma-block-list",
     "bulma-calendar",
     "bulma-tooltip",
-    "bulma-block-list",
   ],
   "variables": {
     "primary": "#000000",
@@ -218,7 +217,6 @@ Only actively maintained, Bulma 1.0+ compatible extensions are now supported:
 - **[bulma-block-list](https://github.com/chrisrhymes/bulma-block-list)**: Block-style list components with highlighting (v1.1.0+)
 - **[bulma-calendar](https://github.com/michael-hack/bulma-calendar)**: Calendar and datepicker components (v7.1.1+)
 - **[bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)**: Tooltip components (v1.2.0+)
-- **[bulma-block-list](https://github.com/chrisrhymes/bulma-block-list)**: Block list components for displaying items in a vertical list (v0.4.0+)
 
 
 ## Migration Steps
@@ -247,7 +245,6 @@ BULMA_SETTINGS = {
         "bulma-block-list",     # ✅ New actively maintained extension
         "bulma-calendar",       # ✅ Updated to maintained version
         "bulma-tooltip",        # ✅ Updated to maintained version
-        "bulma-block-list",     # ✅ New maintained extension
     ],
     # ... other settings remain the same
 }
