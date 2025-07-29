@@ -36,10 +36,6 @@ class TestCollectstaticIntegration:
                 assert '$primary' not in content  # Variables should be compiled
 
     @pytest.mark.django_db
-    @pytest.mark.skip(
-        reason="bulma-block-list extension requires SCSS compilation "
-               "not supported with Bulma 1.0+ and libsass"
-    )
     def test_collectstatic_with_bulma_block_list(self) -> None:
         """Test that collectstatic includes bulma-block-list extension."""
         with tempfile.TemporaryDirectory() as temp_dir:
