@@ -16,7 +16,7 @@ Releases are automated through GitHub Actions when a new GitHub release is publi
 Release tags must follow semantic versioning with an optional `v` prefix:
 
 - ✅ `v1.2.3` (recommended)
-- ✅ `1.2.3` 
+- ✅ `1.2.3`
 - ❌ `release-1.2.3`
 - ❌ `1.2` (must be full semver)
 
