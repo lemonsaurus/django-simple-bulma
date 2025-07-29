@@ -1,5 +1,6 @@
-django-simple-bulma
-===================
+<img width="1536" height="473" alt="image" src="https://github.com/user-attachments/assets/4b373a71-24fc-48e4-907f-1dbdb68352e3" />
+
+
 `django-simple-bulma` makes it super easy to drop Bulma (plus a bunch of popular extensions) into your app with minimal setup.
 
 Installation
