@@ -22,6 +22,8 @@ jobs:
       with:
         submodules: recursive
         token: ${{ secrets.GITHUB_TOKEN }}
+        # Checkout the default branch, not the release tag
+        ref: ${{ github.event.repository.default_branch }}
 
     - name: Install UV
       uses: astral-sh/setup-uv@v4
@@ -51,7 +53,7 @@ jobs:
         git config --local user.name "GitHub Action"
         git add pyproject.toml
         git commit -m "🔖 bump version to ${{ steps.get_version.outputs.VERSION }}"
-        git push
+        git push origin ${{ github.event.repository.default_branch }}
 
   publish-to-pypi:
     name: Build and publish to PyPI
