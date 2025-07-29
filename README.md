@@ -71,7 +71,6 @@ it there. Here's an example of what that looks like:
 # Custom settings for django-simple-bulma
 BULMA_SETTINGS = {
   "extensions": [
-    "bulma-block-list",
     "bulma-calendar",
     "bulma-tooltip",
   ],
@@ -111,9 +110,13 @@ set it to the string `"all"`.
 
 We currently support these actively maintained extensions compatible with Bulma 1.0+:
 
-- [bulma-block-list](https://github.com/chrisrhymes/bulma-block-list) - Block-style list components with highlighting (v1.1.0+)
 - [bulma-calendar](https://github.com/michael-hack/bulma-calendar) - Calendar and datepicker components (v7.1.1+)
 - [bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip) - Tooltip components (v1.2.0+)
+- [bulma-responsive-tables](https://github.com/justboil/bulma-responsive-tables) - Responsive table components for mobile-friendly tables
+- [bulma-switch-control](https://github.com/justboil/bulma-switch-control) - Switch/toggle control components
+- [bulma-radio](https://github.com/justboil/bulma-radio) - Enhanced radio button components
+- [bulma-checkbox](https://github.com/justboil/bulma-checkbox) - Enhanced checkbox components  
+- [bulma-upload-control](https://github.com/justboil/bulma-upload-control) - File upload control components
 
 **Note**: As of this version, we have streamlined our extension support to focus only on actively maintained, Bulma 1.0+ compatible extensions. Many of the previously supported extensions are no longer maintained or compatible with modern Bulma versions.
 
@@ -214,9 +217,13 @@ The following extensions have been **removed** due to being unmaintained or inco
 
 Only actively maintained, Bulma 1.0+ compatible extensions are now supported:
 
-- **[bulma-block-list](https://github.com/chrisrhymes/bulma-block-list)**: Block-style list components with highlighting (v1.1.0+)
 - **[bulma-calendar](https://github.com/michael-hack/bulma-calendar)**: Calendar and datepicker components (v7.1.1+)
 - **[bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)**: Tooltip components (v1.2.0+)
+- **[bulma-responsive-tables](https://github.com/justboil/bulma-responsive-tables)**: Responsive table components for mobile-friendly tables
+- **[bulma-switch-control](https://github.com/justboil/bulma-switch-control)**: Switch/toggle control components
+- **[bulma-radio](https://github.com/justboil/bulma-radio)**: Enhanced radio button components
+- **[bulma-checkbox](https://github.com/justboil/bulma-checkbox)**: Enhanced checkbox components  
+- **[bulma-upload-control](https://github.com/justboil/bulma-upload-control)**: File upload control components
 
 
 ## Migration Steps
@@ -242,9 +249,13 @@ BULMA_SETTINGS = {
 # After (v3.0+)
 BULMA_SETTINGS = {
     "extensions": [
-        "bulma-block-list",     # ✅ New actively maintained extension
-        "bulma-calendar",       # ✅ Updated to maintained version
-        "bulma-tooltip",        # ✅ Updated to maintained version
+        "bulma-calendar",          # ✅ Updated to maintained version
+        "bulma-tooltip",           # ✅ Updated to maintained version
+        "bulma-responsive-tables", # ✅ New JustBoil extension
+        "bulma-switch-control",    # ✅ New JustBoil extension
+        "bulma-radio",             # ✅ New JustBoil extension
+        "bulma-checkbox",          # ✅ New JustBoil extension
+        "bulma-upload-control",    # ✅ New JustBoil extension
     ],
     # ... other settings remain the same
 }

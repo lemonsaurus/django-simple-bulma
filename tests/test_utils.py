@@ -216,40 +216,65 @@ class TestModuleConstants:
             assert isinstance(search[1], str)
 
 
-class TestBulmaBlockListIntegration:
-    """Test bulma-block-list extension integration."""
+class TestJustBoilExtensionsIntegration:
+    """Test JustBoil extensions integration."""
 
-    def test_bulma_block_list_extension_exists(self) -> None:
-        """Test that bulma-block-list extension directory exists."""
-        block_list_path = simple_bulma_path / "extensions" / "bulma-block-list"
-        assert block_list_path.exists()
-        assert block_list_path.is_dir()
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-responsive-tables']})
+    def test_bulma_responsive_tables_extension(self) -> None:
+        """Test that bulma-responsive-tables extension works."""
+        responsive_tables_path = simple_bulma_path / "extensions" / "bulma-responsive-tables"
+        assert responsive_tables_path.exists()
+        assert is_enabled('bulma-responsive-tables') is True
 
-    def test_bulma_block_list_has_src_scss(self) -> None:
-        """Test that bulma-block-list has SCSS source files in src folder."""
-        block_list_path = simple_bulma_path / "extensions" / "bulma-block-list"
-        scss_file = block_list_path / "src" / "block-list.scss"
-        assert scss_file.exists()
+        # Should have pre-compiled CSS files
+        css_dir = responsive_tables_path / "css"
+        assert css_dir.exists()
+        assert (css_dir / "main.css").exists()
 
-        # Verify it contains block-list styles
-        with open(scss_file, "r", encoding="utf-8") as f:
-            content = f.read()
-            assert ".block-list" in content
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-switch-control']})
+    def test_bulma_switch_control_extension(self) -> None:
+        """Test that bulma-switch-control extension works."""
+        switch_path = simple_bulma_path / "extensions" / "bulma-switch-control"
+        assert switch_path.exists()
+        assert is_enabled('bulma-switch-control') is True
 
-    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-block-list']})
-    def test_bulma_block_list_is_enabled(self) -> None:
-        """Test that bulma-block-list can be enabled."""
-        assert is_enabled('bulma-block-list') is True
+        # Should have pre-compiled CSS files
+        css_dir = switch_path / "css"
+        assert css_dir.exists()
+        assert (css_dir / "main.css").exists()
 
-    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-block-list']})
-    def test_bulma_block_list_scss_files_discovered(self) -> None:
-        """Test that bulma-block-list SCSS source files are discovered."""
-        block_list_path = simple_bulma_path / "extensions" / "bulma-block-list"
-        sass_files = get_sass_files(block_list_path)
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-radio']})
+    def test_bulma_radio_extension(self) -> None:
+        """Test that bulma-radio extension works."""
+        radio_path = simple_bulma_path / "extensions" / "bulma-radio"
+        assert radio_path.exists()
+        assert is_enabled('bulma-radio') is True
 
-        assert len(sass_files) > 0
-        # The system should find src/*.scss files for this extension
-        assert any(
-            "src" in str(sass_file) and "block-list" in str(sass_file)
-            for sass_file in sass_files
-        )
+        # Should have pre-compiled CSS files
+        css_dir = radio_path / "css"
+        assert css_dir.exists()
+        assert (css_dir / "main.css").exists()
+
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-checkbox']})
+    def test_bulma_checkbox_extension(self) -> None:
+        """Test that bulma-checkbox extension works."""
+        checkbox_path = simple_bulma_path / "extensions" / "bulma-checkbox"
+        assert checkbox_path.exists()
+        assert is_enabled('bulma-checkbox') is True
+
+        # Should have pre-compiled CSS files
+        css_dir = checkbox_path / "css"
+        assert css_dir.exists()
+        assert (css_dir / "main.css").exists()
+
+    @override_settings(BULMA_SETTINGS={'extensions': ['bulma-upload-control']})
+    def test_bulma_upload_control_extension(self) -> None:
+        """Test that bulma-upload-control extension works."""
+        upload_path = simple_bulma_path / "extensions" / "bulma-upload-control"
+        assert upload_path.exists()
+        assert is_enabled('bulma-upload-control') is True
+
+        # Should have pre-compiled CSS files
+        css_dir = upload_path / "css"
+        assert css_dir.exists()
+        assert (css_dir / "main.css").exists()

@@ -7,6 +7,18 @@
 [submodule "bulma-tooltip"]
 	path = django_simple_bulma/extensions/bulma-tooltip
 	url = https://github.com/CreativeBulma/bulma-tooltip.git
-[submodule "django_simple_bulma/extensions/bulma-block-list"]
-	path = django_simple_bulma/extensions/bulma-block-list
-	url = https://github.com/chrisrhymes/bulma-block-list.git
+[submodule "django_simple_bulma/extensions/bulma-responsive-tables"]
+	path = django_simple_bulma/extensions/bulma-responsive-tables
+	url = https://github.com/justboil/bulma-responsive-tables.git
+[submodule "django_simple_bulma/extensions/bulma-switch-control"]
+	path = django_simple_bulma/extensions/bulma-switch-control
+	url = https://github.com/justboil/bulma-switch-control.git
+[submodule "django_simple_bulma/extensions/bulma-radio"]
+	path = django_simple_bulma/extensions/bulma-radio
+	url = https://github.com/justboil/bulma-radio.git
+[submodule "django_simple_bulma/extensions/bulma-checkbox"]
+	path = django_simple_bulma/extensions/bulma-checkbox
+	url = https://github.com/justboil/bulma-checkbox.git
+[submodule "django_simple_bulma/extensions/bulma-upload-control"]
+	path = django_simple_bulma/extensions/bulma-upload-control
+	url = https://github.com/justboil/bulma-upload-control.git

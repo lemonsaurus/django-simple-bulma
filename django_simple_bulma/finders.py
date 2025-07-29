@@ -4,6 +4,7 @@ Custom collectstatic finders.
 These finders that can be used together with StaticFileStorage
 objects to find files that should be collected by collectstatic.
 """
+import logging
 from os.path import abspath
 from pathlib import Path
 from typing import List, Tuple, Union
@@ -196,6 +197,11 @@ class SimpleBulmaFinder(BaseFinder):
         """
         Collect CSS from enabled extensions.
 
+        Supports both pre-compiled CSS files and SCSS compilation.
+        Priority order:
+        1. Pre-compiled CSS files (dist/*.css, css/*.css)
+        2. SCSS source files (src/*.scss, *.scss) - compiled on-demand
+
         Returns:
             Combined CSS from all enabled extensions
         """
@@ -203,20 +209,121 @@ class SimpleBulmaFinder(BaseFinder):
 
         for ext_dir in (simple_bulma_path / "extensions").iterdir():
             if is_enabled(ext_dir):
-                # Look for CSS files in the extension
-                dist_dir = ext_dir / "dist"
-                if dist_dir.exists():
-                    for css_file in dist_dir.glob("*.css"):
-                        if not css_file.name.endswith(".min.css"):  # Prefer non-minified
-                            try:
-                                with open(css_file, "r", encoding="utf-8") as f:
-                                    extension_css_parts.append(f"/* Extension: {ext_dir.name} */")
-                                    extension_css_parts.append(f.read())
-                            except (IOError, UnicodeDecodeError):
-                                # Skip files that can't be read
-                                continue
+                extension_css = self._get_single_extension_css(ext_dir)
+                if extension_css:
+                    extension_css_parts.append(f"/* Extension: {ext_dir.name} */")
+                    extension_css_parts.append(extension_css)
 
         return "\n".join(extension_css_parts)
+
+    def _get_single_extension_css(self, ext_dir: Path) -> str:
+        """
+        Get CSS for a single extension, trying pre-compiled CSS first, then SCSS compilation.
+
+        Args:
+            ext_dir: Path to the extension directory
+
+        Returns:
+            CSS content for the extension, or empty string if none found
+        """
+        # Try to find pre-compiled CSS files first
+        css_content = self._get_precompiled_extension_css(ext_dir)
+        if css_content:
+            return css_content
+
+        # Fall back to SCSS compilation if no pre-compiled CSS found
+        return self._compile_extension_scss(ext_dir)
+
+    def _get_precompiled_extension_css(self, ext_dir: Path) -> str:
+        """
+        Look for pre-compiled CSS files in common locations.
+
+        Args:
+            ext_dir: Path to the extension directory
+
+        Returns:
+            CSS content from pre-compiled files, or empty string if none found
+        """
+        # Search paths for pre-compiled CSS, in priority order
+        css_search_paths = [
+            ext_dir / "dist",
+            ext_dir / "css",
+            ext_dir / "dist" / "css",
+        ]
+
+        for search_path in css_search_paths:
+            if search_path.exists():
+                # Look for minified CSS first, then regular CSS
+                css_files = list(search_path.glob("*.min.css")) or list(search_path.glob("*.css"))
+
+                for css_file in css_files:
+                    try:
+                        with open(css_file, "r", encoding="utf-8") as f:
+                            return f.read()
+                    except (IOError, UnicodeDecodeError):
+                        # Skip files that can't be read
+                        continue
+
+        return ""
+
+    def _compile_extension_scss(self, ext_dir: Path) -> str:
+        """
+        Compile SCSS sources for an extension.
+
+        Args:
+            ext_dir: Path to the extension directory
+
+        Returns:
+            Compiled CSS from SCSS sources, or empty string if compilation fails
+        """
+        from django_simple_bulma.utils import get_sass_files
+
+        # Check for proper libsass installation
+        if not hasattr(sass, "libsass_version"):
+            logger = logging.getLogger("django-simple-bulma")
+            logger.warning(
+                f"Cannot compile SCSS for extension {ext_dir.name}: "
+                f"libsass not properly installed. Install libsass to enable SCSS compilation."
+            )
+            return ""
+
+        # Get SCSS files for this extension using existing utility
+        sass_files = get_sass_files(ext_dir)
+        if not sass_files:
+            return ""
+
+        try:
+            # Build SCSS import string for this extension
+            scss_imports = []
+            for sass_file in sass_files:
+                # Convert relative path back to absolute path for compilation
+                abs_sass_path = simple_bulma_path / sass_file
+                if abs_sass_path.exists():
+                    scss_imports.append(f"@import '{abs_sass_path}';")
+
+            if not scss_imports:
+                return ""
+
+            # Compile the SCSS
+            scss_string = "@charset 'utf-8';\n" + "\n".join(scss_imports)
+            css_string = sass.compile(
+                string=scss_string,
+                output_style=self.output_style,
+                include_paths=[
+                    simple_bulma_path.as_posix(),
+                    ext_dir.as_posix(),
+                    (ext_dir / "src").as_posix(),
+                ]
+            )
+
+            return css_string
+
+        except Exception as e:
+            logger = logging.getLogger("django-simple-bulma")
+            logger.warning(
+                f"Failed to compile SCSS for extension {ext_dir.name}: {e}"
+            )
+            return ""
 
     def _compile_sass_fallback(self) -> List[str]:
         """Legacy SASS compilation method (for Bulma < 1.0 compatibility)."""
