@@ -73,6 +73,7 @@ BULMA_SETTINGS = {
   "extensions": [
     "bulma-calendar",
     "bulma-tooltip",
+    "bulma-block-list",
   ],
   "variables": {
     "primary": "#000000",
@@ -214,6 +215,7 @@ Only actively maintained, Bulma 1.0+ compatible extensions are now supported:
 
 - **[bulma-calendar](https://github.com/michael-hack/bulma-calendar)**: Calendar and datepicker components (v7.1.1+)
 - **[bulma-tooltip](https://github.com/CreativeBulma/bulma-tooltip)**: Tooltip components (v1.2.0+)
+- **[bulma-block-list](https://github.com/chrisrhymes/bulma-block-list)**: Block list components for displaying items in a vertical list (v0.4.0+)
 
 
 ## Migration Steps
@@ -241,6 +243,7 @@ BULMA_SETTINGS = {
     "extensions": [
         "bulma-calendar",       # ✅ Updated to maintained version
         "bulma-tooltip",        # ✅ Updated to maintained version
+        "bulma-block-list",     # ✅ New maintained extension
     ],
     # ... other settings remain the same
 }
@@ -292,6 +295,47 @@ If you have custom CSS that depends on removed extensions:
 2. Replace extension-specific classes with custom implementations
 3. Test your styling changes across different screen sizes
 
+
+Development
+-----------
+
+This project uses [UV](https://github.com/astral-sh/uv) for dependency management and development workflows. UV is a fast Python package manager that simplifies development setup.
+
+### Setting up your development environment
+
+1. **Install UV** (if you haven't already):
+   ```bash
+   # On macOS and Linux
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+   # On Windows
+   powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+   # Or using pip
+   pip install uv
+   ```
+
+2. **Clone the repository**:
+   ```bash
+   git clone https://github.com/python-discord/django-simple-bulma.git
+   cd django-simple-bulma
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   # Install all dependencies including dev dependencies
+   uv sync --all-extras
+   ```
+
+### Pre-commit hooks
+
+We use pre-commit hooks to ensure code quality. Install them with:
+
+```bash
+uv run pre-commit install
+```
+
+This will run our linting checks automatically before each commit.
 
 Troubleshooting
 ---------------
