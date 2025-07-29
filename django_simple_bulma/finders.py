@@ -57,7 +57,8 @@ class SimpleBulmaFinder(BaseFinder):
         """Return a string that, in SASS, imports all enabled extensions."""
         scss_imports = ""
 
-        for ext in (simple_bulma_path / "extensions").iterdir():
+        # Load extensions in alphabetical order (deterministic and no interdependencies)
+        for ext in sorted((simple_bulma_path / "extensions").iterdir()):
 
             if is_enabled(ext):
                 for src in get_sass_files(ext):
@@ -207,7 +208,8 @@ class SimpleBulmaFinder(BaseFinder):
         """
         extension_css_parts = []
 
-        for ext_dir in (simple_bulma_path / "extensions").iterdir():
+        # Process extensions in alphabetical order for deterministic CSS generation
+        for ext_dir in sorted((simple_bulma_path / "extensions").iterdir()):
             if is_enabled(ext_dir):
                 extension_css = self._get_single_extension_css(ext_dir)
                 if extension_css:
@@ -344,14 +346,22 @@ class SimpleBulmaFinder(BaseFinder):
 
         bulma_string = f"@import '{sass_bulma_submodule_path}/utilities/_index';\n"
 
-        # Now load bulma dynamically.
-        for dirname in self.bulma_submodule_path.iterdir():
+        # Load Bulma modules in the official order (from bulma/sass/_index.scss)
+        # Note: utilities is already loaded above
+        bulma_module_order = [
+            "themes", "base", "elements", "form", "components",
+            "grid", "layout", "helpers"
+        ]
 
-            # We already added this earlier
-            if dirname.name == "utilities":
-                continue
+        for module_name in bulma_module_order:
+            module_path = self.bulma_submodule_path / module_name
+            if module_path.exists():
+                bulma_string += f"@import '{sass_bulma_submodule_path}/{module_name}/_index';\n"
 
-            bulma_string += f"@import '{sass_bulma_submodule_path}/{dirname.name}/_index';\n"
+        # Handle base/skeleton separately as it's loaded after layout in the official order
+        skeleton_path = self.bulma_submodule_path / "base" / "skeleton.sass"
+        if skeleton_path.exists():
+            bulma_string += f"@import '{sass_bulma_submodule_path}/base/skeleton';\n"
 
         # Now load in the extensions that the user wants
         extensions_string = self._get_extension_imports()
@@ -402,7 +412,7 @@ class SimpleBulmaFinder(BaseFinder):
                     break
 
             # Raise an error if we can't find it.
-            if absolute_path is None:
+            if not absolute_path:
                 raise ValueError(
                     f"Unable to locate the SCSS file \"{scss_path}\". Make sure the file exists, "
                     "and ensure that one of the other configured Finders are able to locate it. \n"
