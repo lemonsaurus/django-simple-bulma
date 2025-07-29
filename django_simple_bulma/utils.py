@@ -84,7 +84,8 @@ def get_js_files() -> Generator[str, None, None]:
     """Yield all the js files that are needed for the users selected extensions."""
     # For every extension...
     extensions = []
-    for ext in (simple_bulma_path / "extensions").iterdir():
+    # Process extensions in alphabetical order for deterministic behavior
+    for ext in sorted((simple_bulma_path / "extensions").iterdir()):
         # ...check if it is enabled...
         if is_enabled(ext):
             dist_folder = ext / "dist"
