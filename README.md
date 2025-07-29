@@ -307,10 +307,10 @@ This project uses [UV](https://github.com/astral-sh/uv) for dependency managemen
    ```bash
    # On macOS and Linux
    curl -LsSf https://astral.sh/uv/install.sh | sh
-   
+
    # On Windows
    powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-   
+
    # Or using pip
    pip install uv
    ```
