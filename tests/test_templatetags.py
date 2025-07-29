@@ -19,7 +19,7 @@ class TestBulmaTemplateTag:
 
         assert '<link rel="preload" href="/static/css/bulma.css" as="style">' in result
         assert '<link rel="stylesheet" href="/static/css/bulma.css" id="bulma-css">' in result
-        assert 'defer type="text/javascript"' in result
+        assert 'DOMContentLoaded' in result
 
     @pytest.mark.django_db
     @override_settings(BULMA_SETTINGS={'dark_variables': {'primary': '#333'}})
@@ -80,14 +80,11 @@ class TestBulmaTemplateTag:
         template = Template("{% load django_simple_bulma %}{% bulma %}")
         result = template.render(Context())
 
-        expected_script1 = (
-            '<script defer type="text/javascript" src="/static/extensions/test.min.js"></script>'
-        )
-        assert expected_script1 in result
-        expected_script2 = (
-            '<script defer type="text/javascript" src="/static/extensions/other.js"></script>'
-        )
-        assert expected_script2 in result
+        # Check that scripts are loaded via DOMContentLoaded
+        assert 'DOMContentLoaded' in result
+        assert '/static/extensions/test.min.js' in result
+        assert '/static/extensions/other.js' in result
+        assert 'document.createElement("script")' in result
 
 
 class TestFontAwesomeTemplateTag:
@@ -165,7 +162,6 @@ class TestTemplateTagIntegration:
 
         # Should have CSS twice but JS only once
         assert result.count('bulma.css') == 4  # 2 preload + 2 stylesheet
-        # JS should appear for first call only
-        lines = result.split('\n')
-        js_lines = [line for line in lines if 'script' in line and 'defer' in line]
-        assert len(js_lines) > 0  # Should have at least some JS from first call
+        # Check for DOMContentLoaded script wrapper (should appear once)
+        domready_count = result.count('DOMContentLoaded')
+        assert domready_count == 1  # Should have JS from first call only

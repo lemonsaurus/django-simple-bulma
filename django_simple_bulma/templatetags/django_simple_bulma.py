@@ -50,8 +50,18 @@ def bulma(theme: str = "", *, include_js: bool = True) -> SafeString:
 
     # Build html to include all the js files required.
     if include_js:
-        for js_file in map(static, get_js_files()):
-            html.append(f'<script defer type="text/javascript" src="{js_file}"></script>')
+        js_files = list(map(static, get_js_files()))
+        if js_files:
+            # Load scripts after DOM is ready to ensure extensions can find their target elements
+            html.append('<script type="text/javascript">')
+            html.append('document.addEventListener("DOMContentLoaded", function() {')
+            for js_file in js_files:
+                html.append('    var script = document.createElement("script");')
+                html.append(f'    script.src = "{js_file}";')
+                html.append('    script.type = "text/javascript";')
+                html.append('    document.head.appendChild(script);')
+            html.append('});')
+            html.append('</script>')
 
     return mark_safe("\n".join(html))
 
