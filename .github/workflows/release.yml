@@ -13,15 +13,13 @@ jobs:
     name: Bump version in repository
     runs-on: ubuntu-latest
     needs: check-submodules
-    permissions:
-      contents: write
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        token: ${{ secrets.GITHUB_TOKEN }}
+        ssh-key: ${{ secrets.SSH_DEPLOY_KEY }}
         ref: main
 
     - name: Install UV
