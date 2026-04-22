@@ -31,7 +31,10 @@ classifiers = [
 requires-python = ">=3.12"
 dependencies = [
     "Django>=4.2",
-    "libsass~=0.19",
+    # libsass 0.19-0.22 fail to compile against modern g++ (>=13) due to
+    # stricter template hash invocability. 0.23 is the first release that
+    # builds on current Ubuntu / CI toolchains.
+    "libsass>=0.23",
 ]
 
 [project.urls]
