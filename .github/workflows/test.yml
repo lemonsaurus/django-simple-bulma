@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.12', '3.13']
+        python-version: ['3.13', '3.14']
         django-version: ['4.2', '5.2']
 
     steps:
@@ -33,19 +33,30 @@ jobs:
           uv sync
           uv pip install "Django~=${{ matrix.django-version }}.0"
 
+      - name: Install Chromium for Playwright
+        run: uv run playwright install --with-deps chromium
+
       - name: Run tests
-        run: |
-          uv run pytest -v --tb=short
+        run: uv run pytest -v --tb=short
+
+      - name: Upload Playwright screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-screenshots-py${{ matrix.python-version }}-dj${{ matrix.django-version }}
+          path: tests/_artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Run tests with coverage
-        if: matrix.python-version == '3.12' && matrix.django-version == '4.2'
+        if: matrix.python-version == '3.13' && matrix.django-version == '4.2'
         run: |
           uv run coverage run -m pytest
           uv run coverage report --show-missing
           uv run coverage xml
 
       - name: Comment coverage on PR
-        if: github.event_name == 'pull_request' && matrix.python-version == '3.12' && matrix.django-version == '4.2'
+        if: github.event_name == 'pull_request' && matrix.python-version == '3.13' && matrix.django-version == '4.2'
         uses: py-cov-action/python-coverage-comment-action@v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

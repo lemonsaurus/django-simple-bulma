@@ -24,6 +24,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -51,6 +52,7 @@ dev = [
     "pytest-mock>=3.6,<4.0",
     "coverage[toml]>=7.0,<8.0",
     "pip-audit>=2.7,<3.0",
+    "pytest-playwright>=0.5,<1.0",
 ]
 
 [tool.hatch.build]
