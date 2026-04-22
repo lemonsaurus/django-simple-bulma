@@ -444,15 +444,11 @@ class TestSimpleBulmaFinderBulma1:
 
 
 class TestIssue126BulmaCssOrdering:
-    """
-    Issue #126: user BULMA_SETTINGS variables were being emitted BEFORE
-    Bulma's own :root in the generated file, so Bulma's defaults won the
-    cascade and the customization was invisible. Variables must be written
-    after Bulma's CSS so user overrides actually apply.
-    """
+    """Regression tests for the cascade ordering bug in issue #126."""
 
     @override_settings(BULMA_SETTINGS={"variables": {"primary": "#ff6b6b"}})
     def test_user_variables_are_written_after_bulma_base_css(self) -> None:
+        """User :root overrides must appear AFTER Bulma's base CSS."""
         from django_simple_bulma.utils import simple_bulma_path
 
         finder = SimpleBulmaFinder()
@@ -464,20 +460,17 @@ class TestIssue126BulmaCssOrdering:
         user_root = content.rfind("--bulma-primary-h:")
         bulma_signature = content.find("bulma.io v")
         assert user_root > bulma_signature > -1, (
-            "user :root overrides must come AFTER Bulma's base CSS — "
+            "user :root overrides must come AFTER Bulma's base CSS, "
             "otherwise Bulma's defaults win the cascade (issue #126)"
         )
 
 
 class TestIssue125BulmaCalendarCss:
-    """
-    Issue #125: bulma-calendar ships CSS at dist/css/bulma-calendar.min.css
-    but users reported the CSS wasn't being bundled. The Bulma 1.0 extension
-    pipeline picks it up — keep it that way.
-    """
+    """Regression tests for bulma-calendar CSS bundling (issue #125)."""
 
     @override_settings(BULMA_SETTINGS={"extensions": ["bulma-calendar"]})
     def test_bulma_calendar_css_is_included(self) -> None:
+        """The bulma-calendar extension bundles its pre-compiled CSS."""
         from django_simple_bulma.utils import simple_bulma_path
 
         ext_dir = simple_bulma_path / "extensions" / "bulma-calendar"

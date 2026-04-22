@@ -10,8 +10,7 @@ import re
 
 def get_hsl_channel_names(sass_var: str) -> tuple[str, str, str]:
     """
-    Return the (hue, saturation, lightness) CSS variable names Bulma expects
-    for a given SASS color variable.
+    Return the HSL CSS variable names Bulma expects for a SASS color variable.
 
     Most colors follow `--bulma-{name}-h/s/l`, but scheme and hero share
     hue/saturation across variants, only lightness is per-variant. These

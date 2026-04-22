@@ -225,6 +225,7 @@ class TestGetHslChannelNames:
     """Regression tests for HSL channel naming (issue #126)."""
 
     def test_standard_color_uses_simple_channels(self) -> None:
+        """Standard colors keep the simple --bulma-{name}-h/s/l shape."""
         assert get_hsl_channel_names("primary") == (
             "--bulma-primary-h", "--bulma-primary-s", "--bulma-primary-l"
         )
@@ -233,8 +234,7 @@ class TestGetHslChannelNames:
         )
 
     def test_scheme_variants_share_hue_and_saturation(self) -> None:
-        # Bulma 1.x defines --bulma-scheme-h / --bulma-scheme-s shared across
-        # all scheme variants; only lightness is per-variant.
+        """Scheme variants share --bulma-scheme-h/s with per-variant -l."""
         assert get_hsl_channel_names("scheme-main") == (
             "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-main-l"
         )
@@ -246,8 +246,7 @@ class TestGetHslChannelNames:
         )
 
     def test_hero_variants_use_background_and_color_lightness(self) -> None:
-        # Bulma 1.x defines --bulma-hero-h / --bulma-hero-s with
-        # --bulma-hero-background-l and --bulma-hero-color-l.
+        """Hero variants share --bulma-hero-h/s with -background-l/-color-l."""
         assert get_hsl_channel_names("hero-background") == (
             "--bulma-hero-h", "--bulma-hero-s", "--bulma-hero-background-l"
         )
@@ -260,6 +259,7 @@ class TestIssue126Regression:
     """End-to-end assertions for the customization bug in issue #126."""
 
     def test_scheme_main_emits_correct_bulma_1x_channel_names(self) -> None:
+        """scheme-main writes the channel names Bulma 1.x actually reads."""
         result = convert_sass_variables_to_css({"scheme-main": "#112233"})
         assert "--bulma-scheme-h:" in result
         assert "--bulma-scheme-s:" in result
@@ -269,6 +269,7 @@ class TestIssue126Regression:
         assert "--bulma-scheme-main-s:" not in result
 
     def test_hero_background_emits_correct_bulma_1x_channel_names(self) -> None:
+        """hero-background writes the channel names Bulma 1.x actually reads."""
         result = convert_sass_variables_to_css({"hero-background": "#aabbcc"})
         assert "--bulma-hero-h:" in result
         assert "--bulma-hero-s:" in result
