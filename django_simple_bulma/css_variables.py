@@ -6,10 +6,9 @@ to the new CSS variable system introduced in Bulma 1.0+. This allows existing th
 customizations to continue working without breaking changes.
 """
 import re
-from typing import Dict, Tuple
 
 
-def hex_to_hsl(hex_color: str) -> Tuple[int, int, int]:
+def hex_to_hsl(hex_color: str) -> tuple[int, int, int]:
     """
     Convert hex color to HSL values.
 
@@ -132,7 +131,7 @@ def is_color_value(value: str) -> bool:
     return False
 
 
-def get_variable_mapping() -> Dict[str, str]:
+def get_variable_mapping() -> dict[str, str]:
     """
     Get mapping from legacy SASS variable names to Bulma 1.0+ CSS variables.
 
@@ -197,7 +196,7 @@ def get_variable_mapping() -> Dict[str, str]:
     }
 
 
-def convert_sass_variables_to_css(variables: Dict[str, str]) -> str:
+def convert_sass_variables_to_css(variables: dict[str, str]) -> str:
     """
     Convert legacy SASS variables to CSS variable declarations.
 

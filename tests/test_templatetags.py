@@ -5,6 +5,7 @@ from unittest.mock import patch
 import pytest
 from django.template import Context, Template
 from django.test import override_settings
+
 from django_simple_bulma.templatetags.django_simple_bulma import font_awesome
 
 

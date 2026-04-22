@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from django.test import override_settings
+
 from django_simple_bulma.utils import (
     get_js_files,
     get_sass_files,
@@ -165,6 +166,7 @@ class TestSettingsLoading:
         """Test that settings are loaded and themes detected."""
         # Need to reload the module to pick up new settings
         import importlib
+
         from django_simple_bulma import utils
         importlib.reload(utils)
 
@@ -179,6 +181,7 @@ class TestSettingsLoading:
 
             # Reload utils to pick up the change
             import importlib
+
             from django_simple_bulma import utils
             importlib.reload(utils)
 
@@ -190,6 +193,7 @@ class TestSettingsLoading:
     def test_theme_detection_regex(self) -> None:
         """Test theme detection using regex pattern."""
         import importlib
+
         from django_simple_bulma import utils
         importlib.reload(utils)
 

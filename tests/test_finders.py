@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, mock_open, patch
 import pytest
 from django.core.files.storage import FileSystemStorage
 from django.test import override_settings
+
 from django_simple_bulma.finders import SimpleBulmaFinder
 
 

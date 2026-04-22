@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from django.test import override_settings
+
 from django_simple_bulma.finders import SimpleBulmaFinder
 
 

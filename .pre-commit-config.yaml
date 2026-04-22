@@ -1,22 +1,29 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
+      - id: check-toml
       - id: end-of-file-fixer
+        exclude: ^django_simple_bulma/(css|bulma|extensions)/
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
+        exclude: ^django_simple_bulma/(css|bulma|extensions)/
+
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
       - id: python-check-blanket-noqa
-  - repo: local
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
     hooks:
-      - id: flake8
-        name: Flake8
-        description: This hook runs flake8 in the active python environment.
-        entry: flake8
-        language: python
-        types: [python]
-        require_serial: true
+      - id: ruff
+        args: [--fix]
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.28.4
+    hooks:
+      - id: typos
+        exclude: ^django_simple_bulma/(bulma|extensions|css)/

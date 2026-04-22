@@ -39,25 +39,15 @@ Homepage = "https://github.com/python-discord/django-simple-bulma"
 Repository = "https://github.com/python-discord/django-simple-bulma"
 Issues = "https://github.com/python-discord/django-simple-bulma/issues"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "flake8>=5.0,<7.0",
-    "flake8-annotations>=2.0,<4.0",
-    "flake8-bugbear>=22.0,<25.0",
-    "flake8-docstrings>=1.6,<2.0",
-    "flake8-import-order>=0.18,<1.0",
-    "flake8-tidy-imports>=4.0,<5.0",
-    "flake8-todo>=0.7,<1.0",
-    "flake8-string-format>=0.3,<1.0",
-    "pdoc~=0.3",
-    "pep8-naming~=0.9",
-    "pre-commit~=2.1",
-    "PyGithub~=1.43",
-    "wheel~=0.33",
-    "pytest>=7.0,<9.0",
+    "ruff>=0.6,<1.0",
+    "pre-commit>=4.0,<5.0",
+    "pytest>=8.0,<9.0",
     "pytest-django>=4.5,<5.0",
     "pytest-mock>=3.6,<4.0",
-    "coverage[toml]>=6.0,<8.0",
+    "coverage[toml]>=7.0,<8.0",
+    "pip-audit>=2.7,<3.0",
 ]
 
 [tool.hatch.build]
@@ -68,23 +58,56 @@ include = [
 [tool.hatch.build.targets.wheel]
 packages = ["django_simple_bulma"]
 
-[tool.uv]
-dev-dependencies = [
-    "flake8>=5.0,<7.0",
-    "flake8-annotations>=2.0,<4.0",
-    "flake8-bugbear>=22.0,<25.0",
-    "flake8-docstrings>=1.6,<2.0",
-    "flake8-import-order>=0.18,<1.0",
-    "flake8-tidy-imports>=4.0,<5.0",
-    "flake8-todo>=0.7,<1.0",
-    "flake8-string-format>=0.3,<1.0",
-    "pdoc~=0.3",
-    "pep8-naming~=0.9",
-    "pre-commit~=2.1",
-    "PyGithub~=1.43",
-    "wheel~=0.33",
-    "pytest>=7.0,<9.0",
-    "pytest-django>=4.5,<5.0",
-    "pytest-mock>=3.6,<4.0",
-    "coverage[toml]>=6.0,<8.0",
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = [
+    "django_simple_bulma/bulma",
+    "django_simple_bulma/extensions",
+    "django_simple_bulma/css",
 ]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "B",      # flake8-bugbear
+    "D",      # flake8-docstrings
+    "I",      # isort
+    "N",      # pep8-naming
+    "ANN",    # flake8-annotations
+    "TID",    # flake8-tidy-imports
+    "UP",     # pyupgrade
+]
+ignore = [
+    # Whitespace around arithmetic operator — matches prior flake8 config
+    "E226",
+
+    # Missing docstrings — module, package, magic method, __init__, nested
+    "D100", "D104", "D105", "D107",
+
+    # Docstring whitespace preferences
+    "D203", "D212", "D214", "D215",
+
+    # Docstring quotes / content that we don't enforce
+    "D301",
+    "D400", "D401", "D402", "D404", "D405", "D406", "D407", "D408",
+    "D409", "D410", "D411", "D412", "D413", "D414", "D416", "D417",
+
+    # Annotation noise: *args, **kwargs, dunder returns
+    "ANN002", "ANN003", "ANN204",
+
+    # Module name "django-simple-bulma" has a hyphen because that's the repo
+    # directory, not an importable module. False positive.
+    "N999",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN", "D"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["django_simple_bulma"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "parents"
