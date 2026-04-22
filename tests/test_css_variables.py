@@ -3,6 +3,7 @@ import pytest
 
 from django_simple_bulma.css_variables import (
     convert_sass_variables_to_css,
+    get_hsl_channel_names,
     get_variable_mapping,
     hex_to_hsl,
     is_color_value,
@@ -218,3 +219,58 @@ class TestConvertSassVariablesToCss:
         assert result.endswith("}\n")
         assert result.count("{") == 1
         assert result.count("}") == 1
+
+
+class TestGetHslChannelNames:
+    """Regression tests for HSL channel naming (issue #126)."""
+
+    def test_standard_color_uses_simple_channels(self) -> None:
+        assert get_hsl_channel_names("primary") == (
+            "--bulma-primary-h", "--bulma-primary-s", "--bulma-primary-l"
+        )
+        assert get_hsl_channel_names("link") == (
+            "--bulma-link-h", "--bulma-link-s", "--bulma-link-l"
+        )
+
+    def test_scheme_variants_share_hue_and_saturation(self) -> None:
+        # Bulma 1.x defines --bulma-scheme-h / --bulma-scheme-s shared across
+        # all scheme variants; only lightness is per-variant.
+        assert get_hsl_channel_names("scheme-main") == (
+            "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-main-l"
+        )
+        assert get_hsl_channel_names("scheme-main-bis") == (
+            "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-main-bis-l"
+        )
+        assert get_hsl_channel_names("scheme-invert") == (
+            "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-invert-l"
+        )
+
+    def test_hero_variants_use_background_and_color_lightness(self) -> None:
+        # Bulma 1.x defines --bulma-hero-h / --bulma-hero-s with
+        # --bulma-hero-background-l and --bulma-hero-color-l.
+        assert get_hsl_channel_names("hero-background") == (
+            "--bulma-hero-h", "--bulma-hero-s", "--bulma-hero-background-l"
+        )
+        assert get_hsl_channel_names("hero-color") == (
+            "--bulma-hero-h", "--bulma-hero-s", "--bulma-hero-color-l"
+        )
+
+
+class TestIssue126Regression:
+    """End-to-end assertions for the customization bug in issue #126."""
+
+    def test_scheme_main_emits_correct_bulma_1x_channel_names(self) -> None:
+        result = convert_sass_variables_to_css({"scheme-main": "#112233"})
+        assert "--bulma-scheme-h:" in result
+        assert "--bulma-scheme-s:" in result
+        assert "--bulma-scheme-main-l:" in result
+        # The broken pre-fix naming must NOT be emitted.
+        assert "--bulma-scheme-main-h:" not in result
+        assert "--bulma-scheme-main-s:" not in result
+
+    def test_hero_background_emits_correct_bulma_1x_channel_names(self) -> None:
+        result = convert_sass_variables_to_css({"hero-background": "#aabbcc"})
+        assert "--bulma-hero-h:" in result
+        assert "--bulma-hero-s:" in result
+        assert "--bulma-hero-background-l:" in result
+        assert "--bulma-hero-background-h:" not in result

@@ -441,3 +441,50 @@ class TestSimpleBulmaFinderBulma1:
             # Should have generated one CSS file
             assert len(result) == 1
             assert result[0] == 'css/bulma.css'
+
+
+class TestIssue126BulmaCssOrdering:
+    """
+    Issue #126: user BULMA_SETTINGS variables were being emitted BEFORE
+    Bulma's own :root in the generated file, so Bulma's defaults won the
+    cascade and the customization was invisible. Variables must be written
+    after Bulma's CSS so user overrides actually apply.
+    """
+
+    @override_settings(BULMA_SETTINGS={"variables": {"primary": "#ff6b6b"}})
+    def test_user_variables_are_written_after_bulma_base_css(self) -> None:
+        from django_simple_bulma.utils import simple_bulma_path
+
+        finder = SimpleBulmaFinder()
+        paths = finder._get_bulma_css()
+        assert paths, "expected at least one generated css path"
+
+        content = (simple_bulma_path / paths[0]).read_text()
+
+        user_root = content.rfind("--bulma-primary-h:")
+        bulma_signature = content.find("bulma.io v")
+        assert user_root > bulma_signature > -1, (
+            "user :root overrides must come AFTER Bulma's base CSS — "
+            "otherwise Bulma's defaults win the cascade (issue #126)"
+        )
+
+
+class TestIssue125BulmaCalendarCss:
+    """
+    Issue #125: bulma-calendar ships CSS at dist/css/bulma-calendar.min.css
+    but users reported the CSS wasn't being bundled. The Bulma 1.0 extension
+    pipeline picks it up — keep it that way.
+    """
+
+    @override_settings(BULMA_SETTINGS={"extensions": ["bulma-calendar"]})
+    def test_bulma_calendar_css_is_included(self) -> None:
+        from django_simple_bulma.utils import simple_bulma_path
+
+        ext_dir = simple_bulma_path / "extensions" / "bulma-calendar"
+        if not (ext_dir / "dist" / "css" / "bulma-calendar.min.css").exists():
+            pytest.skip("bulma-calendar submodule not initialised")
+
+        finder = SimpleBulmaFinder()
+        css = finder._get_single_extension_css(ext_dir)
+        assert css, "bulma-calendar extension produced no CSS"
+        assert "datetimepicker" in css or "calendar" in css

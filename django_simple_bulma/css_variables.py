@@ -8,6 +8,34 @@ customizations to continue working without breaking changes.
 import re
 
 
+def get_hsl_channel_names(sass_var: str) -> tuple[str, str, str]:
+    """
+    Return the (hue, saturation, lightness) CSS variable names Bulma expects
+    for a given SASS color variable.
+
+    Most colors follow `--bulma-{name}-h/s/l`, but scheme and hero share
+    hue/saturation across variants, only lightness is per-variant. These
+    special cases must match Bulma 1.x's internal naming for the cascade
+    to actually apply the user's color.
+    """
+    # Scheme: --bulma-scheme-h / -s are shared, lightness is per-variant
+    # (scheme-main, scheme-main-bis, scheme-main-ter, scheme-invert, ...)
+    if sass_var == "scheme" or sass_var.startswith("scheme-"):
+        return ("--bulma-scheme-h", "--bulma-scheme-s", f"--bulma-{sass_var}-l")
+
+    # Hero: --bulma-hero-h / -s are shared; Bulma defines
+    # --bulma-hero-background-l and --bulma-hero-color-l
+    if sass_var in ("hero", "hero-background", "hero-color"):
+        if sass_var == "hero":
+            l_name = "--bulma-hero-background-l"
+        else:
+            l_name = f"--bulma-{sass_var}-l"
+        return ("--bulma-hero-h", "--bulma-hero-s", l_name)
+
+    base = f"--bulma-{sass_var}"
+    return (f"{base}-h", f"{base}-s", f"{base}-l")
+
+
 def hex_to_hsl(hex_color: str) -> tuple[int, int, int]:
     """
     Convert hex color to HSL values.
@@ -213,27 +241,23 @@ def convert_sass_variables_to_css(variables: dict[str, str]) -> str:
     css_declarations = []
 
     for sass_var, value in variables.items():
-        # Get the corresponding CSS variable name
-        css_var = variable_mapping.get(sass_var)
-        if not css_var:
-            # For unmapped variables, try to convert the name directly
-            css_var = f"--bulma-{sass_var}"
-
-        # Handle color values specially
+        # Handle color values specially — set the HSL channels Bulma expects
         if is_color_value(value):
             try:
                 hue, saturation, lightness = hex_to_hsl(value)
-                # For colors, we need to set the HSL components
+                h_var, s_var, l_var = get_hsl_channel_names(sass_var)
                 css_declarations.extend([
-                    f"  {css_var}-h: {hue}deg;",
-                    f"  {css_var}-s: {saturation}%;",
-                    f"  {css_var}-l: {lightness}%;",
+                    f"  {h_var}: {hue}deg;",
+                    f"  {s_var}: {saturation}%;",
+                    f"  {l_var}: {lightness}%;",
                 ])
             except (ValueError, TypeError):
-                # If color conversion fails, use the value directly
+                # If color conversion fails, fall back to the mapped var name.
+                css_var = variable_mapping.get(sass_var, f"--bulma-{sass_var}")
                 css_declarations.append(f"  {css_var}: {value};")
         else:
             # Non-color values can be used directly
+            css_var = variable_mapping.get(sass_var, f"--bulma-{sass_var}")
             css_declarations.append(f"  {css_var}: {value};")
 
     if css_declarations:
