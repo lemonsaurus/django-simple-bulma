@@ -343,3 +343,126 @@ class TestPerformanceIntegration:
         # Should be fast (adjust threshold as needed)
         avg_time = (end_time - start_time) / 100
         assert avg_time < 0.01  # Less than 10ms per render
+
+
+class TestBulmaCalendarExtensionEndToEnd:
+    """End-to-end coverage for the bulma-calendar extension (issue #125).
+
+    The user in #125 reported that with `extensions: ['bulma-calendar']` in
+    BULMA_SETTINGS, the JS script tag was rendered but no corresponding CSS
+    link was visible. Source of confusion: django-simple-bulma bundles all
+    extension CSS *into* the main bulma.css rather than emitting per-extension
+    link tags (unlike JS, which is a script per extension). These tests lock
+    that behavior in so it cannot silently break again.
+    """
+
+    @pytest.mark.django_db
+    def test_calendar_css_is_bundled_into_main_bulma_css(self) -> None:
+        """Calendar rules must end up inside the generated bulma.css."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, "static")
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                BULMA_SETTINGS={"extensions": ["bulma-calendar"]},
+            ):
+                call_command("collectstatic", "--noinput", verbosity=0)
+
+                bulma_css_path = os.path.join(static_root, "css", "bulma.css")
+                assert os.path.exists(bulma_css_path), (
+                    "collectstatic did not produce css/bulma.css"
+                )
+
+                with open(bulma_css_path) as f:
+                    css = f.read()
+
+                # Calendar-specific class names from bulma-calendar's stylesheet.
+                # If any of these are missing, either the extension pipeline
+                # stopped picking up bulma-calendar, or the CSS concatenation
+                # into bulma.css silently dropped it.
+                for marker in (
+                    "datetimepicker",
+                    "datepicker-nav",
+                    "datepicker-body",
+                    "timepicker",
+                ):
+                    assert marker in css, (
+                        f"bulma.css missing calendar marker '{marker}' "
+                        f"(size={len(css)} bytes) — issue #125 regression"
+                    )
+
+    @pytest.mark.django_db
+    def test_calendar_js_is_collected_to_static_root(self) -> None:
+        """Calendar JS must be copied under STATIC_ROOT at a stable path."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, "static")
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                BULMA_SETTINGS={"extensions": ["bulma-calendar"]},
+            ):
+                call_command("collectstatic", "--noinput", verbosity=0)
+
+                js_path = os.path.join(
+                    static_root,
+                    "extensions",
+                    "bulma-calendar",
+                    "dist",
+                    "js",
+                    "bulma-calendar.min.js",
+                )
+                assert os.path.exists(js_path), (
+                    "bulma-calendar JS was not collected to STATIC_ROOT"
+                )
+                assert os.path.getsize(js_path) > 1000, (
+                    "bulma-calendar JS file looks empty"
+                )
+
+    @pytest.mark.django_db
+    def test_bulma_template_tag_emits_css_and_calendar_js(self) -> None:
+        """{% bulma %} must output bulma.css link and the calendar JS script."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, "static")
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                STATIC_URL="/static/",
+                BULMA_SETTINGS={"extensions": ["bulma-calendar"]},
+            ):
+                call_command("collectstatic", "--noinput", verbosity=0)
+
+                template = Template("{% load django_simple_bulma %}{% bulma %}")
+                html = template.render(Context())
+
+                # The single bulma.css link is what carries the calendar CSS.
+                assert 'href="/static/css/bulma.css"' in html
+                assert 'rel="stylesheet"' in html
+
+                # Calendar JS appears as its own script entry inside the
+                # DOMContentLoaded loader block.
+                assert (
+                    "/static/extensions/bulma-calendar/dist/js/"
+                    "bulma-calendar.min.js"
+                ) in html
+
+    @pytest.mark.django_db
+    def test_calendar_markers_disappear_when_extension_is_disabled(self) -> None:
+        """Sanity: without the extension enabled, calendar CSS must NOT ship.
+
+        If this test ever fails, the previous three are no longer proving
+        anything — the markers would be in bulma.css regardless.
+        """
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, "static")
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                BULMA_SETTINGS={"extensions": []},
+            ):
+                call_command("collectstatic", "--noinput", verbosity=0)
+
+                with open(os.path.join(static_root, "css", "bulma.css")) as f:
+                    css = f.read()
+
+                assert "datetimepicker" not in css
+                assert "datepicker-nav" not in css
