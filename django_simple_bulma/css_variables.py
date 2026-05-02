@@ -7,6 +7,11 @@ customizations to continue working without breaking changes.
 """
 import re
 
+# Vars Bulma 1.x exposes as direct color values, not HSL channels. Setting
+# `--bulma-white-h/s/l` does nothing because Bulma reads `--bulma-white`
+# as a single color. Skip the HSL split for these.
+_DIRECT_COLOR_VARS = frozenset({"white", "black", "light", "dark"})
+
 
 def get_hsl_channel_names(sass_var: str) -> tuple[str, str, str]:
     """
@@ -240,7 +245,14 @@ def convert_sass_variables_to_css(variables: dict[str, str]) -> str:
     css_declarations = []
 
     for sass_var, value in variables.items():
-        # Handle color values specially — set the HSL channels Bulma expects
+        # Some scheme colors (white/black/light/dark) are direct color
+        # values in Bulma 1.x, not HSL channels. Emit them as a single var.
+        if sass_var in _DIRECT_COLOR_VARS:
+            css_var = variable_mapping.get(sass_var, f"--bulma-{sass_var}")
+            css_declarations.append(f"  {css_var}: {value};")
+            continue
+
+        # Handle color values specially: set the HSL channels Bulma expects.
         if is_color_value(value):
             try:
                 hue, saturation, lightness = hex_to_hsl(value)

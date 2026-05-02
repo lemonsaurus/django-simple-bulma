@@ -275,3 +275,16 @@ class TestIssue126Regression:
         assert "--bulma-hero-s:" in result
         assert "--bulma-hero-background-l:" in result
         assert "--bulma-hero-background-h:" not in result
+
+    @pytest.mark.parametrize("var_name", ["white", "black", "light", "dark"])
+    def test_direct_color_vars_skip_hsl_split(self, var_name: str) -> None:
+        """white/black/light/dark are direct color vars in Bulma 1.x.
+
+        They must NOT be split into h/s/l channels because Bulma reads
+        `--bulma-{name}` as a single color value, not three HSL components.
+        """
+        result = convert_sass_variables_to_css({var_name: "#123456"})
+        assert f"--bulma-{var_name}: #123456;" in result
+        assert f"--bulma-{var_name}-h:" not in result
+        assert f"--bulma-{var_name}-s:" not in result
+        assert f"--bulma-{var_name}-l:" not in result
