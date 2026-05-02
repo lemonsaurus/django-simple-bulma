@@ -9,10 +9,18 @@ jobs:
     name: Check submodules
     uses: ./.github/workflows/check-submodules.yml
 
-  bump-version:
-    name: Bump version in repository
+  release:
+    name: Bump version, build, and publish
     runs-on: ubuntu-latest
     needs: check-submodules
+    environment: pypi
+
+    # `id-token: write` lets the publish step mint the OIDC token PyPI
+    # trusts for this repo + workflow + environment. `contents: write`
+    # is for the auto-commit that pushes the version bump back to main.
+    permissions:
+      id-token: write
+      contents: write
 
     steps:
     - name: Checkout repository
@@ -31,51 +39,25 @@ jobs:
     - name: Set up Python
       run: uv python install 3.13
 
-    - name: Get version from release tag
-      id: get_version
+    - name: Resolve version from release tag
+      id: version
       run: |
-        # Remove 'v' prefix if present from the release tag
         VERSION=${{ github.event.release.tag_name }}
+        # Strip leading 'v' if present
         VERSION=${VERSION#v}
-        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-        echo "Release version: $VERSION"
+        echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
-    - name: Update version in pyproject.toml
-      run: |
-        uv version ${{ steps.get_version.outputs.VERSION }}
+    - name: Bump version in pyproject.toml
+      run: uv version "${{ steps.version.outputs.value }}"
 
-    - name: Commit version bump
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        file_pattern: pyproject.toml
-        commit_message: "🔖 bump version to ${{ steps.get_version.outputs.VERSION }}"
-
-  publish-to-pypi:
-    name: Build and publish to PyPI
-    runs-on: ubuntu-latest
-    needs: bump-version
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        submodules: recursive
-        ref: main
-
-    - name: Install UV
-      uses: astral-sh/setup-uv@v4
-      with:
-        enable-cache: true
-        cache-dependency-glob: "pyproject.toml"
-
-    - name: Set up Python
-      run: uv python install 3.13
-
-    - name: Build package
+    - name: Build distribution
       run: uv build
 
-    - name: Publish to PyPI
-      run: |
-        uv publish \
-          --username __token__ \
-          --password ${{ secrets.PYPI_TOKEN }}
+    - name: Commit version bump
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        file_pattern: pyproject.toml
+        commit_message: "🔖 bump version to ${{ steps.version.outputs.value }}"
+
+    - name: Publish to PyPI via Trusted Publishing
+      uses: pypa/gh-action-pypi-publish@release/v1
