@@ -22,13 +22,16 @@ jobs:
           cache-dependency-glob: "pyproject.toml"
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install 3.13
 
       # Resolves every direct dependency to its lowest allowed version.
-      # Our pins (Django>=4.2, libsass~=0.19) claim those floors work;
-      # this job is the thing that actually proves it.
+      # Our pins (Django>=4.2, libsass>=0.23) claim those floors work;
+      # this job is what actually proves it.
       - name: Install with lowest-direct resolution
         run: uv sync --resolution=lowest-direct
 
+      # Skip e2e tests: they need a Chromium binary, which is orthogonal
+      # to the "do runtime dep floors still build?" question this job is
+      # asking. Browser integration is covered in test.yml.
       - name: Run tests
-        run: uv run pytest -v --tb=short
+        run: uv run pytest -v --tb=short --ignore=tests/test_e2e.py

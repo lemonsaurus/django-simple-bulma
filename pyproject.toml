@@ -22,13 +22,13 @@ classifiers = [
     "Framework :: Django :: 5.2",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "Django>=4.2",
     # libsass 0.19-0.22 fail to compile against modern g++ (>=13) due to
@@ -51,6 +51,7 @@ dev = [
     "pytest-mock>=3.6,<4.0",
     "coverage[toml]>=7.0,<8.0",
     "pip-audit>=2.7,<3.0",
+    "pytest-playwright>=0.5,<1.0",
 ]
 
 [tool.hatch.build]
@@ -63,7 +64,7 @@ packages = ["django_simple_bulma"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 extend-exclude = [
     "django_simple_bulma/bulma",
     "django_simple_bulma/extensions",

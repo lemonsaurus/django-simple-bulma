@@ -1,3 +1,9 @@
+# Run all hooks on both commit and push. The pre-push pass is a backstop:
+# it catches anything that snuck in via `--no-verify`, an amend, or a fresh
+# clone where `pre-commit install` was only wired for the pre-commit stage.
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit, pre-push]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0

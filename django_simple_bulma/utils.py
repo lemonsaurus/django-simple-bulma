@@ -80,7 +80,7 @@ def is_enabled(extension: Path | str) -> bool:
     return current_extensions == "all" or extension in current_extensions
 
 
-def get_js_files() -> Generator[str, None, None]:
+def get_js_files() -> Generator[str]:
     """Yield all the js files that are needed for the users selected extensions."""
     # For every extension...
     extensions = []

@@ -1,0 +1,29 @@
+{% load django_simple_bulma %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>django-simple-bulma e2e</title>
+  {% bulma %}
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title" data-testid="title">django-simple-bulma</h1>
+      <div class="buttons">
+        <button class="button is-primary" data-testid="primary-button">Primary</button>
+        <button class="button is-link"    data-testid="link-button">Link</button>
+        <button class="button is-danger"  data-testid="danger-button">Danger</button>
+      </div>
+      <div class="notification is-primary" data-testid="primary-notification">
+        Primary notification
+      </div>
+      <nav class="navbar is-primary" role="navigation" data-testid="navbar">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="#">Brand</a>
+        </div>
+      </nav>
+    </div>
+  </section>
+</body>
+</html>

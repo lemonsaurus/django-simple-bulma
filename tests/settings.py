@@ -13,10 +13,12 @@ INSTALLED_APPS = [
     "django_simple_bulma",
 ]
 
+ROOT_URLCONF = "tests.urls"
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "tests" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -31,7 +33,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "test_static"
 
 STATICFILES_DIRS = [
-    BASE_DIR / "test_static_files",
+    BASE_DIR / "tests" / "test_static_files",
 ]
 
 STATICFILES_FINDERS = [

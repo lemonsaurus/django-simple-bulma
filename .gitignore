@@ -12,6 +12,12 @@ django_simple_bulma.egg-info/
 .coverage
 htmlcov/
 
+# Playwright screenshots (captured during e2e, uploaded as CI artifacts)
+tests/_artifacts/
+
+# Django collectstatic output from the test settings
+test_static/
+
 # AI stuff
 .claude
 CLAUDE.*
