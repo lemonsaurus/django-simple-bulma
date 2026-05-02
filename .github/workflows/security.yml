@@ -1,0 +1,36 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly scan catches CVEs published after the last PR
+    - cron: '17 6 * * 1'
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies
+        run: uv sync
+
+      # Only audit the *shipped* dependency graph, not dev tooling.
+      # Users pip-install this package; they don't get pytest or ruff.
+      - name: Export runtime dependencies
+        run: uv export --frozen --no-dev --format requirements-txt --no-hashes -o runtime-deps.txt
+
+      - name: Run pip-audit
+        run: uv run pip-audit -r runtime-deps.txt --no-deps --disable-pip

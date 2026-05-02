@@ -10,8 +10,8 @@ Note that contributions may be rejected on the basis of a contributor failing to
 2. If you have direct access to the repository, **create a branch for your changes** and create a pull request for that branch. If not, create a branch on a fork of the repository and create a pull request from there.
     * It's common practice for a repository to reject direct pushes to `master`, so make branching a habit!
     * If PRing from your own fork, **ensure that "Allow edits from maintainers" is checked**. This gives permission for maintainers to commit changes directly to your fork, speeding up the review process.
-3. **Adhere to the prevailing code style**, which we enforce using [`flake8`](http://flake8.pycqa.org/en/latest/index.html) and [`pre-commit`](https://pre-commit.com/).
-    * Run `flake8` and `pre-commit` against your code [**before** you push it](https://soundcloud.com/lemonsaurusrex/lint-before-you-push). Your commit will be rejected by the build server if it fails to lint.
+3. **Adhere to the prevailing code style**, which we enforce using [`ruff`](https://docs.astral.sh/ruff/) and [`pre-commit`](https://pre-commit.com/).
+    * Run `pre-commit run --all-files` against your code [**before** you push it](https://soundcloud.com/lemonsaurusrex/lint-before-you-push). Your commit will be rejected by the build server if it fails to lint.
     * [Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) are a powerful git feature for executing custom scripts when certain important git actions occur. The pre-commit hook is the first hook executed during the commit process and can be used to check the code being committed & abort the commit if issues, such as linting failures, are detected. While git hooks can seem daunting to configure, the `pre-commit` framework abstracts this process away from you and is provided as a dev dependency for this project. Run `pre-commit install` when setting up the project and you'll never have to worry about committing code that fails linting.
 4. **Make great commits**. A well structured git log is key to a project's maintainability; it efficiently provides insight into when and *why* things were done for future maintainers of the project.
     * Commits should be as narrow in scope as possible. Commits that span hundreds of lines across multiple unrelated functions and/or files are very hard for maintainers to follow. After about a week they'll probably be hard for you to follow too.
@@ -74,7 +74,7 @@ def foo(bar: int, baz: t.Optional[t.Dict[str, str]] = None) -> bool:
     ...
 ```
 
-Since PyDis does not utilize automatic documentation generation, use of this syntax should not be used in code contributed to the organization. Should the purpose and type of the input variables not be easily discernable from the variable name and type annotation, a prose explanation can be used. Explicit references to variables, functions, classes, etc. should be wrapped with backticks (`` ` ``).
+Since PyDis does not utilize automatic documentation generation, use of this syntax should not be used in code contributed to the organization. Should the purpose and type of the input variables not be easily discernible from the variable name and type annotation, a prose explanation can be used. Explicit references to variables, functions, classes, etc. should be wrapped with backticks (`` ` ``).
 
 For example, the above docstring would become:
 

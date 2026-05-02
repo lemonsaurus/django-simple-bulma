@@ -1,0 +1,34 @@
+name: Minimum dependency versions
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  min-versions:
+    name: Test with lowest allowed deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "pyproject.toml"
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      # Resolves every direct dependency to its lowest allowed version.
+      # Our pins (Django>=4.2, libsass~=0.19) claim those floors work;
+      # this job is the thing that actually proves it.
+      - name: Install with lowest-direct resolution
+        run: uv sync --resolution=lowest-direct
+
+      - name: Run tests
+        run: uv run pytest -v --tb=short

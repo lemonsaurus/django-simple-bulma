@@ -13,7 +13,8 @@ register = template.Library()
 
 @register.simple_tag
 def bulma(theme: str = "", *, include_js: bool = True) -> SafeString:
-    """Build static files required for Bulma.
+    """
+    Build static files required for Bulma.
 
     Parameters:
         theme:
@@ -26,10 +27,10 @@ def bulma(theme: str = "", *, include_js: bool = True) -> SafeString:
             in the result. Useful to prevent duplicate loading of JS when
             calling this tag more than once on the same resource.
     """
-    from ..utils import (
+    from django_simple_bulma.utils import (
         get_js_files,
-        logger,
         get_themes,
+        logger,
     )
     themes = get_themes()
     if theme and theme not in themes:

@@ -30,7 +30,7 @@ class TestCollectstaticIntegration:
                 assert os.path.exists(bulma_css)
 
                 # Check that the file has actual content
-                with open(bulma_css, 'r') as f:
+                with open(bulma_css) as f:
                     content = f.read()
                 assert len(content) > 100  # Should be substantial CSS
                 assert '$primary' not in content  # Variables should be compiled
@@ -202,7 +202,7 @@ class TestCustomScssIntegration:
                 assert os.path.exists(custom_css)
 
                 # Check content was compiled
-                with open(custom_css, 'r') as f:
+                with open(custom_css) as f:
                     content = f.read()
                 assert '.custom-class' in content
                 assert 'color: red' in content

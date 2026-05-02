@@ -2,8 +2,8 @@
 
 import logging
 import re
+from collections.abc import Generator
 from pathlib import Path
-from typing import Generator, List, Union
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -64,7 +64,7 @@ sass_files_searches = (
 logger = logging.getLogger("django-simple-bulma")
 
 
-def is_enabled(extension: Union[Path, str]) -> bool:
+def is_enabled(extension: Path | str) -> bool:
     """Return whether an extension is enabled or not."""
     # Get extensions dynamically to support override_settings in tests
     try:
@@ -104,7 +104,7 @@ def get_js_files() -> Generator[str, None, None]:
             extensions.append(ext.name)
 
 
-def get_sass_files(ext: Path) -> List[Path]:
+def get_sass_files(ext: Path) -> list[Path]:
     """Given the path to an extension, find and yield all files that should be imported."""
     for rel_path, glob in sass_files_searches:
         src_files = list((ext / rel_path).rglob(glob))

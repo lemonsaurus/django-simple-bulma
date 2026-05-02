@@ -7,7 +7,6 @@ objects to find files that should be collected by collectstatic.
 import logging
 from os.path import abspath
 from pathlib import Path
-from typing import List, Tuple, Union
 
 import sass
 from django.conf import settings
@@ -75,12 +74,12 @@ class SimpleBulmaFinder(BaseFinder):
         return scss_string
 
     @staticmethod
-    def _get_bulma_js() -> List[str]:
+    def _get_bulma_js() -> list[str]:
         """Return a list of all the js files that are needed for the users selected extensions."""
         return list(get_js_files())
 
     @staticmethod
-    def find_relative_staticfiles(path: Union[str, Path]) -> Union[Path, None]:
+    def find_relative_staticfiles(path: str | Path) -> Path | None:
         """
         Returns a given path, relative to one of the paths in STATICFILES_DIRS.
 
@@ -95,7 +94,7 @@ class SimpleBulmaFinder(BaseFinder):
             if directory in path.parents:
                 return path.relative_to(directory)
 
-    def _get_bulma_css(self) -> List[str]:
+    def _get_bulma_css(self) -> list[str]:
         """
         Gets or compiles the bulma css files for each theme and returns their relative paths.
 
@@ -115,7 +114,7 @@ class SimpleBulmaFinder(BaseFinder):
         is_bulma_1_plus = False
         if version_file.exists():
             import json
-            with open(version_file, "r", encoding="utf-8") as f:
+            with open(version_file, encoding="utf-8") as f:
                 package_data = json.load(f)
                 version = package_data.get("version", "0.0.0")
                 is_bulma_1_plus = version.startswith("1.")
@@ -127,7 +126,7 @@ class SimpleBulmaFinder(BaseFinder):
         # For older Bulma versions, fall back to SASS compilation
         return self._compile_sass_fallback()
 
-    def _get_bulma_1_css(self, themes: List[str], has_extensions: bool) -> List[str]:
+    def _get_bulma_1_css(self, themes: list[str], has_extensions: bool) -> list[str]:
         """
         Generate CSS files for Bulma 1.0+ using pre-compiled CSS with CSS variable injection.
 
@@ -151,7 +150,7 @@ class SimpleBulmaFinder(BaseFinder):
             )
 
         # Read the base pre-compiled CSS
-        with open(precompiled_css, "r", encoding="utf-8") as f:
+        with open(precompiled_css, encoding="utf-8") as f:
             base_css = f.read()
 
         # Process default theme first (empty string means default)
@@ -260,9 +259,9 @@ class SimpleBulmaFinder(BaseFinder):
 
                 for css_file in css_files:
                     try:
-                        with open(css_file, "r", encoding="utf-8") as f:
+                        with open(css_file, encoding="utf-8") as f:
                             return f.read()
-                    except (IOError, UnicodeDecodeError):
+                    except (OSError, UnicodeDecodeError):
                         # Skip files that can't be read
                         continue
 
@@ -327,7 +326,7 @@ class SimpleBulmaFinder(BaseFinder):
             )
             return ""
 
-    def _compile_sass_fallback(self) -> List[str]:
+    def _compile_sass_fallback(self) -> list[str]:
         """Legacy SASS compilation method (for Bulma < 1.0 compatibility)."""
         # Check for proper libsass installation
         if not hasattr(sass, "libsass_version"):
@@ -442,7 +441,7 @@ class SimpleBulmaFinder(BaseFinder):
 
         return paths
 
-    def find(self, path: str, find_all: bool = False, all: bool = False) -> Union[List[str], str]:
+    def find(self, path: str, find_all: bool = False, all: bool = False) -> list[str] | str:
         """
         Given a relative file path, find an absolute file path.
 
@@ -458,7 +457,7 @@ class SimpleBulmaFinder(BaseFinder):
             return [absolute_path]
         return absolute_path
 
-    def list(self, _: List[str]) -> Tuple[str, FileSystemStorage]:
+    def list(self, _: list[str]) -> tuple[str, FileSystemStorage]:
         """Return a two item iterable consisting of the relative path and storage instance."""
         files = self._get_bulma_css()
         files.extend(self._get_custom_css())
