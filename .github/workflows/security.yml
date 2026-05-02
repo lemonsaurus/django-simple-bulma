@@ -30,7 +30,7 @@ jobs:
       # Only audit the *shipped* dependency graph, not dev tooling.
       # Users pip-install this package; they don't get pytest or ruff.
       - name: Export runtime dependencies
-        run: uv export --no-dev --format requirements-txt --no-hashes -o runtime-deps.txt
+        run: uv export --frozen --no-dev --format requirements-txt --no-hashes -o runtime-deps.txt
 
       - name: Run pip-audit
         run: uv run pip-audit -r runtime-deps.txt --no-deps --disable-pip

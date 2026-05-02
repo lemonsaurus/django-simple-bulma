@@ -6,6 +6,9 @@
     ":prHourlyLimit2",
     "helpers:pinGitHubActionDigests"
   ],
+  "pre-commit": {
+    "enabled": true
+  },
   "schedule": ["before 6am on Monday"],
   "labels": ["dependencies"],
   "packageRules": [
