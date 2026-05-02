@@ -117,6 +117,8 @@ We currently support these actively maintained extensions compatible with Bulma 
 
 **Note**: As of this version, we have streamlined our extension support to focus only on actively maintained, Bulma 1.0+ compatible extensions. Many of the previously supported extensions are no longer maintained or compatible with modern Bulma versions.
 
+**Where's the extension CSS?** Extension stylesheets are concatenated into the main `bulma.css` file, so you only need the single `<link>` that `{% bulma %}` produces. Extension JavaScript, by contrast, is loaded as a separate `<script>` per extension. So if you enable `bulma-calendar` and see its JS but no extra CSS link, that's expected — the calendar styles are already inside `bulma.css`.
+
 If an extension you want to use is missing, feel free
 to [create an issue](https://github.com/python-discord/django-simple-bulma/issues) and we will be happy to add it.
 Alternatively, add it yourself and create a pull request (
