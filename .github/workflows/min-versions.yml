@@ -22,7 +22,7 @@ jobs:
           cache-dependency-glob: "pyproject.toml"
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install 3.13
 
       # Resolves every direct dependency to its lowest allowed version.
       # Our pins (Django>=4.2, libsass>=0.23) claim those floors work;

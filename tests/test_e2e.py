@@ -13,10 +13,17 @@ Run locally:
     uv run pytest tests/test_e2e.py
 """
 
+import os
 from pathlib import Path
 
 import pytest
 from django.core.management import call_command
+
+# Playwright's event loop stays alive during test teardown, which otherwise
+# trips Django's SynchronousOnlyOperation guard when the test database is
+# torn down. Scoped here (not in conftest) so non-e2e tests run with the
+# guard intact.
+os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 SCREENSHOT_DIR = Path(__file__).resolve().parent / "_artifacts"
 
@@ -37,7 +44,7 @@ def collected_static(django_db_setup, django_db_blocker) -> None:  # noqa: ARG00
 
 @pytest.fixture(autouse=True)
 def _artifacts_dir() -> None:
-    SCREENSHOT_DIR.mkdir(exist_ok=True)
+    SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def test_bulma_css_reaches_the_browser(
@@ -62,7 +69,7 @@ def test_bulma_css_reaches_the_browser(
     page.screenshot(path=str(SCREENSHOT_DIR / "homepage.png"), full_page=True)
 
 
-def test_primary_and_danger_render_different_colours(
+def test_modifier_classes_render_distinct_colours(
     live_server, page, collected_static  # noqa: ARG001
 ) -> None:
     """Distinct `is-*` modifiers must resolve to distinct backgrounds."""
@@ -72,10 +79,10 @@ def test_primary_and_danger_render_different_colours(
         el = page.get_by_test_id(test_id)
         return _rgb(el.evaluate("el => getComputedStyle(el).backgroundColor"))
 
-    primary, danger = bg("primary-button"), bg("danger-button")
-    assert primary != danger, (
-        "`.button.is-primary` and `.button.is-danger` render identically — "
-        "Bulma modifier classes are not taking effect"
+    primary, link, danger = bg("primary-button"), bg("link-button"), bg("danger-button")
+    assert len({primary, link, danger}) == 3, (
+        f"`is-primary` ({primary}), `is-link` ({link}), and `is-danger` ({danger}) "
+        f"do not all render distinct backgrounds — modifier cascade is broken"
     )
 
 
@@ -85,20 +92,22 @@ def test_calendar_extension_css_is_served(
     """An element carrying a calendar-extension class must pick up its rules.
 
     tests/settings.py enables bulma-calendar. We inject a .datetimepicker
-    into the DOM and check that its layout was affected. If the extension
-    CSS was not concatenated into bulma.css, the element has no styling
-    and its dimensions stay at the browser default.
+    into the DOM and assert that the extension's `display: none` rule
+    applies — a div's default is `display: block`, so this only flips if
+    the calendar CSS was actually concatenated into bulma.css.
     """
     page.goto(live_server.url)
-    width = page.evaluate(
+    display = page.evaluate(
         """() => {
             const el = document.createElement('div');
             el.className = 'datetimepicker';
-            el.style.display = 'block';
             document.body.appendChild(el);
-            const w = el.getBoundingClientRect().width;
+            const value = getComputedStyle(el).display;
             el.remove();
-            return w;
+            return value;
         }"""
     )
-    assert width > 0, "datetimepicker has zero width — calendar CSS is not applied"
+    assert display == "none", (
+        f"datetimepicker resolved to `display: {display}` — expected `none` "
+        f"from bulma-calendar's base rule. Calendar extension CSS is not applied."
+    )

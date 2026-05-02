@@ -29,7 +29,7 @@ jobs:
         cache-dependency-glob: "pyproject.toml"
 
     - name: Set up Python
-      run: uv python install 3.12
+      run: uv python install 3.13
 
     - name: Get version from release tag
       id: get_version
@@ -69,7 +69,7 @@ jobs:
         cache-dependency-glob: "pyproject.toml"
 
     - name: Set up Python
-      run: uv python install 3.12
+      run: uv python install 3.13
 
     - name: Build package
       run: uv build
