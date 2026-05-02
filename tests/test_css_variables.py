@@ -3,6 +3,7 @@ import pytest
 
 from django_simple_bulma.css_variables import (
     convert_sass_variables_to_css,
+    get_hsl_channel_names,
     get_variable_mapping,
     hex_to_hsl,
     is_color_value,
@@ -218,3 +219,72 @@ class TestConvertSassVariablesToCss:
         assert result.endswith("}\n")
         assert result.count("{") == 1
         assert result.count("}") == 1
+
+
+class TestGetHslChannelNames:
+    """Regression tests for HSL channel naming (issue #126)."""
+
+    def test_standard_color_uses_simple_channels(self) -> None:
+        """Standard colors keep the simple --bulma-{name}-h/s/l shape."""
+        assert get_hsl_channel_names("primary") == (
+            "--bulma-primary-h", "--bulma-primary-s", "--bulma-primary-l"
+        )
+        assert get_hsl_channel_names("link") == (
+            "--bulma-link-h", "--bulma-link-s", "--bulma-link-l"
+        )
+
+    def test_scheme_variants_share_hue_and_saturation(self) -> None:
+        """Scheme variants share --bulma-scheme-h/s with per-variant -l."""
+        assert get_hsl_channel_names("scheme-main") == (
+            "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-main-l"
+        )
+        assert get_hsl_channel_names("scheme-main-bis") == (
+            "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-main-bis-l"
+        )
+        assert get_hsl_channel_names("scheme-invert") == (
+            "--bulma-scheme-h", "--bulma-scheme-s", "--bulma-scheme-invert-l"
+        )
+
+    def test_hero_variants_use_background_and_color_lightness(self) -> None:
+        """Hero variants share --bulma-hero-h/s with -background-l/-color-l."""
+        assert get_hsl_channel_names("hero-background") == (
+            "--bulma-hero-h", "--bulma-hero-s", "--bulma-hero-background-l"
+        )
+        assert get_hsl_channel_names("hero-color") == (
+            "--bulma-hero-h", "--bulma-hero-s", "--bulma-hero-color-l"
+        )
+
+
+class TestIssue126Regression:
+    """End-to-end assertions for the customization bug in issue #126."""
+
+    def test_scheme_main_emits_correct_bulma_1x_channel_names(self) -> None:
+        """scheme-main writes the channel names Bulma 1.x actually reads."""
+        result = convert_sass_variables_to_css({"scheme-main": "#112233"})
+        assert "--bulma-scheme-h:" in result
+        assert "--bulma-scheme-s:" in result
+        assert "--bulma-scheme-main-l:" in result
+        # The broken pre-fix naming must NOT be emitted.
+        assert "--bulma-scheme-main-h:" not in result
+        assert "--bulma-scheme-main-s:" not in result
+
+    def test_hero_background_emits_correct_bulma_1x_channel_names(self) -> None:
+        """hero-background writes the channel names Bulma 1.x actually reads."""
+        result = convert_sass_variables_to_css({"hero-background": "#aabbcc"})
+        assert "--bulma-hero-h:" in result
+        assert "--bulma-hero-s:" in result
+        assert "--bulma-hero-background-l:" in result
+        assert "--bulma-hero-background-h:" not in result
+
+    @pytest.mark.parametrize("var_name", ["white", "black", "light", "dark"])
+    def test_direct_color_vars_skip_hsl_split(self, var_name: str) -> None:
+        """white/black/light/dark are direct color vars in Bulma 1.x.
+
+        They must NOT be split into h/s/l channels because Bulma reads
+        `--bulma-{name}` as a single color value, not three HSL components.
+        """
+        result = convert_sass_variables_to_css({var_name: "#123456"})
+        assert f"--bulma-{var_name}: #123456;" in result
+        assert f"--bulma-{var_name}-h:" not in result
+        assert f"--bulma-{var_name}-s:" not in result
+        assert f"--bulma-{var_name}-l:" not in result

@@ -441,3 +441,43 @@ class TestSimpleBulmaFinderBulma1:
             # Should have generated one CSS file
             assert len(result) == 1
             assert result[0] == 'css/bulma.css'
+
+
+class TestIssue126BulmaCssOrdering:
+    """Regression tests for the cascade ordering bug in issue #126."""
+
+    @override_settings(BULMA_SETTINGS={"variables": {"primary": "#ff6b6b"}})
+    def test_user_variables_are_written_after_bulma_base_css(self) -> None:
+        """User :root overrides must appear AFTER Bulma's base CSS."""
+        from django_simple_bulma.utils import simple_bulma_path
+
+        finder = SimpleBulmaFinder()
+        paths = finder._get_bulma_css()
+        assert paths, "expected at least one generated css path"
+
+        content = (simple_bulma_path / paths[0]).read_text()
+
+        user_root = content.rfind("--bulma-primary-h:")
+        bulma_signature = content.find("bulma.io v")
+        assert user_root > bulma_signature > -1, (
+            "user :root overrides must come AFTER Bulma's base CSS, "
+            "otherwise Bulma's defaults win the cascade (issue #126)"
+        )
+
+
+class TestIssue125BulmaCalendarCss:
+    """Regression tests for bulma-calendar CSS bundling (issue #125)."""
+
+    @override_settings(BULMA_SETTINGS={"extensions": ["bulma-calendar"]})
+    def test_bulma_calendar_css_is_included(self) -> None:
+        """The bulma-calendar extension bundles its pre-compiled CSS."""
+        from django_simple_bulma.utils import simple_bulma_path
+
+        ext_dir = simple_bulma_path / "extensions" / "bulma-calendar"
+        if not (ext_dir / "dist" / "css" / "bulma-calendar.min.css").exists():
+            pytest.skip("bulma-calendar submodule not initialised")
+
+        finder = SimpleBulmaFinder()
+        css = finder._get_single_extension_css(ext_dir)
+        assert css, "bulma-calendar extension produced no CSS"
+        assert "datetimepicker" in css or "calendar" in css

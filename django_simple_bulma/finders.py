@@ -173,12 +173,14 @@ class SimpleBulmaFinder(BaseFinder):
             if has_extensions:
                 extension_css = self._get_extension_css()
 
-            # Combine all CSS
+            # Combine all CSS. User variable overrides MUST come last so they
+            # win the cascade — Bulma's own :root rules in base_css would
+            # otherwise override them (same specificity, later source wins).
             final_css = base_css
-            if css_variables:
-                final_css = css_variables + "\n" + final_css
             if extension_css:
                 final_css = final_css + "\n" + extension_css
+            if css_variables:
+                final_css = final_css + "\n" + css_variables
 
             # Write theme CSS file
             theme_filename = f"{theme + '_' if theme else ''}bulma.css"

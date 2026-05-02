@@ -1,6 +1,7 @@
 """Integration tests for django-simple-bulma."""
 
 import os
+import re
 import tempfile
 
 import pytest
@@ -388,7 +389,7 @@ class TestBulmaCalendarExtensionEndToEnd:
                 ):
                     assert marker in css, (
                         f"bulma.css missing calendar marker '{marker}' "
-                        f"(size={len(css)} bytes) — issue #125 regression"
+                        f"(size={len(css)} bytes), issue #125 regression"
                     )
 
     @pytest.mark.django_db
@@ -450,7 +451,7 @@ class TestBulmaCalendarExtensionEndToEnd:
         """Sanity: without the extension enabled, calendar CSS must NOT ship.
 
         If this test ever fails, the previous three are no longer proving
-        anything — the markers would be in bulma.css regardless.
+        anything, the markers would be in bulma.css regardless.
         """
         with tempfile.TemporaryDirectory() as temp_dir:
             static_root = os.path.join(temp_dir, "static")
@@ -466,3 +467,70 @@ class TestBulmaCalendarExtensionEndToEnd:
 
                 assert "datetimepicker" not in css
                 assert "datepicker-nav" not in css
+
+
+def _last_value(css: str, var: str) -> str:
+    """Return the value of the last declaration of `var` in a CSS string.
+
+    We iterate right-to-left because CSS cascade resolves same-specificity
+    same-property declarations by source order: the last one wins.
+    """
+    matches = list(re.finditer(rf"{re.escape(var)}\s*:\s*([^;}}]+)[;}}]", css))
+    assert matches, f"{var} not found in css"
+    return matches[-1].group(1).strip()
+
+
+class TestBulmaSettingsCustomizationEndToEnd:
+    """End-to-end cascade tests for BULMA_SETTINGS (issue #126).
+
+    These run the real collectstatic pipeline and assert the user's chosen
+    values are the ones that actually win the cascade in the generated CSS.
+    Unit tests caught the channel-name and ordering bugs in isolation; these
+    catch them in the user's language: "I set primary red, is the CSS red?"
+    """
+
+    @pytest.mark.django_db
+    def test_user_primary_color_wins_cascade(self) -> None:
+        """Setting primary in BULMA_SETTINGS must win over Bulma's default."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, "static")
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                BULMA_SETTINGS={"variables": {"primary": "#ff6b6b"}},
+            ):
+                call_command("collectstatic", "--noinput", verbosity=0)
+
+                bulma_css = os.path.join(static_root, "css", "bulma.css")
+                with open(bulma_css) as f:
+                    css = f.read()
+
+                # #ff6b6b resolves to ~0deg, 100%, 71% in HSL. The last
+                # declaration of each channel must be the user's value.
+                assert _last_value(css, "--bulma-primary-h") == "0deg"
+                assert _last_value(css, "--bulma-primary-s") == "100%"
+                assert _last_value(css, "--bulma-primary-l") == "71%"
+
+    @pytest.mark.django_db
+    def test_user_scheme_main_wins_cascade(self) -> None:
+        """Scheme-main override must use the channel names Bulma 1.x reads."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            static_root = os.path.join(temp_dir, "static")
+
+            with override_settings(
+                STATIC_ROOT=static_root,
+                BULMA_SETTINGS={"variables": {"scheme-main": "#112233"}},
+            ):
+                call_command("collectstatic", "--noinput", verbosity=0)
+
+                bulma_css = os.path.join(static_root, "css", "bulma.css")
+                with open(bulma_css) as f:
+                    css = f.read()
+
+                # #112233 is roughly (210deg, 50%, 13%). Bulma derives the
+                # final scheme-main color from --bulma-scheme-h / -s plus
+                # --bulma-scheme-main-l, so those three must land on our
+                # values at the end of the file.
+                assert _last_value(css, "--bulma-scheme-h") == "210deg"
+                assert _last_value(css, "--bulma-scheme-s") == "50%"
+                assert _last_value(css, "--bulma-scheme-main-l") == "13%"
