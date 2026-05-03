@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-simple-bulma"
-version = "3.0.0"
+version = "4.0.0"
 description = "Django application to add the Bulma CSS framework and its extensions"
 readme = "README.md"
 license = "MIT"
